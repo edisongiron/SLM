@@ -1,0 +1,37 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.rsuser
+
+# IDEs
+.vscode/
+.idea/
+
+# Build
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# NuGet
+packages/
+*.nupkg
+
+# Logs & tests
+*.log
+TestResults/
+
+# Windows junk
+Thumbs.db
+Desktop.ini
+
+# ReSharper / Rider
+_ReSharper*/
+*.DotSettings.user
