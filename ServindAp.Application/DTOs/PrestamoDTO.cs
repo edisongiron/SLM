@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServindAp.Domain
+namespace ServindAp.Application.DTOs
 {
-    internal class Class1
+    internal class PrestamoDTO
     {
     }
 }
