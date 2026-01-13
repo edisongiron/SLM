@@ -3,7 +3,7 @@
     public class Prestamo
     {
         public int Id { get; set; }
-        public string Responsable { get; set; }
+        public string Responsable { get; set; } = null!;
         public DateTime FechaEntrega { get; set; }
         public DateTime? FechaDevolucion { get; set; }
         public string? Observaciones { get; set; }
