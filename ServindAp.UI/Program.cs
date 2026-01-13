@@ -1,4 +1,4 @@
-namespace ServindAp
+namespace ServindAp.UI
 {
     internal static class Program
     {

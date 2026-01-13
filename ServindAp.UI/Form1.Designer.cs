@@ -1,4 +1,4 @@
-﻿namespace ServindAp
+﻿namespace ServindAp.UI
 {
     partial class Form1
     {
@@ -33,7 +33,7 @@
             materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
             Home = new TabPage();
             toolStrip1 = new ToolStrip();
-            label1 = new Label();
+            labelSubtitulo = new Label();
             Logo = new PictureBox();
             tabPage2 = new TabPage();
             label3 = new Label();
@@ -60,56 +60,65 @@
             materialTabControl1.Dock = DockStyle.Fill;
             materialTabControl1.ImageList = imageList1;
             materialTabControl1.ItemSize = new Size(120, 50);
-            materialTabControl1.Location = new Point(3, 64);
+            materialTabControl1.Location = new Point(3, 48);
+            materialTabControl1.Margin = new Padding(3, 2, 3, 2);
             materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
             materialTabControl1.Multiline = true;
             materialTabControl1.Name = "materialTabControl1";
             materialTabControl1.SelectedIndex = 0;
-            materialTabControl1.Size = new Size(1329, 664);
+            materialTabControl1.Size = new Size(1162, 498);
             materialTabControl1.TabIndex = 0;
             // 
             // Home
             // 
             Home.Controls.Add(toolStrip1);
-            Home.Controls.Add(label1);
+            Home.Controls.Add(labelSubtitulo);
             Home.Controls.Add(Logo);
             Home.ImageKey = "Icono house.png";
             Home.Location = new Point(4, 54);
+            Home.Margin = new Padding(3, 2, 3, 2);
             Home.Name = "Home";
-            Home.Padding = new Padding(3);
-            Home.Size = new Size(1321, 606);
+            Home.Padding = new Padding(3, 2, 3, 2);
+            Home.Size = new Size(1154, 440);
             Home.TabIndex = 0;
             Home.Text = "Inicio";
             // 
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Location = new Point(3, 3);
+            toolStrip1.Location = new Point(3, 2);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1315, 25);
+            toolStrip1.Size = new Size(1148, 25);
             toolStrip1.TabIndex = 2;
             toolStrip1.Text = "toolStrip1";
             // 
-            // label1
+            // labelSubtitulo
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Rockwell", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = SystemColors.ControlDarkDark;
-            label1.Location = new Point(331, 354);
-            label1.Name = "label1";
-            label1.Size = new Size(662, 28);
-            label1.TabIndex = 1;
-            label1.Text = "Sistema de gestion de entregas de equipos y herramientas";
+            labelSubtitulo.AutoSize = true;
+            labelSubtitulo.Font = new Font("Roboto", 14);
+            labelSubtitulo.ForeColor = Color.FromArgb(140, 140, 142);
+            //labelSubtitulo.Location = new Point(290, 266);
+            labelSubtitulo.Name = "labelSubtitulo";
+            labelSubtitulo.Size = new Size(562, 23);
+            labelSubtitulo.TabIndex = 1;
+            labelSubtitulo.Width = Home.Width;
+            labelSubtitulo.Height = 30;
+            labelSubtitulo.TextAlign = ContentAlignment.MiddleCenter;
+            labelSubtitulo.Location = new Point(0, 380);
+            labelSubtitulo.Text = "Sistema de gestion de entregas de equipos y herramientas";
             // 
             // Logo
             // 
+            Logo.AccessibleName = "";
             Logo.Image = (Image)resources.GetObject("Logo.Image");
-            Logo.Location = new Point(399, 23);
+            Logo.Margin = new Padding(3, 2, 3, 2);
             Logo.Name = "Logo";
             Logo.Size = new Size(512, 206);
             Logo.SizeMode = PictureBoxSizeMode.AutoSize;
             Logo.TabIndex = 0;
             Logo.TabStop = false;
+            int logoX = (Home.Width - Logo.Width) / 2;
+            Logo.Location = new Point(logoX, 150); // Altura
             // 
             // tabPage2
             // 
@@ -121,9 +130,10 @@
             tabPage2.Controls.Add(label2);
             tabPage2.ImageKey = "Icono Cambio.png";
             tabPage2.Location = new Point(4, 54);
+            tabPage2.Margin = new Padding(3, 2, 3, 2);
             tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1321, 606);
+            tabPage2.Padding = new Padding(3, 2, 3, 2);
+            tabPage2.Size = new Size(1155, 440);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Prestamo";
             // 
@@ -131,19 +141,25 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Rockwell", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(109, 450);
+            label3.Location = new Point(95, 338);
             label3.Name = "label3";
-            label3.Size = new Size(110, 24);
+            label3.Size = new Size(88, 19);
             label3.TabIndex = 5;
             label3.Text = "Buscador:";
+
+            label3.Font = new Font("Rockwell", 12, FontStyle.Bold);
+            label3.ForeColor = Color.FromArgb(130, 130, 130);
+            label3.Location = new Point(90, 450); // Más a la izquierda (90) y más abajo (90)
+
             // 
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(109, 164);
+            dataGridView1.Location = new Point(95, 123);
+            dataGridView1.Margin = new Padding(3, 2, 3, 2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(840, 188);
+            dataGridView1.Size = new Size(735, 141);
             dataGridView1.TabIndex = 4;
             // 
             // materialButton2
@@ -153,8 +169,8 @@
             materialButton2.Depth = 0;
             materialButton2.HighEmphasis = true;
             materialButton2.Icon = null;
-            materialButton2.Location = new Point(975, 195);
-            materialButton2.Margin = new Padding(4, 6, 4, 6);
+            materialButton2.Location = new Point(853, 146);
+            materialButton2.Margin = new Padding(4, 4, 4, 4);
             materialButton2.MouseState = MaterialSkin.MouseState.HOVER;
             materialButton2.Name = "materialButton2";
             materialButton2.NoAccentTextColor = Color.Empty;
@@ -172,8 +188,8 @@
             materialButton1.Depth = 0;
             materialButton1.HighEmphasis = true;
             materialButton1.Icon = null;
-            materialButton1.Location = new Point(975, 255);
-            materialButton1.Margin = new Padding(4, 6, 4, 6);
+            materialButton1.Location = new Point(853, 191);
+            materialButton1.Margin = new Padding(4, 4, 4, 4);
             materialButton1.MouseState = MaterialSkin.MouseState.HOVER;
             materialButton1.Name = "materialButton1";
             materialButton1.NoAccentTextColor = Color.Empty;
@@ -191,12 +207,13 @@
             materialTextBox1.Depth = 0;
             materialTextBox1.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
             materialTextBox1.LeadingIcon = null;
-            materialTextBox1.Location = new Point(109, 486);
+            materialTextBox1.Location = new Point(95, 364);
+            materialTextBox1.Margin = new Padding(3, 2, 3, 2);
             materialTextBox1.MaxLength = 50;
             materialTextBox1.MouseState = MaterialSkin.MouseState.OUT;
             materialTextBox1.Multiline = false;
             materialTextBox1.Name = "materialTextBox1";
-            materialTextBox1.Size = new Size(280, 50);
+            materialTextBox1.Size = new Size(245, 50);
             materialTextBox1.TabIndex = 1;
             materialTextBox1.Text = "";
             materialTextBox1.TrailingIcon = null;
@@ -205,19 +222,24 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Rockwell", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(109, 89);
+            label2.Location = new Point(95, 67);
             label2.Name = "label2";
-            label2.Size = new Size(220, 28);
+            label2.Size = new Size(186, 23);
             label2.TabIndex = 0;
             label2.Text = "Préstamos Activos";
+
+            label2.Font = new Font("Rockwell", 14, FontStyle.Bold);
+            label2.ForeColor = Color.FromArgb(130, 130, 130);
+            label2.Location = new Point(90, 90); // Más a la izquierda (90) y más abajo (90)
             // 
             // tabPage3
             // 
             tabPage3.ImageKey = "Icono Herramienta.png";
             tabPage3.Location = new Point(4, 54);
+            tabPage3.Margin = new Padding(3, 2, 3, 2);
             tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(1321, 606);
+            tabPage3.Padding = new Padding(3, 2, 3, 2);
+            tabPage3.Size = new Size(1155, 440);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Herramientas";
             // 
@@ -232,13 +254,14 @@
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1335, 731);
+            ClientSize = new Size(1168, 548);
             Controls.Add(materialTabControl1);
             DrawerTabControl = materialTabControl1;
+            Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
-            Load += Form1_Load;
+            Padding = new Padding(3, 48, 3, 2);
             materialTabControl1.ResumeLayout(false);
             Home.ResumeLayout(false);
             Home.PerformLayout();
@@ -255,7 +278,7 @@
         private TabPage tabPage3;
         private PictureBox Logo;
         private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
-        private Label label1;
+        private Label labelSubtitulo;
         private ToolStrip toolStrip1;
         private DataGridView dataGridView1;
         private MaterialSkin.Controls.MaterialButton materialButton2;
