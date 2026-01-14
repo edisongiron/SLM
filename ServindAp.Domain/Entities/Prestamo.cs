@@ -1,4 +1,7 @@
-﻿namespace ServindAp.Domain.Entities
+﻿using ServindAp.Domain.Exceptions;
+using ServindAp.Domain.Enums;
+
+namespace ServindAp.Domain.Entities
 {
     public class Prestamo
     {
@@ -25,32 +28,36 @@
             Responsable = responsable;
             FechaEntrega = fechaEntrega;
             Observaciones = observaciones;
-            EstadoPrestamoId = 2; // Activo por defecto
+            EstadoPrestamoId = (int)TipoEstadoPrestamo.Activo; // Activo por defecto
             Herramientas = new List<PrestamoHerramienta>();
         }
 
         // ===== LÓGICA DE NEGOCIO =====
 
-        public bool EstaActivo() => FechaDevolucion == null;
+        public bool EstaActivo() => EstadoPrestamoId == (int)TipoEstadoPrestamo.Activo;
 
-        public bool EstaDevuelto() => FechaDevolucion != null;
+        public bool EstaDevuelto() =>
+            EstadoPrestamoId == (int)TipoEstadoPrestamo.Devuelto ||
+            EstadoPrestamoId == (int)TipoEstadoPrestamo.DevueltoConDefectos;
 
-        public void RegistrarDevolucion(DateTime fechaDevolucion)
+        public void RegistrarDevolucion(DateTime fechaDevolucion, bool tieneDefectos = false)
         {
             if (EstaDevuelto())
-                throw new InvalidOperationException("El préstamo ya fue devuelto");
+                throw new PrestamoYaDevueltoException();
 
             if (fechaDevolucion < FechaEntrega)
-                throw new ArgumentException("La fecha de devolución no puede ser anterior a la fecha de entrega");
+                throw new FechaInvalidaException("La fecha de devolución no puede ser anterior a la fecha de entrega");
 
             FechaDevolucion = fechaDevolucion;
-            EstadoPrestamoId = 3; // Devuelto
+            EstadoPrestamoId = tieneDefectos
+                ? (int)TipoEstadoPrestamo.DevueltoConDefectos
+                : (int)TipoEstadoPrestamo.Devuelto;
         }
 
         public void AgregarHerramienta(int herramientaId, int cantidad)
         {
             if (cantidad <= 0)
-                throw new ArgumentException("La cantidad debe ser mayor a cero");
+                throw new CantidadInvalidaException("La cantidad debe ser mayor a cero");
 
             Herramientas.Add(new PrestamoHerramienta
             {
