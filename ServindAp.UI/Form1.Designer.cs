@@ -39,19 +39,17 @@ namespace ServindAp.UI
             toolStrip1 = new ToolStrip();
             Logo = new PictureBox();
             tabPage2 = new TabPage();
-            label3 = new Label();
-            dataGridView1 = new DataGridView();
-            materialButton2 = new MaterialButton();
-            materialButton1 = new MaterialButton();
-            materialTextBox1 = new MaterialTextBox();
+            BuscadorTxb = new TextBox();
+            TablaPrestamos = new DataGridView();
             label2 = new Label();
             tabPage3 = new TabPage();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             imageList1 = new ImageList(components);
             materialTabControl1.SuspendLayout();
             Home.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
             tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)TablaPrestamos).BeginInit();
             SuspendLayout();
             // 
             // materialTabControl1
@@ -63,13 +61,12 @@ namespace ServindAp.UI
             materialTabControl1.Dock = DockStyle.Fill;
             materialTabControl1.ImageList = imageList1;
             materialTabControl1.ItemSize = new Size(120, 50);
-            materialTabControl1.Location = new Point(3, 48);
-            materialTabControl1.Margin = new Padding(3, 2, 3, 2);
+            materialTabControl1.Location = new Point(3, 64);
             materialTabControl1.MouseState = MouseState.HOVER;
             materialTabControl1.Multiline = true;
             materialTabControl1.Name = "materialTabControl1";
             materialTabControl1.SelectedIndex = 0;
-            materialTabControl1.Size = new Size(1162, 498);
+            materialTabControl1.Size = new Size(1373, 909);
             materialTabControl1.TabIndex = 0;
             // 
             // Home
@@ -77,12 +74,11 @@ namespace ServindAp.UI
             Home.Controls.Add(labelSubtitulo);
             Home.Controls.Add(toolStrip1);
             Home.Controls.Add(Logo);
-            Home.ImageKey = "Icono house.png";
+            Home.ImageKey = "home_32dp_000000_FILL0_wght400_GRAD0_opsz40.png";
             Home.Location = new Point(4, 54);
-            Home.Margin = new Padding(3, 2, 3, 2);
             Home.Name = "Home";
-            Home.Padding = new Padding(3, 2, 3, 2);
-            Home.Size = new Size(1154, 440);
+            Home.Padding = new Padding(3);
+            Home.Size = new Size(1365, 851);
             Home.TabIndex = 0;
             Home.Text = "Inicio";
             // 
@@ -91,7 +87,7 @@ namespace ServindAp.UI
             labelSubtitulo.AutoSize = true;
             labelSubtitulo.Depth = 0;
             labelSubtitulo.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-            labelSubtitulo.Location = new Point(3, 263);
+            labelSubtitulo.Location = new Point(3, 351);
             labelSubtitulo.MouseState = MouseState.HOVER;
             labelSubtitulo.Name = "labelSubtitulo";
             labelSubtitulo.Size = new Size(430, 19);
@@ -101,16 +97,17 @@ namespace ServindAp.UI
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Location = new Point(3, 2);
+            toolStrip1.Location = new Point(3, 3);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1148, 25);
+            toolStrip1.Size = new Size(1359, 25);
             toolStrip1.TabIndex = 2;
             toolStrip1.Text = "toolStrip1";
             // 
             // Logo
             // 
             Logo.Image = (Image)resources.GetObject("Logo.Image");
-            Logo.Location = new Point(3, 3);
+            Logo.Location = new Point(3, 4);
+            Logo.Margin = new Padding(3, 4, 3, 4);
             Logo.Name = "Logo";
             Logo.Size = new Size(512, 206);
             Logo.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -119,117 +116,53 @@ namespace ServindAp.UI
             // 
             // tabPage2
             // 
-            tabPage2.Controls.Add(label3);
-            tabPage2.Controls.Add(dataGridView1);
-            tabPage2.Controls.Add(materialButton2);
-            tabPage2.Controls.Add(materialButton1);
-            tabPage2.Controls.Add(materialTextBox1);
+            tabPage2.Controls.Add(BuscadorTxb);
+            tabPage2.Controls.Add(TablaPrestamos);
             tabPage2.Controls.Add(label2);
-            tabPage2.ImageKey = "Icono Cambio.png";
+            tabPage2.ImageKey = "swap_horiz_32dp_000000_FILL0_wght400_GRAD0_opsz40.png";
             tabPage2.Location = new Point(4, 54);
-            tabPage2.Margin = new Padding(3, 2, 3, 2);
             tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3, 2, 3, 2);
-            tabPage2.Size = new Size(1154, 440);
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1365, 851);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Prestamo";
             // 
-            // label3
+            // BuscadorTxb
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Roboto", 12F, FontStyle.Bold);
-            label3.ForeColor = Color.FromArgb(130, 130, 130);
-            label3.Location = new Point(90, 450);
-            label3.Name = "label3";
-            label3.Size = new Size(88, 19);
-            label3.TabIndex = 5;
-            label3.Text = "Buscador:";
+            BuscadorTxb.Location = new Point(118, 118);
+            BuscadorTxb.Multiline = true;
+            BuscadorTxb.Name = "BuscadorTxb";
+            BuscadorTxb.Size = new Size(231, 43);
+            BuscadorTxb.TabIndex = 6;
+            BuscadorTxb.TextChanged += BuscadorTxb_TextChanged;
             // 
-            // dataGridView1
+            // TablaPrestamos
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(95, 123);
-            dataGridView1.Margin = new Padding(3, 2, 3, 2);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(735, 141);
-            dataGridView1.TabIndex = 4;
-            // 
-            // materialButton2
-            // 
-            materialButton2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            materialButton2.Density = MaterialButton.MaterialButtonDensity.Default;
-            materialButton2.Depth = 0;
-            materialButton2.HighEmphasis = true;
-            materialButton2.Icon = null;
-            materialButton2.Location = new Point(853, 146);
-            materialButton2.Margin = new Padding(4);
-            materialButton2.MouseState = MouseState.HOVER;
-            materialButton2.Name = "materialButton2";
-            materialButton2.NoAccentTextColor = Color.Empty;
-            materialButton2.Size = new Size(158, 36);
-            materialButton2.TabIndex = 3;
-            materialButton2.Text = "materialButton2";
-            materialButton2.Type = MaterialButton.MaterialButtonType.Contained;
-            materialButton2.UseAccentColor = false;
-            materialButton2.UseVisualStyleBackColor = true;
-            // 
-            // materialButton1
-            // 
-            materialButton1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            materialButton1.Density = MaterialButton.MaterialButtonDensity.Default;
-            materialButton1.Depth = 0;
-            materialButton1.HighEmphasis = true;
-            materialButton1.Icon = null;
-            materialButton1.Location = new Point(853, 191);
-            materialButton1.Margin = new Padding(4);
-            materialButton1.MouseState = MouseState.HOVER;
-            materialButton1.Name = "materialButton1";
-            materialButton1.NoAccentTextColor = Color.Empty;
-            materialButton1.Size = new Size(158, 36);
-            materialButton1.TabIndex = 2;
-            materialButton1.Text = "materialButton1";
-            materialButton1.Type = MaterialButton.MaterialButtonType.Contained;
-            materialButton1.UseAccentColor = false;
-            materialButton1.UseVisualStyleBackColor = true;
-            // 
-            // materialTextBox1
-            // 
-            materialTextBox1.AnimateReadOnly = false;
-            materialTextBox1.BorderStyle = BorderStyle.None;
-            materialTextBox1.Depth = 0;
-            materialTextBox1.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            materialTextBox1.LeadingIcon = null;
-            materialTextBox1.Location = new Point(95, 364);
-            materialTextBox1.Margin = new Padding(3, 2, 3, 2);
-            materialTextBox1.MaxLength = 50;
-            materialTextBox1.MouseState = MouseState.OUT;
-            materialTextBox1.Multiline = false;
-            materialTextBox1.Name = "materialTextBox1";
-            materialTextBox1.Size = new Size(245, 50);
-            materialTextBox1.TabIndex = 1;
-            materialTextBox1.Text = "";
-            materialTextBox1.TrailingIcon = null;
+            TablaPrestamos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            TablaPrestamos.Location = new Point(118, 195);
+            TablaPrestamos.Name = "TablaPrestamos";
+            TablaPrestamos.RowHeadersWidth = 51;
+            TablaPrestamos.Size = new Size(1241, 650);
+            TablaPrestamos.TabIndex = 4;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Rockwell", 14F, FontStyle.Bold);
             label2.ForeColor = Color.FromArgb(130, 130, 130);
-            label2.Location = new Point(90, 90);
+            label2.Location = new Point(118, 52);
             label2.Name = "label2";
-            label2.Size = new Size(186, 23);
+            label2.Size = new Size(231, 29);
             label2.TabIndex = 0;
             label2.Text = "Préstamos Activos";
             // 
             // tabPage3
             // 
-            tabPage3.ImageKey = "Icono Herramienta.png";
+            tabPage3.ImageKey = "service_toolbox_32dp_000000_FILL0_wght400_GRAD0_opsz40.png";
             tabPage3.Location = new Point(4, 54);
-            tabPage3.Margin = new Padding(3, 2, 3, 2);
             tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3, 2, 3, 2);
-            tabPage3.Size = new Size(1154, 440);
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(1365, 851);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Herramientas";
             // 
@@ -238,27 +171,25 @@ namespace ServindAp.UI
             imageList1.ColorDepth = ColorDepth.Depth32Bit;
             imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
             imageList1.TransparentColor = Color.Transparent;
-            imageList1.Images.SetKeyName(0, "Icono Cambio.png");
-            imageList1.Images.SetKeyName(1, "Icono Herramienta.png");
-            imageList1.Images.SetKeyName(2, "Icono house.png");
+            imageList1.Images.SetKeyName(0, "home_32dp_000000_FILL0_wght400_GRAD0_opsz40.png");
+            imageList1.Images.SetKeyName(1, "swap_horiz_32dp_000000_FILL0_wght400_GRAD0_opsz40.png");
+            imageList1.Images.SetKeyName(2, "service_toolbox_32dp_000000_FILL0_wght400_GRAD0_opsz40.png");
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1168, 548);
+            ClientSize = new Size(1379, 976);
             Controls.Add(materialTabControl1);
             DrawerTabControl = materialTabControl1;
-            Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
-            Padding = new Padding(3, 48, 3, 2);
             materialTabControl1.ResumeLayout(false);
             Home.ResumeLayout(false);
             Home.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)Logo).EndInit();
             tabPage2.ResumeLayout(false);
             tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)TablaPrestamos).EndInit();
             ResumeLayout(false);
         }
 
@@ -269,13 +200,11 @@ namespace ServindAp.UI
         private PictureBox Logo;
         private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
         private ToolStrip toolStrip1;
-        private DataGridView dataGridView1;
-        private MaterialSkin.Controls.MaterialButton materialButton2;
-        private MaterialSkin.Controls.MaterialButton materialButton1;
-        private MaterialSkin.Controls.MaterialTextBox materialTextBox1;
+        private DataGridView TablaPrestamos;
         private Label label2;
-        private Label label3;
-        private ImageList imageList1;
         private MaterialLabel labelSubtitulo;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private TextBox BuscadorTxb;
+        private ImageList imageList1;
     }
 }
