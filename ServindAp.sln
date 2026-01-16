@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServindAp.Domain", "ServindAp.Domain\ServindAp.Domain.csproj", "{D315284F-C772-4E18-A02E-E1F7BE835CBC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServindAp.Application", "ServindAp.Application\ServindAp.Application.csproj", "{3352AC94-3186-41D5-9692-9CC361713FC9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D315284F-C772-4E18-A02E-E1F7BE835CBC} = {D315284F-C772-4E18-A02E-E1F7BE835CBC}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServindAp.Infrastructure", "ServindAp.Infrastructure\ServindAp.Infrastructure.csproj", "{80946C2D-8058-4075-AF87-0A0B86164355}"
 EndProject

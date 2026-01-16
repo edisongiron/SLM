@@ -1,8 +1,4 @@
-﻿using ServindAp.Domain.Entities;
-using ServindAp.Domain.Enums;
-using ServindAp.Domain.Exceptions;
-using System;
-
+﻿
 namespace ServindAp.Domain.Exceptions
 {
     public class PrestamoYaDevueltoException : DomainException
@@ -11,8 +7,23 @@ namespace ServindAp.Domain.Exceptions
             : base("El préstamo ya ha sido devuelto") { }
     }
 
-    public class FechaInvalidaException : DomainException
+    public class PrestamoNoEncontradoException : DomainException
     {
-        public FechaInvalidaException(string mensaje) : base(mensaje) { }
+        public PrestamoNoEncontradoException(int prestamoId)
+            : base($"No se encontró el préstamo con ID {prestamoId}") { }
+    }
+
+    public class PrestamoSinHerramientasException : DomainException
+    {
+        public PrestamoSinHerramientasException()
+            : base("El préstamo debe tener al menos una herramienta") { }
+    }
+
+    public class CantidadInvalidaException : DomainException
+    {
+        public CantidadInvalidaException()
+            : base("La cantidad debe ser mayor a cero") { }
+
+        public CantidadInvalidaException(string mensaje) : base(mensaje) { }
     }
 }

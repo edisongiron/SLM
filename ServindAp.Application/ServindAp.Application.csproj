@@ -9,7 +9,10 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\Repositories\" />
-    <Folder Include="UseCases\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServindAp.Domain\ServindAp.Domain.csproj" />
   </ItemGroup>
 
 </Project>
