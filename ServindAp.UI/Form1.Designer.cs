@@ -39,16 +39,19 @@ namespace ServindAp.UI
             toolStrip1 = new ToolStrip();
             Logo = new PictureBox();
             tabPage2 = new TabPage();
+            panelBuscador = new Panel();
+            picLupa = new PictureBox();
             BuscadorTxb = new TextBox();
             TablaPrestamos = new DataGridView();
-            label2 = new Label();
             tabPage3 = new TabPage();
-            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             imageList1 = new ImageList(components);
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             materialTabControl1.SuspendLayout();
             Home.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
             tabPage2.SuspendLayout();
+            panelBuscador.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picLupa).BeginInit();
             ((System.ComponentModel.ISupportInitialize)TablaPrestamos).BeginInit();
             SuspendLayout();
             // 
@@ -66,7 +69,7 @@ namespace ServindAp.UI
             materialTabControl1.Multiline = true;
             materialTabControl1.Name = "materialTabControl1";
             materialTabControl1.SelectedIndex = 0;
-            materialTabControl1.Size = new Size(1373, 909);
+            materialTabControl1.Size = new Size(1696, 909);
             materialTabControl1.TabIndex = 0;
             // 
             // Home
@@ -78,7 +81,7 @@ namespace ServindAp.UI
             Home.Location = new Point(4, 54);
             Home.Name = "Home";
             Home.Padding = new Padding(3);
-            Home.Size = new Size(1365, 851);
+            Home.Size = new Size(1688, 851);
             Home.TabIndex = 0;
             Home.Text = "Inicio";
             // 
@@ -99,7 +102,7 @@ namespace ServindAp.UI
             toolStrip1.ImageScalingSize = new Size(20, 20);
             toolStrip1.Location = new Point(3, 3);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1359, 25);
+            toolStrip1.Size = new Size(1682, 25);
             toolStrip1.TabIndex = 2;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -116,45 +119,56 @@ namespace ServindAp.UI
             // 
             // tabPage2
             // 
-            tabPage2.Controls.Add(BuscadorTxb);
+            tabPage2.Controls.Add(panelBuscador);
             tabPage2.Controls.Add(TablaPrestamos);
-            tabPage2.Controls.Add(label2);
             tabPage2.ImageKey = "swap_horiz_32dp_000000_FILL0_wght400_GRAD0_opsz40.png";
             tabPage2.Location = new Point(4, 54);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1365, 851);
+            tabPage2.Size = new Size(1688, 851);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Prestamo";
             // 
+            // panelBuscador
+            // 
+            panelBuscador.BackColor = Color.White;
+            panelBuscador.Controls.Add(picLupa);
+            panelBuscador.Controls.Add(BuscadorTxb);
+            panelBuscador.Location = new Point(118, 51);
+            panelBuscador.Name = "panelBuscador";
+            panelBuscador.Size = new Size(300, 46);
+            panelBuscador.TabIndex = 7;
+            // 
+            // picLupa
+            // 
+            picLupa.Image = (Image)resources.GetObject("picLupa.Image");
+            picLupa.Location = new Point(58, 6);
+            picLupa.Name = "picLupa";
+            picLupa.Size = new Size(30, 30);
+            picLupa.SizeMode = PictureBoxSizeMode.Zoom;
+            picLupa.TabIndex = 7;
+            picLupa.TabStop = false;
+            // 
             // BuscadorTxb
             // 
-            BuscadorTxb.Location = new Point(118, 118);
-            BuscadorTxb.Multiline = true;
+            BuscadorTxb.BackColor = Color.White;
+            BuscadorTxb.BorderStyle = BorderStyle.None;
+            BuscadorTxb.Location = new Point(94, 12);
             BuscadorTxb.Name = "BuscadorTxb";
-            BuscadorTxb.Size = new Size(231, 43);
+            BuscadorTxb.Size = new Size(192, 20);
             BuscadorTxb.TabIndex = 6;
             BuscadorTxb.TextChanged += BuscadorTxb_TextChanged;
+            BuscadorTxb.Enter += BuscadorTxb_Enter;
+            BuscadorTxb.Leave += BuscadorTxb_Leave;
             // 
             // TablaPrestamos
             // 
             TablaPrestamos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            TablaPrestamos.Location = new Point(118, 195);
+            TablaPrestamos.Location = new Point(118, 158);
             TablaPrestamos.Name = "TablaPrestamos";
             TablaPrestamos.RowHeadersWidth = 51;
-            TablaPrestamos.Size = new Size(1241, 650);
+            TablaPrestamos.Size = new Size(1483, 650);
             TablaPrestamos.TabIndex = 4;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Rockwell", 14F, FontStyle.Bold);
-            label2.ForeColor = Color.FromArgb(130, 130, 130);
-            label2.Location = new Point(118, 52);
-            label2.Name = "label2";
-            label2.Size = new Size(231, 29);
-            label2.TabIndex = 0;
-            label2.Text = "Préstamos Activos";
             // 
             // tabPage3
             // 
@@ -162,7 +176,7 @@ namespace ServindAp.UI
             tabPage3.Location = new Point(4, 54);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(1365, 851);
+            tabPage3.Size = new Size(1688, 851);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Herramientas";
             // 
@@ -179,7 +193,7 @@ namespace ServindAp.UI
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1379, 976);
+            ClientSize = new Size(1702, 976);
             Controls.Add(materialTabControl1);
             DrawerTabControl = materialTabControl1;
             Name = "Form1";
@@ -188,7 +202,9 @@ namespace ServindAp.UI
             Home.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)Logo).EndInit();
             tabPage2.ResumeLayout(false);
-            tabPage2.PerformLayout();
+            panelBuscador.ResumeLayout(false);
+            panelBuscador.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picLupa).EndInit();
             ((System.ComponentModel.ISupportInitialize)TablaPrestamos).EndInit();
             ResumeLayout(false);
         }
@@ -201,10 +217,11 @@ namespace ServindAp.UI
         private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
         private ToolStrip toolStrip1;
         private DataGridView TablaPrestamos;
-        private Label label2;
         private MaterialLabel labelSubtitulo;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private TextBox BuscadorTxb;
         private ImageList imageList1;
+        private PictureBox picLupa;
+        private Panel panelBuscador;
     }
 }
