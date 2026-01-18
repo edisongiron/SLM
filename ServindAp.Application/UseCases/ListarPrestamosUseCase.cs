@@ -3,10 +3,6 @@ using ServindAp.Application.Interfaces.Repositories;
 
 namespace ServindAp.Application.UseCases
 {
-    /// <summary>
-    /// UseCase para cargar todos los préstamos.
-    /// La lógica de búsqueda, filtrado y ordenamiento se maneja en la UI.
-    /// </summary>
     public class ListarPrestamosUseCase
     {
         private readonly IPrestamoRepository _prestamoRepository;

@@ -2,15 +2,8 @@ using ServindAp.Domain.Entities;
 
 namespace ServindAp.Application.Interfaces.Repositories
 {
-    /// <summary>
-    /// Interfaz para el repositorio de Préstamos.
-    /// Define los contratos para acceder a datos de préstamos.
-    /// </summary>
     public interface IPrestamoRepository
     {
-        /// <summary>
-        /// Obtiene un préstamo por su identificador.
-        /// </summary>
         Task<Prestamo?> ObtenerPorIdAsync(int id);
 
         /// <summary>

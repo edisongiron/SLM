@@ -1,9 +1,5 @@
 namespace ServindAp.Application.DTOs
 {
-    /// <summary>
-    /// DTO para representar la relación entre un Préstamo y una Herramienta.
-    /// Contiene la información de qué herramienta se prestó y en qué cantidad.
-    /// </summary>
     public class PrestamoHerramientaDTO
     {
         public int Id { get; set; }

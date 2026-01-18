@@ -1,9 +1,5 @@
 namespace ServindAp.Application.DTOs
 {
-    /// <summary>
-    /// DTO para representar un Préstamo en la capa de aplicación.
-    /// Contiene la información del préstamo incluyendo sus herramientas asociadas.
-    /// </summary>
     public class PrestamoDTO
     {
         public int Id { get; set; }

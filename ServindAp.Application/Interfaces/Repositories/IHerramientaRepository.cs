@@ -2,15 +2,8 @@ using ServindAp.Domain.Entities;
 
 namespace ServindAp.Application.Interfaces.Repositories
 {
-    /// <summary>
-    /// Interfaz para el repositorio de Herramientas.
-    /// Define los contratos para acceder a datos de herramientas.
-    /// </summary>
     public interface IHerramientaRepository
     {
-        /// <summary>
-        /// Obtiene una herramienta por su identificador.
-        /// </summary>
         Task<Herramienta?> ObtenerPorIdAsync(int id);
 
         /// <summary>
@@ -37,5 +30,15 @@ namespace ServindAp.Application.Interfaces.Repositories
         /// Elimina una herramienta.
         /// </summary>
         Task EliminarAsync(int id);
+
+        /// <summary>
+        /// Obtiene herramientas que tienen stock disponible.
+        /// </summary>
+        Task<IReadOnlyList<Herramienta>> ObtenerConStockAsync();
+
+        /// <summary>
+        /// Verifica si una herramienta tiene stock suficiente.
+        /// </summary>
+        Task<bool> TieneStockDisponibleAsync(int herramientaId, int cantidadRequerida);
     }
 }

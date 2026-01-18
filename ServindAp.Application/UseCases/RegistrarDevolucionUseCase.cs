@@ -4,10 +4,6 @@ using ServindAp.Domain.Exceptions;
 
 namespace ServindAp.Application.UseCases
 {
-    /// <summary>
-    /// UseCase para registrar la devolución de un préstamo.
-    /// Actualiza el estado del préstamo a "Devuelto" o "DevueltoConDefectos" según corresponda.
-    /// </summary>
     public class RegistrarDevolucionUseCase
     {
         private readonly IPrestamoRepository _prestamoRepository;
@@ -39,11 +35,26 @@ namespace ServindAp.Application.UseCases
             if (prestamo == null)
                 throw new PrestamoNoEncontradoException(request.PrestamoId);
 
+            // Obtener las herramientas del préstamo para devolver el stock
+            var herramientasPrestamo = await _prestamoHerramientaRepository.ObtenerPorPrestamoIdAsync(prestamo.Id);
+
             // Registrar la devolución en la entidad de dominio
             // Esto lanzará excepciones del dominio si hay problemas
             prestamo.RegistrarDevolucion(request.FechaDevolucion, request.TieneDefectos);
 
-            // Persistir los cambios
+            // Devolver el stock de las herramientas retornables
+            foreach (var ph in herramientasPrestamo)
+            {
+                var herramienta = await _herramientaRepository.ObtenerPorIdAsync(ph.HerramientaId);
+                
+                if (herramienta != null && herramienta.EsRetornable)
+                {
+                    herramienta.AumentarStock(ph.Cantidad);
+                    await _herramientaRepository.ActualizarAsync(herramienta);
+                }
+            }
+
+            // Persistir los cambios del préstamo
             await _prestamoRepository.ActualizarAsync(prestamo);
 
             // Construir y retornar el DTO con los datos actualizados

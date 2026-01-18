@@ -5,10 +5,6 @@ using ServindAp.Domain.Exceptions;
 
 namespace ServindAp.Application.UseCases
 {
-    /// <summary>
-    /// UseCase para crear un nuevo préstamo.
-    /// Valida los datos de entrada y persiste el préstamo con sus herramientas asociadas.
-    /// </summary>
     public class CrearPrestamoUseCase
     {
         private readonly IPrestamoRepository _prestamoRepository;
@@ -41,7 +37,7 @@ namespace ServindAp.Application.UseCases
                 request.Observaciones
             );
 
-            // Validar que las herramientas existan
+            // Validar que las herramientas existan y tengan stock
             var herramientaIds = request.Herramientas.Select(h => h.HerramientaId).ToList();
             var herramientas = await _herramientaRepository.ObtenerPorIdsAsync(herramientaIds);
 
@@ -52,11 +48,26 @@ namespace ServindAp.Application.UseCases
                 throw new HerramientaNoEncontradaException(idFaltante);
             }
 
+            // Validar stock disponible
+            foreach (var herramientaSolicitada in request.Herramientas)
+            {
+                var herramienta = herramientas.First(h => h.Id == herramientaSolicitada.HerramientaId);
+                
+                if (!herramienta.TieneStockDisponible(herramientaSolicitada.Cantidad))
+                {
+                    throw new StockInsuficienteException(
+                        herramienta.Nombre,
+                        herramientaSolicitada.Cantidad,
+                        herramienta.Stock
+                    );
+                }
+            }
+
             // Crear el préstamo
             var prestamoId = await _prestamoRepository.CrearAsync(prestamo);
             prestamo.Id = prestamoId;
 
-            // Agregar las herramientas al préstamo
+            // Agregar las herramientas al préstamo y reducir stock
             foreach (var herramientaPrestada in request.Herramientas)
             {
                 var prestamoHerramienta = new PrestamoHerramienta(
@@ -66,6 +77,14 @@ namespace ServindAp.Application.UseCases
                 );
 
                 await _prestamoHerramientaRepository.CrearAsync(prestamoHerramienta);
+
+                // Reducir el stock de la herramienta si es retornable
+                var herramienta = herramientas.First(h => h.Id == herramientaPrestada.HerramientaId);
+                if (herramienta.EsRetornable)
+                {
+                    herramienta.ReducirStock(herramientaPrestada.Cantidad);
+                    await _herramientaRepository.ActualizarAsync(herramienta);
+                }
             }
 
             // Construir el DTO de respuesta con las herramientas

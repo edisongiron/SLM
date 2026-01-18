@@ -4,10 +4,6 @@ using ServindAp.Domain.Exceptions;
 
 namespace ServindAp.Application.UseCases
 {
-    /// <summary>
-    /// UseCase para obtener los detalles de un préstamo específico.
-    /// Recupera toda la información del préstamo incluyendo sus herramientas asociadas.
-    /// </summary>
     public class ObtenerPrestamoUseCase
     {
         private readonly IPrestamoRepository _prestamoRepository;

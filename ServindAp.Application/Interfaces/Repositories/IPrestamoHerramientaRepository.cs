@@ -2,15 +2,8 @@ using ServindAp.Domain.Entities;
 
 namespace ServindAp.Application.Interfaces.Repositories
 {
-    /// <summary>
-    /// Interfaz para el repositorio de PrestamoHerramienta.
-    /// Define los contratos para acceder a las relaciones entre préstamos y herramientas.
-    /// </summary>
     public interface IPrestamoHerramientaRepository
     {
-        /// <summary>
-        /// Obtiene todas las herramientas asociadas a un préstamo específico.
-        /// </summary>
         Task<IReadOnlyList<PrestamoHerramienta>> ObtenerPorPrestamoIdAsync(int prestamoId);
 
         /// <summary>

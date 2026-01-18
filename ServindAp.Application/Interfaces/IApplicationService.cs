@@ -1,10 +1,5 @@
 namespace ServindAp.Application.Interfaces
 {
-    /// <summary>
-    /// Interfaz que centraliza todos los UseCases de la aplicación.
-    /// Proporciona acceso a todos los casos de uso a través de una única interfaz.
-    /// Útil para inyección de dependencias y fácil mantenimiento.
-    /// </summary>
     public interface IApplicationService
     {
         /// <summary>

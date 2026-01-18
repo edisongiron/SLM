@@ -3,10 +3,6 @@ using ServindAp.Application.Interfaces.Repositories;
 
 namespace ServindAp.Application.UseCases
 {
-    /// <summary>
-    /// UseCase para listar todas las herramientas disponibles en el sistema.
-    /// Útil para mostrarlas en los formularios de creación de préstamos.
-    /// </summary>
     public class ListarHerramientasUseCase
     {
         private readonly IHerramientaRepository _herramientaRepository;
@@ -16,11 +12,6 @@ namespace ServindAp.Application.UseCases
             _herramientaRepository = herramientaRepository ?? throw new ArgumentNullException(nameof(herramientaRepository));
         }
 
-        /// <summary>
-        /// Ejecuta el caso de uso para listar herramientas.
-        /// </summary>
-        /// <param name="filtro">Parámetros opcionales de filtrado</param>
-        /// <returns>Lista de DTOs de herramientas</returns>
         public async Task<List<HerramientaDTO>> ExecuteAsync(ListarHerramientasFilter? filtro = null)
         {
             filtro ??= new ListarHerramientasFilter();
