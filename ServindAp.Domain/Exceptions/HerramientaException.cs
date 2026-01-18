@@ -12,6 +12,9 @@ namespace ServindAp.Domain.Exceptions
         public StockInsuficienteException(string nombreHerramienta)
             : base($"Stock insuficiente para la herramienta: {nombreHerramienta}") { }
 
+        public StockInsuficienteException(string nombreHerramienta, int cantidadRequerida, int cantidadDisponible)
+            : base($"Stock insuficiente para '{nombreHerramienta}'. Requerido: {cantidadRequerida}, Disponible: {cantidadDisponible}") { }
+
         public StockInsuficienteException(int herramientaId, int cantidadRequerida, int cantidadDisponible)
             : base($"Stock insuficiente. Herramienta ID: {herramientaId}. Requerido: {cantidadRequerida}, Disponible: {cantidadDisponible}") { }
     }
