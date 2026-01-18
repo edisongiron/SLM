@@ -44,6 +44,10 @@ namespace ServindAp.UI
             BuscadorTxb = new TextBox();
             TablaPrestamos = new DataGridView();
             tabPage3 = new TabPage();
+            TablaHerramientas = new DataGridView();
+            panelBuscadorHerramientas = new Panel();
+            picLupaHerramientas = new PictureBox();
+            txbBuscadorHerramientas = new TextBox();
             imageList1 = new ImageList(components);
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             materialTabControl1.SuspendLayout();
@@ -53,6 +57,10 @@ namespace ServindAp.UI
             panelBuscador.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picLupa).BeginInit();
             ((System.ComponentModel.ISupportInitialize)TablaPrestamos).BeginInit();
+            tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)TablaHerramientas).BeginInit();
+            panelBuscadorHerramientas.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picLupaHerramientas).BeginInit();
             SuspendLayout();
             // 
             // materialTabControl1
@@ -172,6 +180,8 @@ namespace ServindAp.UI
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(TablaHerramientas);
+            tabPage3.Controls.Add(panelBuscadorHerramientas);
             tabPage3.ImageKey = "service_toolbox_32dp_000000_FILL0_wght400_GRAD0_opsz40.png";
             tabPage3.Location = new Point(4, 54);
             tabPage3.Name = "tabPage3";
@@ -179,6 +189,44 @@ namespace ServindAp.UI
             tabPage3.Size = new Size(1688, 851);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Herramientas";
+            // 
+            // TablaHerramientas
+            // 
+            TablaHerramientas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            TablaHerramientas.Location = new Point(137, 141);
+            TablaHerramientas.Name = "TablaHerramientas";
+            TablaHerramientas.RowHeadersWidth = 51;
+            TablaHerramientas.Size = new Size(1442, 530);
+            TablaHerramientas.TabIndex = 9;
+            // 
+            // panelBuscadorHerramientas
+            // 
+            panelBuscadorHerramientas.BackColor = Color.White;
+            panelBuscadorHerramientas.Controls.Add(picLupaHerramientas);
+            panelBuscadorHerramientas.Controls.Add(txbBuscadorHerramientas);
+            panelBuscadorHerramientas.Location = new Point(137, 70);
+            panelBuscadorHerramientas.Name = "panelBuscadorHerramientas";
+            panelBuscadorHerramientas.Size = new Size(300, 46);
+            panelBuscadorHerramientas.TabIndex = 8;
+            // 
+            // picLupaHerramientas
+            // 
+            picLupaHerramientas.Image = (Image)resources.GetObject("picLupaHerramientas.Image");
+            picLupaHerramientas.Location = new Point(58, 6);
+            picLupaHerramientas.Name = "picLupaHerramientas";
+            picLupaHerramientas.Size = new Size(30, 30);
+            picLupaHerramientas.SizeMode = PictureBoxSizeMode.Zoom;
+            picLupaHerramientas.TabIndex = 7;
+            picLupaHerramientas.TabStop = false;
+            // 
+            // txbBuscadorHerramientas
+            // 
+            txbBuscadorHerramientas.BackColor = Color.White;
+            txbBuscadorHerramientas.BorderStyle = BorderStyle.None;
+            txbBuscadorHerramientas.Location = new Point(94, 12);
+            txbBuscadorHerramientas.Name = "txbBuscadorHerramientas";
+            txbBuscadorHerramientas.Size = new Size(192, 20);
+            txbBuscadorHerramientas.TabIndex = 6;
             // 
             // imageList1
             // 
@@ -206,6 +254,11 @@ namespace ServindAp.UI
             panelBuscador.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picLupa).EndInit();
             ((System.ComponentModel.ISupportInitialize)TablaPrestamos).EndInit();
+            tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)TablaHerramientas).EndInit();
+            panelBuscadorHerramientas.ResumeLayout(false);
+            panelBuscadorHerramientas.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picLupaHerramientas).EndInit();
             ResumeLayout(false);
         }
 
@@ -223,5 +276,9 @@ namespace ServindAp.UI
         private ImageList imageList1;
         private PictureBox picLupa;
         private Panel panelBuscador;
+        private DataGridView TablaHerramientas;
+        private Panel panelBuscadorHerramientas;
+        private PictureBox picLupaHerramientas;
+        private TextBox txbBuscadorHerramientas;
     }
 }

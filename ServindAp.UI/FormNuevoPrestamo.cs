@@ -15,6 +15,7 @@ namespace ServindAp.UI
         public FormNuevoPrestamo()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void panelContenedor_Paint(object sender, PaintEventArgs e)
@@ -26,5 +27,11 @@ namespace ServindAp.UI
         {
 
         }
+
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
     }
 }

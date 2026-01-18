@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panelContenedor = new Panel();
+            cmbHerramienta = new MaterialSkin.Controls.MaterialComboBox();
             btnCancelar = new MaterialSkin.Controls.MaterialButton();
             btnAgregar = new MaterialSkin.Controls.MaterialButton();
             FechaEntrega = new DateTimePicker();
@@ -39,7 +40,6 @@
             materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
             materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
             label1 = new Label();
-            cmbHerramienta = new MaterialSkin.Controls.MaterialComboBox();
             panelContenedor.SuspendLayout();
             SuspendLayout();
             // 
@@ -62,6 +62,28 @@
             panelContenedor.TabIndex = 0;
             panelContenedor.Paint += panelContenedor_Paint;
             // 
+            // cmbHerramienta
+            // 
+            cmbHerramienta.AutoResize = false;
+            cmbHerramienta.BackColor = Color.FromArgb(255, 255, 255);
+            cmbHerramienta.Depth = 0;
+            cmbHerramienta.DrawMode = DrawMode.OwnerDrawVariable;
+            cmbHerramienta.DropDownHeight = 174;
+            cmbHerramienta.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbHerramienta.DropDownWidth = 121;
+            cmbHerramienta.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
+            cmbHerramienta.ForeColor = Color.FromArgb(222, 0, 0, 0);
+            cmbHerramienta.FormattingEnabled = true;
+            cmbHerramienta.IntegralHeight = false;
+            cmbHerramienta.ItemHeight = 43;
+            cmbHerramienta.Location = new Point(260, 130);
+            cmbHerramienta.MaxDropDownItems = 4;
+            cmbHerramienta.MouseState = MaterialSkin.MouseState.OUT;
+            cmbHerramienta.Name = "cmbHerramienta";
+            cmbHerramienta.Size = new Size(318, 49);
+            cmbHerramienta.StartIndex = 0;
+            cmbHerramienta.TabIndex = 14;
+            // 
             // btnCancelar
             // 
             btnCancelar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -74,12 +96,13 @@
             btnCancelar.MouseState = MaterialSkin.MouseState.HOVER;
             btnCancelar.Name = "btnCancelar";
             btnCancelar.NoAccentTextColor = Color.Empty;
-            btnCancelar.Size = new Size(88, 36);
+            btnCancelar.Size = new Size(96, 36);
             btnCancelar.TabIndex = 13;
             btnCancelar.Text = "Cancelar";
             btnCancelar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnCancelar.UseAccentColor = false;
             btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click;
             // 
             // btnAgregar
             // 
@@ -199,28 +222,6 @@
             label1.Size = new Size(158, 25);
             label1.TabIndex = 0;
             label1.Text = "Nuevo Préstamo";
-            // 
-            // cmbHerramienta
-            // 
-            cmbHerramienta.AutoResize = false;
-            cmbHerramienta.BackColor = Color.FromArgb(255, 255, 255);
-            cmbHerramienta.Depth = 0;
-            cmbHerramienta.DrawMode = DrawMode.OwnerDrawVariable;
-            cmbHerramienta.DropDownHeight = 174;
-            cmbHerramienta.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbHerramienta.DropDownWidth = 121;
-            cmbHerramienta.Font = new Font("Roboto Medium", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            cmbHerramienta.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            cmbHerramienta.FormattingEnabled = true;
-            cmbHerramienta.IntegralHeight = false;
-            cmbHerramienta.ItemHeight = 43;
-            cmbHerramienta.Location = new Point(260, 130);
-            cmbHerramienta.MaxDropDownItems = 4;
-            cmbHerramienta.MouseState = MaterialSkin.MouseState.OUT;
-            cmbHerramienta.Name = "cmbHerramienta";
-            cmbHerramienta.Size = new Size(318, 49);
-            cmbHerramienta.StartIndex = 0;
-            cmbHerramienta.TabIndex = 14;
             // 
             // FormNuevoPrestamo
             // 
