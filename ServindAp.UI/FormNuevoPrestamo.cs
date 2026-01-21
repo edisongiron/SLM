@@ -9,13 +9,13 @@ namespace ServindAp.UI
     {
         private GradientPanel panelFondo;
 
+
         public FormNuevoPrestamo()
         {
             InitializeComponent();
 
             // ABRIR MAXIMIZADO
             this.WindowState = FormWindowState.Maximized;
-
             this.StartPosition = FormStartPosition.CenterScreen;
 
             // FONDO DEGRADADO
@@ -30,7 +30,7 @@ namespace ServindAp.UI
 
             this.Shown += FormNuevoPrestamo_Shown;
 
-           
+
         }
 
 
@@ -38,15 +38,20 @@ namespace ServindAp.UI
         {
             EstilizarYPosicionarTodo();
             CentrarPanel();
+
+            RedondearPanel();
+            AgregarSombraPanel();
+
             if (btnAgregar != null)
                 btnAgregar.Region = new Region(GetRoundedPath(btnAgregar.ClientRectangle, 12));
 
             if (btnCancelar != null)
                 btnCancelar.Region = new Region(GetRoundedPath(btnCancelar.ClientRectangle, 12));
         }
+
         private async void FormNuevoPrestamo_Shown(object sender, EventArgs e)
         {
-            await Task.Delay(50); 
+            await Task.Delay(50);
             this.ActiveControl = null;
             panelFondo.Focus();
         }
@@ -56,104 +61,109 @@ namespace ServindAp.UI
         private void EstilizarYPosicionarTodo()
         {
 
+            panelContenedor.Width = 850;
+            panelContenedor.Height = 550;
+            panelContenedor.BackColor = Color.White;
+            panelContenedor.Padding = new Padding(35);
+
             // FORMULARIO Y PANEL 
 
             panelContenedor.BackColor = Color.White;
             panelContenedor.Padding = new Padding(50);
 
             // TÍTULO 
-            label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            label1.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
             label1.ForeColor = Color.FromArgb(33, 37, 41);
             label1.AutoSize = true;
-            label1.Location = new Point((panelContenedor.Width - 250) / 2, 40);
+            label1.Location = new Point((panelContenedor.Width - label1.Width) / 2, 30);
 
             // LABELS 
-            materialLabel1.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            materialLabel1.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             materialLabel1.ForeColor = Color.FromArgb(33, 37, 41);
 
-            materialLabel2.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            materialLabel2.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             materialLabel2.ForeColor = Color.FromArgb(33, 37, 41);
 
-            materialLabel3.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            materialLabel3.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             materialLabel3.ForeColor = Color.FromArgb(33, 37, 41);
 
-            materialLabel4.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            materialLabel4.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             materialLabel4.ForeColor = Color.FromArgb(33, 37, 41);
 
-            Cantidad.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            Cantidad.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             Cantidad.ForeColor = Color.FromArgb(33, 37, 41);
 
             //  INPUTS 
-            txtResponsable.Font = new Font("Segoe UI", 12F);
+            txtResponsable.Font = new Font("Segoe UI", 11F);
             txtResponsable.BackColor = Color.FromArgb(248, 249, 250);
 
-            txtObservaciones.Font = new Font("Segoe UI", 12F);
+            txtObservaciones.Font = new Font("Segoe UI", 11F);
             txtObservaciones.BackColor = Color.FromArgb(248, 249, 250);
 
-            cmbHerramienta.Font = new Font("Segoe UI", 12F);
+            cmbHerramienta.Font = new Font("Segoe UI", 11F);
             cmbHerramienta.BackColor = Color.FromArgb(248, 249, 250);
 
-            materialComboBox1.Font = new Font("Segoe UI", 12F);
+            materialComboBox1.Font = new Font("Segoe UI", 11F);
             materialComboBox1.BackColor = Color.FromArgb(248, 249, 250);
 
-            FechaEntrega.Font = new Font("Segoe UI", 12F);
+            FechaEntrega.Font = new Font("Segoe UI", 10F);
             FechaEntrega.Enabled = false;
 
             // BOTONES 
             // AGREGAR 
-            btnAgregar.BackColor = Color.FromArgb(55, 65, 81);
+            btnAgregar.BackColor = Color.FromArgb(46, 204, 113); // Verde esmeralda
             btnAgregar.ForeColor = Color.White;
-            btnAgregar.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            btnAgregar.Size = new Size(150, 45);
+            btnAgregar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            btnAgregar.Size = new Size(140, 42);
             btnAgregar.Text = "AGREGAR";
             btnAgregar.FlatStyle = FlatStyle.Flat;
             btnAgregar.FlatAppearance.BorderSize = 0;
 
             // CANCELAR 
-            btnCancelar.BackColor = Color.FromArgb(0, 123, 255);
+            btnCancelar.BackColor = Color.FromArgb(149, 165, 166); // Gris neutro
             btnCancelar.ForeColor = Color.White;
-            btnCancelar.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            btnCancelar.Size = new Size(150, 45);
+            btnCancelar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            btnCancelar.Size = new Size(140, 42);
             btnCancelar.Text = "CANCELAR";
             btnCancelar.FlatStyle = FlatStyle.Flat;
             btnCancelar.FlatAppearance.BorderSize = 0;
             btnCancelar.UseVisualStyleBackColor = false;
 
             //  POSICIONES 
-            int margenIzq = 80;
-            int margenDer = 580;
-            int espacio = 80;
+            int margenIzq = 55;
+            int margenDer = 450;
+            int espacio = 65;
 
             // COLUMNA IZQUIERDA
-            materialLabel1.Location = new Point(margenIzq, 140);
-            cmbHerramienta.Location = new Point(margenIzq, 170);
-            cmbHerramienta.Size = new Size(380, 50);
+            materialLabel1.Location = new Point(margenIzq, 100);
+            cmbHerramienta.Location = new Point(margenIzq, 125);
+            cmbHerramienta.Size = new Size(330, 40);
 
-            materialLabel2.Location = new Point(margenIzq, 140 + espacio + 50);
-            txtResponsable.Location = new Point(margenIzq, 170 + espacio + 50);
-            txtResponsable.Size = new Size(380, 50);
+            materialLabel2.Location = new Point(margenIzq, 100 + espacio + 40);
+            txtResponsable.Location = new Point(margenIzq, 125 + espacio + 40);
+            txtResponsable.Size = new Size(330, 40);
 
             // COLUMNA DERECHA
-            materialLabel3.Location = new Point(margenDer, 140);
-            FechaEntrega.Location = new Point(margenDer, 170);
-            FechaEntrega.Size = new Size(350, 30);
+            materialLabel3.Location = new Point(margenDer, 100);
+            FechaEntrega.Location = new Point(margenDer, 125);
+            FechaEntrega.Size = new Size(320, 28);
 
-            Cantidad.Location = new Point(margenDer, 140 + espacio + 50);
-            materialComboBox1.Location = new Point(margenDer, 170 + espacio + 50);
-            materialComboBox1.Size = new Size(150, 50);
+            Cantidad.Location = new Point(margenDer, 100 + espacio + 40);
+            materialComboBox1.Location = new Point(margenDer, 125 + espacio + 40);
+            materialComboBox1.Size = new Size(120, 40);
 
             // OBSERVACIONES - Ancho completo
-            materialLabel4.Location = new Point(margenIzq, 370);
-            txtObservaciones.Location = new Point(margenIzq, 400);
-            txtObservaciones.Size = new Size(850, 50);
+            materialLabel4.Location = new Point(margenIzq, 315);
+            txtObservaciones.Location = new Point(margenIzq, 340);
+            txtObservaciones.Size = new Size(720, 40);
 
             // BOTONES - Centrados
             int centroPanel = panelContenedor.Width / 2;
-            btnAgregar.Location = new Point(centroPanel - 200, 500);
-            btnCancelar.Location = new Point(centroPanel + 20, 500);
+            btnAgregar.Location = new Point(centroPanel - 155, 420);
+            btnCancelar.Location = new Point(centroPanel + 15, 420);
 
             // CENTRAR EL PANEL cuando se maximiza o cambia de tamaño
-            
+
         }
 
         private void CentrarPanel()
@@ -173,6 +183,66 @@ namespace ServindAp.UI
 
         }
 
+
+        private void AgregarSombraPanel()
+        {
+            // Capa 1 - Más alejada (difuminado externo)
+            Panel sombra1 = new Panel();
+            sombra1.BackColor = Color.FromArgb(20, 0, 0, 0); // Aumentado de 10 a 20
+            sombra1.Size = new Size(
+                panelContenedor.Width + 20,
+                panelContenedor.Height + 20
+            );
+            sombra1.Location = new Point(
+                panelContenedor.Left + 10,
+                panelContenedor.Top + 10
+            );
+            panelFondo.Controls.Add(sombra1);
+
+            // Capa 2 - Intermedia
+            Panel sombra2 = new Panel();
+            sombra2.BackColor = Color.FromArgb(35, 0, 0, 0); // Aumentado de 15 a 35
+            sombra2.Size = new Size(
+                panelContenedor.Width + 14,
+                panelContenedor.Height + 14
+            );
+            sombra2.Location = new Point(
+                panelContenedor.Left + 7,
+                panelContenedor.Top + 7
+            );
+            panelFondo.Controls.Add(sombra2);
+
+            // Capa 3 - Más cercana (núcleo de la sombra)
+            Panel sombra3 = new Panel();
+            sombra3.BackColor = Color.FromArgb(50, 0, 0, 0); // Aumentado de 25 a 50
+            sombra3.Size = new Size(
+                panelContenedor.Width + 8,
+                panelContenedor.Height + 8
+            );
+            sombra3.Location = new Point(
+                panelContenedor.Left + 4,
+                panelContenedor.Top + 4
+            );
+            panelFondo.Controls.Add(sombra3);
+
+            // Enviar todas las sombras atrás
+            sombra1.SendToBack();
+            sombra2.SendToBack();
+            sombra3.SendToBack();
+        }
+
+
+        private void RedondearPanel()
+        {
+            int radio = 8; 
+            GraphicsPath pathPanel = new GraphicsPath();
+            pathPanel.AddArc(0, 0, radio, radio, 180, 90);
+            pathPanel.AddArc(panelContenedor.Width - radio, 0, radio, radio, 270, 90);
+            pathPanel.AddArc(panelContenedor.Width - radio, panelContenedor.Height - radio, radio, radio, 0, 90);
+            pathPanel.AddArc(0, panelContenedor.Height - radio, radio, radio, 90, 90);
+            pathPanel.CloseFigure();
+            panelContenedor.Region = new Region(pathPanel);
+        }
 
 
         //Panel degradado
@@ -198,25 +268,6 @@ namespace ServindAp.UI
         }
 
 
-        private void ConfigurarBoton(Button btn, string texto)
-        {
-            btn.Text = texto;
-            btn.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
-            btn.Size = new Size(150, 45);
-
-            btn.BackColor = Color.FromArgb(209, 213, 219);   // Gris claro
-            btn.ForeColor = Color.FromArgb(31, 41, 55);      // Gris oscuro texto
-
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderSize = 0;
-            btn.UseVisualStyleBackColor = false;
-
-            btn.Cursor = Cursors.Hand;
-
-            // Bordes redondeados
-            btn.Region = new Region(GetRoundedPath(btn.ClientRectangle, 12));
-        }
-
 
         private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
         {
@@ -237,32 +288,93 @@ namespace ServindAp.UI
         // HOVER BOTÓN AGREGAR
         private void btnAgregar_MouseEnter(object sender, EventArgs e)
         {
-            btnAgregar.BackColor = Color.FromArgb(156, 163, 175);
+            btnAgregar.BackColor = Color.FromArgb(39, 174, 96); // Verde más oscuro
         }
 
         private void btnAgregar_MouseLeave(object sender, EventArgs e)
         {
-            btnAgregar.BackColor = Color.FromArgb(209, 213, 219);
+            btnAgregar.BackColor = Color.FromArgb(46, 204, 113); // Verde original
         }
+
 
         // HOVER BOTÓN CANCELAR
         private void btnCancelar_MouseEnter(object sender, EventArgs e)
         {
-            btnCancelar.BackColor = Color.FromArgb(156, 163, 175);
+            btnCancelar.BackColor = Color.FromArgb(127, 140, 141); // Gris más oscuro
         }
+
 
         private void btnCancelar_MouseLeave(object sender, EventArgs e)
         {
-            btnCancelar.BackColor = Color.FromArgb(209, 213, 219);
+            btnCancelar.BackColor = Color.FromArgb(149, 165, 166); // Gris original
         }
 
-        private void btnCancelar_Click(object sender, EventArgs e)
+
+        private void btnCancelar_Click_1(object sender, EventArgs e)
         {
             this.Close();
         }
 
+
         private void panelContenedor_Paint(object sender, PaintEventArgs e)
         {
         }
+
+
+
+        private bool ValidarFormulario()
+        {
+            if (cmbHerramienta.SelectedIndex == -1)
+            {
+                MessageBox.Show(
+                    "Por favor selecciona una herramienta",
+                    "Campo requerido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                cmbHerramienta.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtResponsable.Text))
+            {
+                MessageBox.Show(
+                    "Por favor ingresa el nombre del responsable",
+                    "Campo requerido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                txtResponsable.Focus();
+                return false;
+            }
+
+            if (materialComboBox1.SelectedIndex == -1)
+            {
+                MessageBox.Show(
+                    "Por favor selecciona la cantidad",
+                    "Campo requerido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                materialComboBox1.Focus();
+                return false;
+            }
+
+            if (FechaEntrega.Value.Date < DateTime.Now.Date)
+            {
+                MessageBox.Show(
+                    "La fecha de entrega debe ser hoy o posterior",
+                    "Fecha inválida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return false;
+            }
+
+            return true;
+        }
+
+
+       
     }
 }

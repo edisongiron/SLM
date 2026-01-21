@@ -7,6 +7,8 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
+#nullable disable
+
 namespace ServindAp.UI
 {
     public partial class Form1 : MaterialForm
@@ -88,7 +90,6 @@ namespace ServindAp.UI
         {
             int margenSuperior = 90;
             int espacioVertical = 15;
-            int margenLateral = 0;
 
             // TABLA
             int anchoTabla = (int)(tabPage2.ClientSize.Width * 0.8);
