@@ -1,7 +1,7 @@
-﻿using MaterialSkin;
+using MaterialSkin;
 using MaterialSkin.Controls;
 
-namespace ServindAp.UI
+namespace ServindAp.UI.Forms
 {
     partial class Form1
     {

@@ -2,14 +2,23 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <LangVersion>14.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MaterialSkin.2" Version="2.3.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServindAp.Application\ServindAp.Application.csproj" />
+    <ProjectReference Include="..\ServindAp.Infrastructure\ServindAp.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +36,11 @@
     </EmbeddedResource>
   </ItemGroup>
 
+<<<<<<< HEAD
   <ItemGroup>
     <Folder Include="UserControls\" />
   </ItemGroup>
 
+=======
+>>>>>>> 2bb83fbb913326c5362e812eb5a1051cf5bd427d
 </Project>

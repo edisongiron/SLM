@@ -1,18 +1,22 @@
-﻿using System;
-using System.Drawing;
+﻿using ServindAp.Application.Interfaces;
+using ServindAp.Application.UseCases;
+using ServindAp.Domain.Exceptions;
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace ServindAp.UI
+namespace ServindAp.UI.UserControls
 {
     public partial class FormNuevoPrestamo : Form
     {
         private GradientPanel panelFondo;
+        private readonly IApplicationService _appService;
 
-
-        public FormNuevoPrestamo()
+        public FormNuevoPrestamo(IApplicationService appService)
         {
             InitializeComponent();
+            _appService = appService;
+
 
             // ABRIR MAXIMIZADO
             this.WindowState = FormWindowState.Maximized;
@@ -30,12 +34,12 @@ namespace ServindAp.UI
 
             this.Shown += FormNuevoPrestamo_Shown;
 
-
         }
 
 
-        private void FormNuevoPrestamo_Load(object sender, EventArgs e)
+        private async void FormNuevoPrestamo_Load(object sender, EventArgs e)
         {
+            await CargarHerramientas();
             EstilizarYPosicionarTodo();
             CentrarPanel();
 
@@ -49,13 +53,29 @@ namespace ServindAp.UI
                 btnCancelar.Region = new Region(GetRoundedPath(btnCancelar.ClientRectangle, 12));
         }
 
-        private async void FormNuevoPrestamo_Shown(object sender, EventArgs e)
+        private async void FormNuevoPrestamo_Shown(object? sender, EventArgs e)
         {
             await Task.Delay(50);
             this.ActiveControl = null;
             panelFondo.Focus();
         }
 
+
+        private async Task CargarHerramientas()
+        {
+            try
+            {
+                var herramientas = await _appService.ListarHerramientas.ExecuteAsync();
+
+                cmbHerramienta.DataSource = herramientas;
+                cmbHerramienta.DisplayMember = "Nombre";
+                cmbHerramienta.ValueMember = "Id";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
 
 
         private void EstilizarYPosicionarTodo()
@@ -234,7 +254,7 @@ namespace ServindAp.UI
 
         private void RedondearPanel()
         {
-            int radio = 8; 
+            int radio = 8;
             GraphicsPath pathPanel = new GraphicsPath();
             pathPanel.AddArc(0, 0, radio, radio, 180, 90);
             pathPanel.AddArc(panelContenedor.Width - radio, 0, radio, radio, 270, 90);
@@ -249,7 +269,9 @@ namespace ServindAp.UI
 
         public class GradientPanel : Panel
         {
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public Color Color1 { get; set; } = Color.FromArgb(76, 175, 80);   // Verde
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public Color Color2 { get; set; } = Color.FromArgb(33, 150, 243);  // Azul
 
             protected override void OnPaint(PaintEventArgs e)
@@ -374,7 +396,50 @@ namespace ServindAp.UI
             return true;
         }
 
+        private async void btnAgregar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!ValidarFormulario()) return;
 
-       
+                var request = new CrearPrestamoRequest
+                {
+                    Responsable = txtResponsable.Text,
+                    FechaEntrega = FechaEntrega.Value,
+                    Observaciones = txtObservaciones.Text,
+                    Herramientas = new List<HerramientaPrestamoRequest>
+                    {
+                        new HerramientaPrestamoRequest
+                        {
+                            HerramientaId = 1,
+                            Cantidad = 5
+                        }
+                    }
+                };
+
+                var prestamo = await _appService.CrearPrestamo.ExecuteAsync(request);
+
+                MessageBox.Show(
+                    "Préstamo agregado exitosamente",
+                    "Éxito",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                this.Close();
+
+            }
+            catch (ResponsableRequeridoException ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+            catch (StockInsuficienteException ex)
+            {
+                MessageBox.Show(ex.Message, "Stock Insuficiente");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
     }
 }
