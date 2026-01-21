@@ -1,4 +1,4 @@
-﻿namespace ServindAp.UI
+﻿namespace ServindAp.UI.UserControls
 {
     partial class FormNuevoPrestamo
     {
@@ -60,17 +60,19 @@
             panelContenedor.Controls.Add(materialLabel2);
             panelContenedor.Controls.Add(materialLabel1);
             panelContenedor.Controls.Add(label1);
-            panelContenedor.Location = new Point(100, 35);
+            panelContenedor.Location = new Point(88, 26);
+            panelContenedor.Margin = new Padding(3, 2, 3, 2);
             panelContenedor.Name = "panelContenedor";
-            panelContenedor.Size = new Size(1094, 639);
+            panelContenedor.Size = new Size(957, 479);
             panelContenedor.TabIndex = 0;
             panelContenedor.Paint += panelContenedor_Paint;
             // 
             // btnCancelar
             // 
-            btnCancelar.Location = new Point(477, 422);
+            btnCancelar.Location = new Point(417, 316);
+            btnCancelar.Margin = new Padding(3, 2, 3, 2);
             btnCancelar.Name = "btnCancelar";
-            btnCancelar.Size = new Size(94, 29);
+            btnCancelar.Size = new Size(82, 22);
             btnCancelar.TabIndex = 18;
             btnCancelar.Text = "Cancelar";
             btnCancelar.UseVisualStyleBackColor = true;
@@ -78,12 +80,14 @@
             // 
             // btnAgregar
             // 
-            btnAgregar.Location = new Point(311, 422);
+            btnAgregar.Location = new Point(272, 316);
+            btnAgregar.Margin = new Padding(3, 2, 3, 2);
             btnAgregar.Name = "btnAgregar";
-            btnAgregar.Size = new Size(94, 29);
+            btnAgregar.Size = new Size(82, 22);
             btnAgregar.TabIndex = 17;
             btnAgregar.Text = "Agregar";
             btnAgregar.UseVisualStyleBackColor = true;
+            btnAgregar.Click += btnAgregar_Click;
             // 
             // materialComboBox1
             // 
@@ -99,11 +103,12 @@
             materialComboBox1.FormattingEnabled = true;
             materialComboBox1.IntegralHeight = false;
             materialComboBox1.ItemHeight = 43;
-            materialComboBox1.Location = new Point(560, 260);
+            materialComboBox1.Location = new Point(490, 195);
+            materialComboBox1.Margin = new Padding(3, 2, 3, 2);
             materialComboBox1.MaxDropDownItems = 4;
             materialComboBox1.MouseState = MaterialSkin.MouseState.OUT;
             materialComboBox1.Name = "materialComboBox1";
-            materialComboBox1.Size = new Size(151, 49);
+            materialComboBox1.Size = new Size(133, 49);
             materialComboBox1.StartIndex = 0;
             materialComboBox1.TabIndex = 16;
             // 
@@ -112,7 +117,7 @@
             Cantidad.AutoSize = true;
             Cantidad.Depth = 0;
             Cantidad.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-            Cantidad.Location = new Point(560, 237);
+            Cantidad.Location = new Point(490, 178);
             Cantidad.MouseState = MaterialSkin.MouseState.HOVER;
             Cantidad.Name = "Cantidad";
             Cantidad.Size = new Size(69, 19);
@@ -133,20 +138,22 @@
             cmbHerramienta.FormattingEnabled = true;
             cmbHerramienta.IntegralHeight = false;
             cmbHerramienta.ItemHeight = 43;
-            cmbHerramienta.Location = new Point(15, 142);
+            cmbHerramienta.Location = new Point(13, 106);
+            cmbHerramienta.Margin = new Padding(3, 2, 3, 2);
             cmbHerramienta.MaxDropDownItems = 4;
             cmbHerramienta.MouseState = MaterialSkin.MouseState.OUT;
             cmbHerramienta.Name = "cmbHerramienta";
-            cmbHerramienta.Size = new Size(318, 49);
+            cmbHerramienta.Size = new Size(279, 49);
             cmbHerramienta.StartIndex = 0;
             cmbHerramienta.TabIndex = 14;
             // 
             // FechaEntrega
             // 
             FechaEntrega.Enabled = false;
-            FechaEntrega.Location = new Point(551, 151);
+            FechaEntrega.Location = new Point(482, 113);
+            FechaEntrega.Margin = new Padding(3, 2, 3, 2);
             FechaEntrega.Name = "FechaEntrega";
-            FechaEntrega.Size = new Size(212, 27);
+            FechaEntrega.Size = new Size(186, 23);
             FechaEntrega.TabIndex = 11;
             // 
             // txtObservaciones
@@ -156,12 +163,13 @@
             txtObservaciones.Depth = 0;
             txtObservaciones.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
             txtObservaciones.LeadingIcon = null;
-            txtObservaciones.Location = new Point(311, 328);
+            txtObservaciones.Location = new Point(272, 246);
+            txtObservaciones.Margin = new Padding(3, 2, 3, 2);
             txtObservaciones.MaxLength = 50;
             txtObservaciones.MouseState = MaterialSkin.MouseState.OUT;
             txtObservaciones.Multiline = false;
             txtObservaciones.Name = "txtObservaciones";
-            txtObservaciones.Size = new Size(318, 50);
+            txtObservaciones.Size = new Size(278, 50);
             txtObservaciones.TabIndex = 10;
             txtObservaciones.Text = "";
             txtObservaciones.TrailingIcon = null;
@@ -173,12 +181,13 @@
             txtResponsable.Depth = 0;
             txtResponsable.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
             txtResponsable.LeadingIcon = null;
-            txtResponsable.Location = new Point(15, 262);
+            txtResponsable.Location = new Point(13, 196);
+            txtResponsable.Margin = new Padding(3, 2, 3, 2);
             txtResponsable.MaxLength = 50;
             txtResponsable.MouseState = MaterialSkin.MouseState.OUT;
             txtResponsable.Multiline = false;
             txtResponsable.Name = "txtResponsable";
-            txtResponsable.Size = new Size(318, 50);
+            txtResponsable.Size = new Size(278, 50);
             txtResponsable.TabIndex = 8;
             txtResponsable.Text = "";
             txtResponsable.TrailingIcon = null;
@@ -188,7 +197,7 @@
             materialLabel4.AutoSize = true;
             materialLabel4.Depth = 0;
             materialLabel4.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-            materialLabel4.Location = new Point(166, 341);
+            materialLabel4.Location = new Point(145, 256);
             materialLabel4.MouseState = MaterialSkin.MouseState.HOVER;
             materialLabel4.Name = "materialLabel4";
             materialLabel4.Size = new Size(130, 19);
@@ -200,7 +209,7 @@
             materialLabel3.AutoSize = true;
             materialLabel3.Depth = 0;
             materialLabel3.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-            materialLabel3.Location = new Point(542, 106);
+            materialLabel3.Location = new Point(474, 80);
             materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
             materialLabel3.Name = "materialLabel3";
             materialLabel3.Size = new Size(128, 19);
@@ -212,7 +221,7 @@
             materialLabel2.AutoSize = true;
             materialLabel2.Depth = 0;
             materialLabel2.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-            materialLabel2.Location = new Point(14, 237);
+            materialLabel2.Location = new Point(12, 178);
             materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
             materialLabel2.Name = "materialLabel2";
             materialLabel2.Size = new Size(114, 19);
@@ -224,7 +233,7 @@
             materialLabel1.AutoSize = true;
             materialLabel1.Depth = 0;
             materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-            materialLabel1.Location = new Point(15, 106);
+            materialLabel1.Location = new Point(13, 80);
             materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
             materialLabel1.Name = "materialLabel1";
             materialLabel1.Size = new Size(113, 19);
@@ -235,18 +244,19 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Symbol", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(368, 39);
+            label1.Location = new Point(322, 29);
             label1.Name = "label1";
-            label1.Size = new Size(158, 25);
+            label1.Size = new Size(132, 20);
             label1.TabIndex = 0;
             label1.Text = "Nuevo Préstamo";
             // 
             // FormNuevoPrestamo
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1263, 749);
+            ClientSize = new Size(1105, 562);
             Controls.Add(panelContenedor);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "FormNuevoPrestamo";
             Text = "FormNuevoPrestamo";
             Load += FormNuevoPrestamo_Load;

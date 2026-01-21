@@ -21,17 +21,15 @@ namespace ServindAp.Application.DependencyInjection
         /// En Program.cs o equivalente:
         /// services.AddApplicationServices();
         /// </example>
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            // Registrar UseCases como Scoped
-            // Cada solicitud obtiene su propia instancia
             services.AddScoped<CrearPrestamoUseCase>();
             services.AddScoped<ListarPrestamosUseCase>();
             services.AddScoped<ObtenerPrestamoUseCase>();
             services.AddScoped<RegistrarDevolucionUseCase>();
             services.AddScoped<ListarHerramientasUseCase>();
+            services.AddScoped<ActualizarStockHerramientaUseCase>();
 
-            // Registrar el servicio centralizado de aplicación
             services.AddScoped<IApplicationService, ApplicationService>();
 
             return services;

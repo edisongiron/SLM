@@ -1,3 +1,10 @@
+using Microsoft.Extensions.DependencyInjection;
+using ServindAp.Application.DependencyInjection;
+using ServindAp.Infrastructure.DependencyInjection;
+using ServindAp.UI.Forms;
+using ServindAp.UI.UserControls;
+using System.Windows.Forms;
+
 namespace ServindAp.UI
 {
     internal static class Program
@@ -8,10 +15,24 @@ namespace ServindAp.UI
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+
+            var services = new ServiceCollection();
+
+            var dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "servindap.db");
+            var connectionString = $"Data Source={dbPath}";
+
+            services.AddInfrastructure(connectionString);
+            services.AddApplication();
+
+            services.AddTransient<Form1>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            InfrastructureServiceCollectionExtensions.InitializeDatabase(serviceProvider);
+
+            var mainForm = serviceProvider.GetRequiredService<Form1>();
+            System.Windows.Forms.Application.Run(mainForm);
         }
     }
 }

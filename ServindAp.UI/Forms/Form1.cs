@@ -1,28 +1,32 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
 using Microsoft.VisualBasic.Logging;
+using ServindAp.Application.Interfaces;
+using ServindAp.UI.UserControls;
 using System;
 using System.Data;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
-#nullable disable
-
-namespace ServindAp.UI
+namespace ServindAp.UI.Forms
 {
     public partial class Form1 : MaterialForm
     {
 
-        private DataTable tablaDatos;
-        private MaterialButton btnNuevoPrestamo;
-        private DataTable tablaHerramientas;
-        private MaterialButton btnNuevaHerramienta;
+        private DataTable? tablaDatos;
+        private MaterialButton? btnNuevoPrestamo;
+        private DataTable? tablaHerramientas;
+        private MaterialButton? btnNuevaHerramienta;
 
+        private readonly IApplicationService _appService;
 
-        public Form1()
+        public Form1(IApplicationService appService)
         {
             InitializeComponent();
+            _appService = appService;
+
+
             WindowState = FormWindowState.Maximized;
             ConfigurarMaterialSkin();
             ConfigurarBuscador();
@@ -32,23 +36,23 @@ namespace ServindAp.UI
 
             this.Resize += (s, e) => CentrarControles();
             tabPage2.Resize += (s, e) => LayoutTabPrestamos();
-            tabPage3.Resize += (s, e) => LayoutTabHerramientas(); 
+            tabPage3.Resize += (s, e) => LayoutTabHerramientas();
 
             //Tabla de Prestamos
-            this.Load += (s, e) => Form1_Load(s, e);
-            TablaPrestamos.CellContentClick += (s, e) => TablaPrestamos_CellContentClick(s, e);
-            TablaPrestamos.CellPainting += (s, e) => TablaPrestamos_CellPainting(s, e);//Botones Editar/Eliminar
-            panelBuscador.Paint += (s, e) => PanelBuscador_Paint(s, e);
+            this.Load += Form1_Load;
+            TablaPrestamos.CellContentClick += TablaPrestamos_CellContentClick;
+            TablaPrestamos.CellPainting += TablaPrestamos_CellPainting; //Botones Editar/Eliminar
+            panelBuscador.Paint += PanelBuscador_Paint;
 
 
-            TablaHerramientas.CellContentClick += (s, e) => TablaHerramientas_CellContentClick(s, e);
-            TablaHerramientas.CellPainting += (s, e) => TablaHerramientas_CellPainting(s, e);
-            panelBuscadorHerramientas.Paint += (s, e) => PanelBuscadorHerramientas_Paint(s, e);
+            TablaHerramientas.CellContentClick += TablaHerramientas_CellContentClick;
+            TablaHerramientas.CellPainting += TablaHerramientas_CellPainting;
+            panelBuscadorHerramientas.Paint += PanelBuscadorHerramientas_Paint;
 
         }
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object? sender, EventArgs e)
         {
             //Prestamos
             ConfigurarEstiloTabla();
@@ -275,23 +279,23 @@ namespace ServindAp.UI
             TablaPrestamos.Columns.Add(btnEliminar);
 
 
-            TablaPrestamos.Columns["Responsable"].Width = 200;
-            TablaPrestamos.Columns["Herramienta"].Width = 220;
-            TablaPrestamos.Columns["Cantidad"].Width = 110;
-            TablaPrestamos.Columns["FechaEntrega"].Width = 150;
-            TablaPrestamos.Columns["Observaciones"].Width = 300;
+            TablaPrestamos?.Columns["Responsable"]?.Width = 200;
+            TablaPrestamos?.Columns["Herramienta"]?.Width = 220;
+            TablaPrestamos?.Columns["Cantidad"]?.Width = 110;
+            TablaPrestamos?.Columns["FechaEntrega"]?.Width = 150;
+            TablaPrestamos?.Columns["Observaciones"]?.Width = 300;
         }
 
 
         private void CargarDatosPrueba()
         {
-            tablaDatos.Rows.Add(1, "Juan Pérez", "Taladro Makita", 1, "10/01/2026", "Activo", "Incluye maletín y 5 brocas");
-            tablaDatos.Rows.Add(2, "María García", "Martillo", 2, "09/01/2026", "Activo", "Mango de fibra de vidrio");
-            tablaDatos.Rows.Add(3, "Carlos López", "Destornillador Set", 1, "08/01/2026", "Devuelto", "Set completo 12 piezas");
-            tablaDatos.Rows.Add(4, "Ana Rodríguez", "Sierra Circular", 1, "11/01/2026", "Activo", "Incluye disco de corte");
-            tablaDatos.Rows.Add(5, "Pedro Martínez", "Llave Inglesa", 3, "07/01/2026", "Activo", "Tamaños: 8\", 10\", 12\"");
-            tablaDatos.Rows.Add(6, "Laura Sánchez", "Taladro DeWalt", 1, "12/01/2026", "Activo", "Batería recargable");
-            tablaDatos.Rows.Add(7, "Edison", "Martillo", 1, "12/01/2026", "Activo", "Peso 500g");
+            tablaDatos?.Rows.Add(1, "Juan Pérez", "Taladro Makita", 1, "10/01/2026", "Activo", "Incluye maletín y 5 brocas");
+            tablaDatos?.Rows.Add(2, "María García", "Martillo", 2, "09/01/2026", "Activo", "Mango de fibra de vidrio");
+            tablaDatos?.Rows.Add(3, "Carlos López", "Destornillador Set", 1, "08/01/2026", "Devuelto", "Set completo 12 piezas");
+            tablaDatos?.Rows.Add(4, "Ana Rodríguez", "Sierra Circular", 1, "11/01/2026", "Activo", "Incluye disco de corte");
+            tablaDatos?.Rows.Add(5, "Pedro Martínez", "Llave Inglesa", 3, "07/01/2026", "Activo", "Tamaños: 8\", 10\", 12\"");
+            tablaDatos?.Rows.Add(6, "Laura Sánchez", "Taladro DeWalt", 1, "12/01/2026", "Activo", "Batería recargable");
+            tablaDatos?.Rows.Add(7, "Edison", "Martillo", 1, "12/01/2026", "Activo", "Peso 500g");
         }
 
 
@@ -372,34 +376,34 @@ namespace ServindAp.UI
             TablaHerramientas.Columns.Add(btnEliminar);
 
             // Anchos de columnas
-            TablaHerramientas.Columns["ID"].Width = 110;
-            TablaHerramientas.Columns["Nombre"].Width = 280;
-            TablaHerramientas.Columns["Descripcion"].Width = 500;
-            TablaHerramientas.Columns["Cantidad"].Width = 150;
-            TablaHerramientas.Columns["EsRetornable"].Width = 200;
-            TablaHerramientas.Columns["btnEditarHerr"].Width = 100;
-            TablaHerramientas.Columns["btnEliminarHerr"].Width = 100;
+            TablaHerramientas?.Columns["ID"]?.Width = 110;
+            TablaHerramientas?.Columns["Nombre"]?.Width = 280;
+            TablaHerramientas?.Columns["Descripcion"]?.Width = 500;
+            TablaHerramientas?.Columns["Cantidad"]?.Width = 150;
+            TablaHerramientas?.Columns["EsRetornable"]?.Width = 200;
+            TablaHerramientas?.Columns["btnEditarHerr"]?.Width = 100;
+            TablaHerramientas?.Columns["btnEliminarHerr"]?.Width = 100;
 
             // Nombres amigables en encabezados
-            TablaHerramientas.Columns["EsRetornable"].HeaderText = "Retornable";
+            TablaHerramientas?.Columns["EsRetornable"]?.HeaderText = "Retornable";
         }
 
 
         private void CargarDatosPruebaHerramientas()
         {
-            tablaHerramientas.Rows.Add(1, "Taladro Makita", "Taladro percutor 18V con maletín", 5, "Sí");
-            tablaHerramientas.Rows.Add(2, "Martillo", "Martillo de carpintero mango fibra de vidrio", 10, "Sí");
-            tablaHerramientas.Rows.Add(3, "Destornillador Set", "Set de 12 destornilladores mixtos", 8, "Sí");
-            tablaHerramientas.Rows.Add(4, "Sierra Circular", "Sierra circular 7 1/4 pulgadas DeWalt", 3, "Sí");
-            tablaHerramientas.Rows.Add(5, "Llave Inglesa", "Llave ajustable 12 pulgadas", 15, "Sí");
-            tablaHerramientas.Rows.Add(6, "Cinta Métrica", "Cinta métrica 5 metros Stanley", 20, "No");
-            tablaHerramientas.Rows.Add(7, "Nivel", "Nivel de burbuja 24 pulgadas", 6, "Sí");
-            tablaHerramientas.Rows.Add(8, "Alicate", "Alicate de corte lateral 8 pulgadas", 12, "Sí");
+            tablaHerramientas?.Rows.Add(1, "Taladro Makita", "Taladro percutor 18V con maletín", 5, "Sí");
+            tablaHerramientas?.Rows.Add(2, "Martillo", "Martillo de carpintero mango fibra de vidrio", 10, "Sí");
+            tablaHerramientas?.Rows.Add(3, "Destornillador Set", "Set de 12 destornilladores mixtos", 8, "Sí");
+            tablaHerramientas?.Rows.Add(4, "Sierra Circular", "Sierra circular 7 1/4 pulgadas DeWalt", 3, "Sí");
+            tablaHerramientas?.Rows.Add(5, "Llave Inglesa", "Llave ajustable 12 pulgadas", 15, "Sí");
+            tablaHerramientas?.Rows.Add(6, "Cinta Métrica", "Cinta métrica 5 metros Stanley", 20, "No");
+            tablaHerramientas?.Rows.Add(7, "Nivel", "Nivel de burbuja 24 pulgadas", 6, "Sí");
+            tablaHerramientas?.Rows.Add(8, "Alicate", "Alicate de corte lateral 8 pulgadas", 12, "Sí");
         }
 
 
 
-        private void TablaPrestamos_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        private void TablaPrestamos_CellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
         {
             //Color de botones
 
@@ -413,7 +417,7 @@ namespace ServindAp.UI
                 e.PaintBackground(e.CellBounds, true);
 
                 Color colorBoton;
-                string texto = e.FormattedValue?.ToString(); 
+                string texto = e.FormattedValue?.ToString() ?? "";
 
                 if (columna.Name == "btnEditar")
                 {
@@ -431,22 +435,26 @@ namespace ServindAp.UI
                     e.CellBounds.Height - 12
                 );
 
-                using (SolidBrush brush = new SolidBrush(colorBoton))
+
+                if (e.Graphics != null)
                 {
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.FillRectangle(brush, rect);
+                    using (SolidBrush brush = new SolidBrush(colorBoton))
+                    {
+                        e.Graphics?.SmoothingMode = SmoothingMode.AntiAlias;
+                        e.Graphics?.FillRectangle(brush, rect);
+                    }
+                    var graphics = e.Graphics!;  
+                    TextRenderer.DrawText(
+                        graphics,
+                        texto,
+                        new Font("Segoe UI", 9, FontStyle.Bold),
+                        rect,
+                        Color.White,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
+                    );
+
+                    e.Handled = true;
                 }
-
-                TextRenderer.DrawText(
-                    e.Graphics,
-                    texto,
-                    new Font("Segoe UI", 9, FontStyle.Bold),
-                    rect,
-                    Color.White,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
-                );
-
-                e.Handled = true;
             }
 
 
@@ -467,15 +475,15 @@ namespace ServindAp.UI
             }
 
 
-            var vista = (TablaPrestamos.DataSource as DataTable).DefaultView;
+            var vista = (TablaPrestamos?.DataSource as DataTable)?.DefaultView;
 
             if (string.IsNullOrEmpty(textoBusqueda))
             {
-                vista.RowFilter = string.Empty;
+                vista?.RowFilter = string.Empty;
             }
             else
             {
-                vista.RowFilter =
+                vista?.RowFilter =
                     $"Responsable LIKE '%{textoBusqueda}%' OR " +
                     $"Herramienta LIKE '%{textoBusqueda}%' OR " +
                     $"Estado LIKE '%{textoBusqueda}%'";
@@ -519,7 +527,7 @@ namespace ServindAp.UI
         }
 
 
-        private void BuscadorTxb_Enter(object sender, EventArgs e)
+        private void BuscadorTxb_Enter(object? sender, EventArgs e)
         {
             if (BuscadorTxb.Text == PLACEHOLDER_BUSCADOR)
             {
@@ -528,7 +536,7 @@ namespace ServindAp.UI
             }
         }
 
-        private void BuscadorTxb_Leave(object sender, EventArgs e)
+        private void BuscadorTxb_Leave(object? sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(BuscadorTxb.Text))
             {
@@ -553,7 +561,7 @@ namespace ServindAp.UI
             panelBuscador.Region = new Region(path);
         }
 
-        private void PanelBuscador_Paint(object sender, PaintEventArgs e)
+        private void PanelBuscador_Paint(object? sender, PaintEventArgs e)
         {
             int radio = 18;
             int grosor = 2;
@@ -615,7 +623,7 @@ namespace ServindAp.UI
 
         }
 
-        private void txbBuscadorHerramientas_Enter(object sender, EventArgs e)
+        private void txbBuscadorHerramientas_Enter(object? sender, EventArgs e)
         {
             if (txbBuscadorHerramientas.Text == PLACEHOLDER_BUSCADOR_HERR)
             {
@@ -624,7 +632,7 @@ namespace ServindAp.UI
             }
         }
 
-        private void txbBuscadorHerramientas_Leave(object sender, EventArgs e)
+        private void txbBuscadorHerramientas_Leave(object? sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txbBuscadorHerramientas.Text))
             {
@@ -633,7 +641,7 @@ namespace ServindAp.UI
             }
         }
 
-        private void txbBuscadorHerramientas_TextChanged(object sender, EventArgs e)
+        private void txbBuscadorHerramientas_TextChanged(object? sender, EventArgs e)
         {
             if (TablaHerramientas.DataSource == null)
                 return;
@@ -645,15 +653,15 @@ namespace ServindAp.UI
                 textoBusqueda = "";
             }
 
-            var vista = (TablaHerramientas.DataSource as DataTable).DefaultView;
+            var vista = (TablaHerramientas?.DataSource as DataTable)?.DefaultView;
 
             if (string.IsNullOrEmpty(textoBusqueda))
             {
-                vista.RowFilter = string.Empty;
+                vista?.RowFilter = string.Empty;
             }
             else
             {
-                vista.RowFilter =
+                vista?.RowFilter =
                     $"Nombre LIKE '%{textoBusqueda}%' OR " +
                     $"Descripcion LIKE '%{textoBusqueda}%' OR " +
                     $"EsRetornable LIKE '%{textoBusqueda}%'";
@@ -676,7 +684,7 @@ namespace ServindAp.UI
             panelBuscadorHerramientas.Region = new Region(path);
         }
 
-        private void PanelBuscadorHerramientas_Paint(object sender, PaintEventArgs e)
+        private void PanelBuscadorHerramientas_Paint(object? sender, PaintEventArgs e)
         {
             int radio = 18;
             int grosor = 2;
@@ -702,7 +710,7 @@ namespace ServindAp.UI
         }
 
         // BOTONES EDITAR/ELIMINAR
-        private void TablaHerramientas_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        private void TablaHerramientas_CellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
@@ -711,11 +719,12 @@ namespace ServindAp.UI
 
             if (columna.Name == "btnEditarHerr" || columna.Name == "btnEliminarHerr")
             {
+                var graphics = e.Graphics;
+                if (graphics == null) return;
+
                 e.PaintBackground(e.CellBounds, true);
-
                 Color colorBoton;
-                string texto = e.FormattedValue?.ToString();
-
+                string texto = e.FormattedValue?.ToString() ?? "";
                 if (columna.Name == "btnEditarHerr")
                 {
                     colorBoton = Color.FromArgb(66, 165, 245); // Azul
@@ -724,35 +733,31 @@ namespace ServindAp.UI
                 {
                     colorBoton = Color.FromArgb(239, 83, 80); // Rojo
                 }
-
                 Rectangle rect = new Rectangle(
                     e.CellBounds.X + 6,
                     e.CellBounds.Y + 6,
                     e.CellBounds.Width - 12,
                     e.CellBounds.Height - 12
                 );
-
                 using (SolidBrush brush = new SolidBrush(colorBoton))
                 {
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.FillRectangle(brush, rect);
+                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    graphics.FillRectangle(brush, rect);
                 }
-
                 TextRenderer.DrawText(
-                    e.Graphics,
+                    graphics,
                     texto,
                     new Font("Segoe UI", 9, FontStyle.Bold),
                     rect,
                     Color.White,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
                 );
-
                 e.Handled = true;
             }
         }
 
 
-        private void TablaHerramientas_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void TablaHerramientas_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
                 return;
@@ -801,7 +806,7 @@ namespace ServindAp.UI
             tabPage3.Controls.Add(btnNuevaHerramienta);
         }
 
-        private void btnNuevaHerramienta_Click(object sender, EventArgs e)
+        private void btnNuevaHerramienta_Click(object? sender, EventArgs e)
         {
             // Aquí irá tu formulario de nueva herramienta
             MessageBox.Show(
@@ -817,7 +822,7 @@ namespace ServindAp.UI
 
 
         //Acciones de botones Editar/Eliminar
-        private void TablaPrestamos_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void TablaPrestamos_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
                 return;
@@ -868,14 +873,13 @@ namespace ServindAp.UI
         }
 
 
-        private void btnNuevoPrestamo_Click(object sender, EventArgs e)
+        private void btnNuevoPrestamo_Click(object? sender, EventArgs e)
         {
-            FormNuevoPrestamo prestamo = new FormNuevoPrestamo();
+            FormNuevoPrestamo prestamo = new FormNuevoPrestamo(_appService);
             prestamo.ShowDialog();
         }
 
         
-
 
     }
 }
