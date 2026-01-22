@@ -310,25 +310,25 @@ namespace ServindAp.UI.UserControls
         // HOVER BOTÓN AGREGAR
         private void btnAgregar_MouseEnter(object sender, EventArgs e)
         {
-            btnAgregar.BackColor = Color.FromArgb(39, 174, 96); // Verde más oscuro
+            btnAgregar.BackColor = Color.FromArgb(39, 174, 96); 
         }
 
         private void btnAgregar_MouseLeave(object sender, EventArgs e)
         {
-            btnAgregar.BackColor = Color.FromArgb(46, 204, 113); // Verde original
+            btnAgregar.BackColor = Color.FromArgb(46, 204, 113); 
         }
 
 
         // HOVER BOTÓN CANCELAR
         private void btnCancelar_MouseEnter(object sender, EventArgs e)
         {
-            btnCancelar.BackColor = Color.FromArgb(127, 140, 141); // Gris más oscuro
+            btnCancelar.BackColor = Color.FromArgb(127, 140, 141);
         }
 
 
         private void btnCancelar_MouseLeave(object sender, EventArgs e)
         {
-            btnCancelar.BackColor = Color.FromArgb(149, 165, 166); // Gris original
+            btnCancelar.BackColor = Color.FromArgb(149, 165, 166);
         }
 
 
@@ -382,7 +382,7 @@ namespace ServindAp.UI.UserControls
                 return false;
             }
 
-            if (FechaEntrega.Value.Date < DateTime.Now.Date)
+            /*if (FechaEntrega.Value.Date < DateTime.Now.Date)
             {
                 MessageBox.Show(
                     "La fecha de entrega debe ser hoy o posterior",
@@ -391,7 +391,7 @@ namespace ServindAp.UI.UserControls
                     MessageBoxIcon.Warning
                 );
                 return false;
-            }
+            }*/
 
             return true;
         }
@@ -441,5 +441,7 @@ namespace ServindAp.UI.UserControls
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+
     }
 }

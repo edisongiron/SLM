@@ -245,6 +245,7 @@ namespace ServindAp.UI.Forms
             Controls.Add(materialTabControl1);
             DrawerTabControl = materialTabControl1;
             Name = "Form1";
+            Load += Form1_Load_1;
             materialTabControl1.ResumeLayout(false);
             Home.ResumeLayout(false);
             Home.PerformLayout();

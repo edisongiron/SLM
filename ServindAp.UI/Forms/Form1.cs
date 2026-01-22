@@ -67,10 +67,9 @@ namespace ServindAp.UI.Forms
             CargarDatosPruebaHerramientas();
             ConfigurarBotonNuevaHerramienta();
             LayoutTabHerramientas();
-            
+
 
         }
-
 
         private void Home_Resize(object sender, EventArgs e)
         {
@@ -443,7 +442,7 @@ namespace ServindAp.UI.Forms
                         e.Graphics?.SmoothingMode = SmoothingMode.AntiAlias;
                         e.Graphics?.FillRectangle(brush, rect);
                     }
-                    var graphics = e.Graphics!;  
+                    var graphics = e.Graphics!;
                     TextRenderer.DrawText(
                         graphics,
                         texto,
@@ -808,13 +807,8 @@ namespace ServindAp.UI.Forms
 
         private void btnNuevaHerramienta_Click(object? sender, EventArgs e)
         {
-            // Aquí irá tu formulario de nueva herramienta
-            MessageBox.Show(
-                "Aquí se abrirá el formulario para agregar una nueva herramienta",
-                "Nueva Herramienta",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
+            FormNuevaHerramienta prestamo2 = new FormNuevaHerramienta();
+            prestamo2.ShowDialog();
 
         }
 
@@ -879,7 +873,10 @@ namespace ServindAp.UI.Forms
             prestamo.ShowDialog();
         }
 
-        
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+
+        }
 
     }
 }
