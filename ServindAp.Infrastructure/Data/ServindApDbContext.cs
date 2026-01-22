@@ -57,7 +57,6 @@ namespace ServindAp.Infrastructure.Data
                 entity.Property(e => e.Nombre).HasColumnName("nombre").IsRequired();
                 entity.Property(e => e.Stock).HasColumnName("stock").IsRequired().HasDefaultValue(0);
                 entity.Property(e => e.Descripcion).HasColumnName("descripcion");
-                entity.Property(e => e.EsRetornable).HasColumnName("es_retornable").IsRequired();
             });
 
             modelBuilder.Entity<PrestamoHerramienta>(entity =>

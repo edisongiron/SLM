@@ -26,5 +26,25 @@ namespace ServindAp.Application.Interfaces
         /// Acceso al UseCase de listar herramientas.
         /// </summary>
         UseCases.ListarHerramientasUseCase ListarHerramientas { get; }
+
+        /// <summary>
+        /// Acceso al UseCase de crear herramientas.
+        /// </summary>
+        UseCases.CrearHerramientaUseCase CrearHerramienta { get; }
+
+        /// <summary>
+        /// Acceso al UseCase de actualizar herramientas.
+        /// </summary>
+        UseCases.ActualizarHerramientaUseCase ActualizarHerramienta { get; }
+
+        /// <summary>
+        /// Acceso al UseCase de obtener una herramienta específica.
+        /// </summary>
+        UseCases.ObtenerHerramientaUseCase ObtenerHerramienta { get; }
+
+        /// <summary>
+        /// Acceso al UseCase de eliminar herramientas.
+        /// </summary>
+        UseCases.EliminarHerramientaUseCase EliminarHerramienta { get; }
     }
 }

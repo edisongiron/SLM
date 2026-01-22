@@ -18,13 +18,7 @@ namespace ServindAp.Application.UseCases
 
             var herramientas = await _herramientaRepository.ObtenerTodasAsync();
 
-            // Aplicar filtros
             var herramientasFiltradas = herramientas.AsEnumerable();
-
-            if (filtro.SoloRetornables)
-            {
-                herramientasFiltradas = herramientasFiltradas.Where(h => h.EsRetornable);
-            }
 
             // Convertir a DTOs
             var herramientasDTOs = herramientasFiltradas
@@ -50,14 +44,6 @@ namespace ServindAp.Application.UseCases
     /// </summary>
     public class ListarHerramientasFilter
     {
-        /// <summary>
-        /// Si es true, solo obtiene las herramientas que son retornables.
-        /// </summary>
-        public bool SoloRetornables { get; set; } = false;
-
-        /// <summary>
-        /// Campo por el cual ordenar (nombre, nombre_desc).
-        /// </summary>
         public string? OrdenarPor { get; set; } = "nombre";
     }
 }

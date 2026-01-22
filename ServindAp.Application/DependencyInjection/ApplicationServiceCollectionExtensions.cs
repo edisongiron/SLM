@@ -29,6 +29,10 @@ namespace ServindAp.Application.DependencyInjection
             services.AddScoped<RegistrarDevolucionUseCase>();
             services.AddScoped<ListarHerramientasUseCase>();
             services.AddScoped<ActualizarStockHerramientaUseCase>();
+            services.AddScoped<CrearHerramientaUseCase>();
+            services.AddScoped<ActualizarHerramientaUseCase>();
+            services.AddScoped<ObtenerHerramientaUseCase>();
+            services.AddScoped<EliminarHerramientaUseCase>();
 
             services.AddScoped<IApplicationService, ApplicationService>();
 
@@ -50,6 +54,10 @@ namespace ServindAp.Application.DependencyInjection
         public ObtenerPrestamoUseCase ObtenerPrestamo { get; }
         public RegistrarDevolucionUseCase RegistrarDevolucion { get; }
         public ListarHerramientasUseCase ListarHerramientas { get; }
+        public CrearHerramientaUseCase CrearHerramienta { get; }
+        public ActualizarHerramientaUseCase ActualizarHerramienta { get; }
+        public ObtenerHerramientaUseCase ObtenerHerramienta { get; }
+        public EliminarHerramientaUseCase EliminarHerramienta { get; }
 
         /// <summary>
         /// Constructor que recibe todos los UseCases.
@@ -60,13 +68,21 @@ namespace ServindAp.Application.DependencyInjection
             ListarPrestamosUseCase listarPrestamos,
             ObtenerPrestamoUseCase obtenerPrestamo,
             RegistrarDevolucionUseCase registrarDevolucion,
-            ListarHerramientasUseCase listarHerramientas)
+            ListarHerramientasUseCase listarHerramientas,
+            CrearHerramientaUseCase crearHerramienta,
+            ActualizarHerramientaUseCase actualizarHerramienta,
+            ObtenerHerramientaUseCase obtenerHerramienta,
+            EliminarHerramientaUseCase eliminarHerramienta)
         {
             CrearPrestamo = crearPrestamo ?? throw new ArgumentNullException(nameof(crearPrestamo));
             ListarPrestamos = listarPrestamos ?? throw new ArgumentNullException(nameof(listarPrestamos));
             ObtenerPrestamo = obtenerPrestamo ?? throw new ArgumentNullException(nameof(obtenerPrestamo));
             RegistrarDevolucion = registrarDevolucion ?? throw new ArgumentNullException(nameof(registrarDevolucion));
             ListarHerramientas = listarHerramientas ?? throw new ArgumentNullException(nameof(listarHerramientas));
+            CrearHerramienta = crearHerramienta ?? throw new ArgumentNullException(nameof(crearHerramienta));
+            ActualizarHerramienta = actualizarHerramienta ?? throw new ArgumentNullException(nameof(actualizarHerramienta));
+            ObtenerHerramienta = obtenerHerramienta ?? throw new ArgumentNullException(nameof(obtenerHerramienta));
+            EliminarHerramienta = eliminarHerramienta ?? throw new ArgumentNullException(nameof(eliminarHerramienta));
         }
     }
 }

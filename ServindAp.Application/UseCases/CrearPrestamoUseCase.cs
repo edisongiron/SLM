@@ -78,13 +78,9 @@ namespace ServindAp.Application.UseCases
 
                 await _prestamoHerramientaRepository.CrearAsync(prestamoHerramienta);
 
-                // Reducir el stock de la herramienta si es retornable
                 var herramienta = herramientas.First(h => h.Id == herramientaPrestada.HerramientaId);
-                if (herramienta.EsRetornable)
-                {
-                    herramienta.ReducirStock(herramientaPrestada.Cantidad);
-                    await _herramientaRepository.ActualizarAsync(herramienta);
-                }
+                herramienta.ReducirStock(herramientaPrestada.Cantidad);
+                await _herramientaRepository.ActualizarAsync(herramienta);
             }
 
             // Construir el DTO de respuesta con las herramientas

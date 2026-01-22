@@ -1,0 +1,25 @@
+using ServindAp.Application.DTOs;
+using ServindAp.Application.Interfaces.Repositories;
+using ServindAp.Domain.Exceptions;
+
+namespace ServindAp.Application.UseCases
+{
+    public class ObtenerHerramientaUseCase
+    {
+        private readonly IHerramientaRepository _herramientaRepository;
+
+        public ObtenerHerramientaUseCase(IHerramientaRepository herramientaRepository)
+        {
+            _herramientaRepository = herramientaRepository ?? throw new ArgumentNullException(nameof(herramientaRepository));
+        }
+
+        public async Task<HerramientaDTO> ExecuteAsync(int id)
+        {
+            var herramienta = await _herramientaRepository.ObtenerPorIdAsync(id);
+            if (herramienta == null)
+                throw new HerramientaNoEncontradaException(id);
+
+            return HerramientaDTO.FromDomain(herramienta);
+        }
+    }
+}

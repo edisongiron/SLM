@@ -1,13 +1,17 @@
-﻿using System;
+﻿using ServindAp.Application.Interfaces;
+using ServindAp.Application.UseCases;
+using ServindAp.Domain.Entities;
+using ServindAp.Domain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
 
 
 namespace ServindAp.UI.UserControls
@@ -15,12 +19,13 @@ namespace ServindAp.UI.UserControls
     public partial class FormNuevaHerramienta : Form
     {
         private GradientPanel panelFondo;
+        private readonly IApplicationService _appService;
 
-       
 
-        public FormNuevaHerramienta()
+        public FormNuevaHerramienta(IApplicationService appService)
         {
             InitializeComponent();
+            _appService = appService;
 
             // ABRIR MAXIMIZADO
             this.WindowState = FormWindowState.Maximized;
@@ -95,14 +100,14 @@ namespace ServindAp.UI.UserControls
             txtNombre.Font = new Font("Segoe UI", 11F);
             txtNombre.BackColor = Color.FromArgb(248, 249, 250);
 
-            cmbCant.Font = new Font("Segoe UI", 11F);
-            cmbCant.BackColor = Color.FromArgb(248, 249, 250);
-            // Agregar opciones al ComboBox de cantidad
-            cmbCant.Items.Clear();
-            for (int i = 1; i <= 100; i++)
-            {
-                cmbCant.Items.Add(i);
-            }
+            //cmbCant.Font = new Font("Segoe UI", 11F);
+            //cmbCant.BackColor = Color.FromArgb(248, 249, 250);
+            //// Agregar opciones al ComboBox de cantidad
+            //cmbCant.Items.Clear();
+            //for (int i = 1; i <= 100; i++)
+            //{
+            //    cmbCant.Items.Add(i);
+            //}
 
             txtDescripcion.Font = new Font("Segoe UI", 11F);
             txtDescripcion.BackColor = Color.FromArgb(248, 249, 250);
@@ -140,8 +145,8 @@ namespace ServindAp.UI.UserControls
 
             // COLUMNA DERECHA
             NameCantidad.Location = new Point(margenDer + 100, 100);
-            cmbCant.Location = new Point(margenDer + 100, 125);
-            cmbCant.Size = new Size(200, 40);
+            //cmbCant.Location = new Point(margenDer + 100, 125);
+            //cmbCant.Size = new Size(200, 40);
 
             // DESCRIPCIÓN - Ancho completo
             materialLabel1.Location = new Point(margenIzq, 100 + espacio + 40);
@@ -293,65 +298,74 @@ namespace ServindAp.UI.UserControls
             this.Close();
         }
 
-        private bool ValidarFormulario()
-        {
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
-            {
-                MessageBox.Show(
-                    "Por favor ingresa el nombre de la herramienta",
-                    "Campo requerido",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtNombre.Focus();
-                return false;
-            }
+        //private bool ValidarFormulario()
+        //{
+        //    if (string.IsNullOrWhiteSpace(txtNombre.Text))
+        //    {
+        //        MessageBox.Show(
+        //            "Por favor ingresa el nombre de la herramienta",
+        //            "Campo requerido",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Warning
+        //        );
+        //        txtNombre.Focus();
+        //        return false;
+        //    }
 
-            if (cmbCant.SelectedIndex == -1)
-            {
-                MessageBox.Show(
-                    "Por favor selecciona la cantidad",
-                    "Campo requerido",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                cmbCant.Focus();
-                return false;
-            }
+        //    if (cmbCant.SelectedIndex == -1)
+        //    {
+        //        MessageBox.Show(
+        //            "Por favor selecciona la cantidad",
+        //            "Campo requerido",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Warning
+        //        );
+        //        cmbCant.Focus();
+        //        return false;
+        //    }
 
-            if (string.IsNullOrWhiteSpace(txtDescripcion.Text))
-            {
-                MessageBox.Show(
-                    "Por favor ingresa una descripción",
-                    "Campo requerido",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtDescripcion.Focus();
-                return false;
-            }
+        //    if (string.IsNullOrWhiteSpace(txtDescripcion.Text))
+        //    {
+        //        MessageBox.Show(
+        //            "Por favor ingresa una descripción",
+        //            "Campo requerido",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Warning
+        //        );
+        //        txtDescripcion.Focus();
+        //        return false;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
-        private void btnAgregar_Click(object sender, EventArgs e)
+        private async void btnAgregar_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!ValidarFormulario()) return;
+                //if (!ValidarFormulario()) return;
 
-                // AQUÍ VA LA LÓGICA PARA GUARDAR EN LA BASE DE DATOS
-                // Por ahora solo mostramos el mensaje de éxito
+                var request = new CrearHerramientaRequest
+                {
+                    Nombre = txtNombre.Text.Trim(),
+                    Descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) 
+                    ? null
+                    : txtDescripcion.Text.Trim(),
+                    Stock = Int32.Parse(labelStock.Text.Trim())
+                };
 
-                MessageBox.Show(
-                    "Herramienta agregada exitosamente",
-                    "Éxito",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                var herramienta = await _appService.CrearHerramienta.ExecuteAsync(request);
+
+                MessageBox.Show($"Herramienta creada con ID: {herramienta.Id}");
 
                 this.Close();
             }
+
+            catch (DatoRequeridoException ex)
+            {
+                MessageBox.Show(ex.Message, "Validación");
+            }
+
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

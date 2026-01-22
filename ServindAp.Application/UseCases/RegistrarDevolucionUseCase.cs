@@ -47,7 +47,7 @@ namespace ServindAp.Application.UseCases
             {
                 var herramienta = await _herramientaRepository.ObtenerPorIdAsync(ph.HerramientaId);
                 
-                if (herramienta != null && herramienta.EsRetornable)
+                if (herramienta != null)
                 {
                     herramienta.AumentarStock(ph.Cantidad);
                     await _herramientaRepository.ActualizarAsync(herramienta);

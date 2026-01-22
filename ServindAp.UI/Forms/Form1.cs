@@ -807,7 +807,7 @@ namespace ServindAp.UI.Forms
 
         private void btnNuevaHerramienta_Click(object? sender, EventArgs e)
         {
-            FormNuevaHerramienta prestamo2 = new FormNuevaHerramienta();
+            FormNuevaHerramienta prestamo2 = new FormNuevaHerramienta(_appService);
             prestamo2.ShowDialog();
 
         }
