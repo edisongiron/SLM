@@ -343,15 +343,31 @@ namespace ServindAp.UI.UserControls
         {
             try
             {
-                //if (!ValidarFormulario()) return;
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("El nombre es requerido", "Validación");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(labelStock.Text))
+                {
+                    MessageBox.Show("El stock es requerido", "Validación");
+                    return;
+                }
+
+                if (!int.TryParse(labelStock.Text.Trim(), out int stock))
+                {
+                    MessageBox.Show("El stock debe ser un número", "Validación");
+                    return;
+                }
 
                 var request = new CrearHerramientaRequest
                 {
                     Nombre = txtNombre.Text.Trim(),
                     Descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) 
-                    ? null
-                    : txtDescripcion.Text.Trim(),
-                    Stock = Int32.Parse(labelStock.Text.Trim())
+                        ? null
+                        : txtDescripcion.Text.Trim(),
+                    Stock = stock
                 };
 
                 var herramienta = await _appService.CrearHerramienta.ExecuteAsync(request);
@@ -360,15 +376,13 @@ namespace ServindAp.UI.UserControls
 
                 this.Close();
             }
-
             catch (DatoRequeridoException ex)
             {
                 MessageBox.Show(ex.Message, "Validación");
             }
-
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error: {ex.Message}", "Error");
             }
         }
     }

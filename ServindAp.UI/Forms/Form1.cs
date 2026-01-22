@@ -3,6 +3,7 @@ using MaterialSkin.Controls;
 using Microsoft.VisualBasic.Logging;
 using ServindAp.Application.Interfaces;
 using ServindAp.UI.UserControls;
+using ServindAp.Domain.Exceptions;
 using System;
 using System.Data;
 using System.Drawing.Drawing2D;
@@ -52,23 +53,21 @@ namespace ServindAp.UI.Forms
         }
 
 
-        private void Form1_Load(object? sender, EventArgs e)
+        private async void Form1_Load(object? sender, EventArgs e)
         {
             //Prestamos
             ConfigurarEstiloTabla();
             CrearColumnas();
-            CargarDatosPrueba();
+            await CargarDatosPrueba();
             LayoutTabPrestamos();
             ConfigurarBotonNuevoPrestamo();
 
             //Herramientas
             ConfigurarEstiloTablaHerramientas();
             CrearColumnasHerramientas();
-            CargarDatosPruebaHerramientas();
+            await CargarDatosPruebaHerramientas();
             ConfigurarBotonNuevaHerramienta();
             LayoutTabHerramientas();
-
-
         }
 
         private void Home_Resize(object sender, EventArgs e)
@@ -286,15 +285,31 @@ namespace ServindAp.UI.Forms
         }
 
 
-        private void CargarDatosPrueba()
+        private async Task CargarDatosPrueba()
         {
-            tablaDatos?.Rows.Add(1, "Juan Pérez", "Taladro Makita", 1, "10/01/2026", "Activo", "Incluye maletín y 5 brocas");
-            tablaDatos?.Rows.Add(2, "María García", "Martillo", 2, "09/01/2026", "Activo", "Mango de fibra de vidrio");
-            tablaDatos?.Rows.Add(3, "Carlos López", "Destornillador Set", 1, "08/01/2026", "Devuelto", "Set completo 12 piezas");
-            tablaDatos?.Rows.Add(4, "Ana Rodríguez", "Sierra Circular", 1, "11/01/2026", "Activo", "Incluye disco de corte");
-            tablaDatos?.Rows.Add(5, "Pedro Martínez", "Llave Inglesa", 3, "07/01/2026", "Activo", "Tamaños: 8\", 10\", 12\"");
-            tablaDatos?.Rows.Add(6, "Laura Sánchez", "Taladro DeWalt", 1, "12/01/2026", "Activo", "Batería recargable");
-            tablaDatos?.Rows.Add(7, "Edison", "Martillo", 1, "12/01/2026", "Activo", "Peso 500g");
+            try
+            {
+                tablaDatos?.Rows.Clear();
+                var prestamos = await _appService.ListarPrestamos.ExecuteAsync();
+                
+                foreach (var prestamo in prestamos)
+                {
+                    var herramienta = prestamo.Herramientas?.FirstOrDefault()?.Herramienta;
+                    tablaDatos?.Rows.Add(
+                        prestamo.Id,
+                        prestamo.Responsable,
+                        herramienta?.Nombre ?? "N/A",
+                        prestamo.Herramientas?.FirstOrDefault()?.Cantidad ?? 0,
+                        prestamo.FechaEntrega.ToString("dd/MM/yyyy"),
+                        prestamo.Estado ?? "Desconocido",
+                        prestamo.Observaciones ?? ""
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar préstamos: {ex.Message}", "Error");
+            }
         }
 
 
@@ -352,8 +367,7 @@ namespace ServindAp.UI.Forms
             tablaHerramientas.Columns.Add("ID", typeof(int));
             tablaHerramientas.Columns.Add("Nombre", typeof(string));
             tablaHerramientas.Columns.Add("Descripcion", typeof(string));
-            tablaHerramientas.Columns.Add("Cantidad", typeof(int));
-            tablaHerramientas.Columns.Add("EsRetornable", typeof(string));
+            tablaHerramientas.Columns.Add("Stock", typeof(int));
 
             TablaHerramientas.AutoGenerateColumns = true;
             TablaHerramientas.DataSource = tablaHerramientas;
@@ -378,26 +392,33 @@ namespace ServindAp.UI.Forms
             TablaHerramientas?.Columns["ID"]?.Width = 110;
             TablaHerramientas?.Columns["Nombre"]?.Width = 280;
             TablaHerramientas?.Columns["Descripcion"]?.Width = 500;
-            TablaHerramientas?.Columns["Cantidad"]?.Width = 150;
-            TablaHerramientas?.Columns["EsRetornable"]?.Width = 200;
+            TablaHerramientas?.Columns["Stock"]?.Width = 150;
             TablaHerramientas?.Columns["btnEditarHerr"]?.Width = 100;
             TablaHerramientas?.Columns["btnEliminarHerr"]?.Width = 100;
-
-            // Nombres amigables en encabezados
-            TablaHerramientas?.Columns["EsRetornable"]?.HeaderText = "Retornable";
         }
 
 
-        private void CargarDatosPruebaHerramientas()
+        private async Task CargarDatosPruebaHerramientas()
         {
-            tablaHerramientas?.Rows.Add(1, "Taladro Makita", "Taladro percutor 18V con maletín", 5, "Sí");
-            tablaHerramientas?.Rows.Add(2, "Martillo", "Martillo de carpintero mango fibra de vidrio", 10, "Sí");
-            tablaHerramientas?.Rows.Add(3, "Destornillador Set", "Set de 12 destornilladores mixtos", 8, "Sí");
-            tablaHerramientas?.Rows.Add(4, "Sierra Circular", "Sierra circular 7 1/4 pulgadas DeWalt", 3, "Sí");
-            tablaHerramientas?.Rows.Add(5, "Llave Inglesa", "Llave ajustable 12 pulgadas", 15, "Sí");
-            tablaHerramientas?.Rows.Add(6, "Cinta Métrica", "Cinta métrica 5 metros Stanley", 20, "No");
-            tablaHerramientas?.Rows.Add(7, "Nivel", "Nivel de burbuja 24 pulgadas", 6, "Sí");
-            tablaHerramientas?.Rows.Add(8, "Alicate", "Alicate de corte lateral 8 pulgadas", 12, "Sí");
+            try
+            {
+                tablaHerramientas?.Rows.Clear();
+                var herramientas = await _appService.ListarHerramientas.ExecuteAsync();
+                
+                foreach (var herramienta in herramientas)
+                {
+                    tablaHerramientas?.Rows.Add(
+                        herramienta.Id,
+                        herramienta.Nombre,
+                        herramienta.Descripcion ?? "Sin descripción",
+                        herramienta.Stock
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar herramientas: {ex.Message}", "Error");
+            }
         }
 
 
@@ -662,8 +683,7 @@ namespace ServindAp.UI.Forms
             {
                 vista?.RowFilter =
                     $"Nombre LIKE '%{textoBusqueda}%' OR " +
-                    $"Descripcion LIKE '%{textoBusqueda}%' OR " +
-                    $"EsRetornable LIKE '%{textoBusqueda}%'";
+                    $"Descripcion LIKE '%{textoBusqueda}%'";
             }
         }
 
@@ -764,17 +784,13 @@ namespace ServindAp.UI.Forms
             if (TablaHerramientas.Columns[e.ColumnIndex].Name == "btnEditarHerr")
             {
                 int id = Convert.ToInt32(TablaHerramientas.Rows[e.RowIndex].Cells["ID"].Value);
-
-                MessageBox.Show(
-                    $"Editar herramienta ID: {id}",
-                    "Editar",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                MessageBox.Show($"Editar herramienta ID: {id}", "Editar");
             }
 
             if (TablaHerramientas.Columns[e.ColumnIndex].Name == "btnEliminarHerr")
             {
+                int id = Convert.ToInt32(TablaHerramientas.Rows[e.RowIndex].Cells["ID"].Value);
+                
                 var confirmacion = MessageBox.Show(
                     "¿Seguro que deseas eliminar esta herramienta?",
                     "Confirmación",
@@ -784,8 +800,26 @@ namespace ServindAp.UI.Forms
 
                 if (confirmacion == DialogResult.Yes)
                 {
-                    TablaHerramientas.Rows.RemoveAt(e.RowIndex);
+                    EliminarHerramienta(id);
                 }
+            }
+        }
+
+        private async void EliminarHerramienta(int id)
+        {
+            try
+            {
+                await _appService.EliminarHerramienta.ExecuteAsync(id);
+                MessageBox.Show("Herramienta eliminada correctamente", "Éxito");
+                await RecargarHerramientas();
+            }
+            catch (HerramientaNoEncontradaException ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error");
             }
         }
 
@@ -807,9 +841,14 @@ namespace ServindAp.UI.Forms
 
         private void btnNuevaHerramienta_Click(object? sender, EventArgs e)
         {
-            FormNuevaHerramienta prestamo2 = new FormNuevaHerramienta(_appService);
-            prestamo2.ShowDialog();
+            FormNuevaHerramienta herramienta = new FormNuevaHerramienta(_appService);
+            herramienta.ShowDialog();
+            _ = RecargarHerramientas();
+        }
 
+        private async Task RecargarHerramientas()
+        {
+            await CargarDatosPruebaHerramientas();
         }
 
 
@@ -871,6 +910,12 @@ namespace ServindAp.UI.Forms
         {
             FormNuevoPrestamo prestamo = new FormNuevoPrestamo(_appService);
             prestamo.ShowDialog();
+            _ = RecargarPrestamos();
+        }
+
+        private async Task RecargarPrestamos()
+        {
+            await CargarDatosPrueba();
         }
 
         private void Form1_Load_1(object sender, EventArgs e)

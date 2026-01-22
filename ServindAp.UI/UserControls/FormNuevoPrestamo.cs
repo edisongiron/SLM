@@ -123,8 +123,8 @@ namespace ServindAp.UI.UserControls
             cmbHerramienta.Font = new Font("Segoe UI", 11F);
             cmbHerramienta.BackColor = Color.FromArgb(248, 249, 250);
 
-            materialComboBox1.Font = new Font("Segoe UI", 11F);
-            materialComboBox1.BackColor = Color.FromArgb(248, 249, 250);
+            //materialComboBox1.Font = new Font("Segoe UI", 11F);
+            //materialComboBox1.BackColor = Color.FromArgb(248, 249, 250);
 
             FechaEntrega.Font = new Font("Segoe UI", 10F);
             FechaEntrega.Enabled = false;
@@ -169,8 +169,8 @@ namespace ServindAp.UI.UserControls
             FechaEntrega.Size = new Size(320, 28);
 
             Cantidad.Location = new Point(margenDer, 100 + espacio + 40);
-            materialComboBox1.Location = new Point(margenDer, 125 + espacio + 40);
-            materialComboBox1.Size = new Size(120, 40);
+            //materialComboBox1.Location = new Point(margenDer, 125 + espacio + 40);
+            //materialComboBox1.Size = new Size(120, 40);
 
             // OBSERVACIONES - Ancho completo
             materialLabel4.Location = new Point(margenIzq, 315);
@@ -370,15 +370,25 @@ namespace ServindAp.UI.UserControls
                 return false;
             }
 
-            if (materialComboBox1.SelectedIndex == -1)
+            if (string.IsNullOrWhiteSpace(labelCantidad.Text))
             {
                 MessageBox.Show(
-                    "Por favor selecciona la cantidad",
+                    "Por favor ingresa la cantidad",
                     "Campo requerido",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
-                materialComboBox1.Focus();
+                return false;
+            }
+
+            if (!int.TryParse(labelCantidad.Text.Trim(), out _))
+            {
+                MessageBox.Show(
+                    "La cantidad debe ser un número",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
                 return false;
             }
 
@@ -404,15 +414,15 @@ namespace ServindAp.UI.UserControls
 
                 var request = new CrearPrestamoRequest
                 {
-                    Responsable = txtResponsable.Text,
+                    Responsable = txtResponsable.Text.Trim(),
                     FechaEntrega = FechaEntrega.Value,
-                    Observaciones = txtObservaciones.Text,
+                    Observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? null : txtObservaciones.Text.Trim(),
                     Herramientas = new List<HerramientaPrestamoRequest>
                     {
                         new HerramientaPrestamoRequest
                         {
-                            HerramientaId = 1,
-                            Cantidad = 5
+                            HerramientaId = int.Parse(cmbHerramienta.SelectedItem?.ToString() ?? "1"),
+                            Cantidad = int.Parse(labelCantidad.Text.Trim())
                         }
                     }
                 };
@@ -428,9 +438,9 @@ namespace ServindAp.UI.UserControls
                 this.Close();
 
             }
-            catch (ResponsableRequeridoException ex)
+            catch (DatoRequeridoException ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "Validación");
             }
             catch (StockInsuficienteException ex)
             {
