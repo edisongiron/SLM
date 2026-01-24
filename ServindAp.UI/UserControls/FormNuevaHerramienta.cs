@@ -72,7 +72,7 @@ namespace ServindAp.UI.UserControls
         {
             // PANEL CONTENEDOR
             panelContenedor2.Width = 850;
-            panelContenedor2.Height = 500;  // Más pequeño porque solo tiene 3 campos
+            panelContenedor2.Height = 500;  
             panelContenedor2.BackColor = Color.White;
             panelContenedor2.Padding = new Padding(50);
 
@@ -88,8 +88,8 @@ namespace ServindAp.UI.UserControls
             materialLabel2.ForeColor = Color.FromArgb(33, 37, 41);
             
 
-            NameCantidad.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            NameCantidad.ForeColor = Color.FromArgb(33, 37, 41);
+            lblStock.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblStock.ForeColor = Color.FromArgb(33, 37, 41);
             
 
             materialLabel1.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
@@ -97,17 +97,7 @@ namespace ServindAp.UI.UserControls
             
 
             // INPUTS 
-            txtNombre.Font = new Font("Segoe UI", 11F);
             txtNombre.BackColor = Color.FromArgb(248, 249, 250);
-
-            //cmbCant.Font = new Font("Segoe UI", 11F);
-            //cmbCant.BackColor = Color.FromArgb(248, 249, 250);
-            //// Agregar opciones al ComboBox de cantidad
-            //cmbCant.Items.Clear();
-            //for (int i = 1; i <= 100; i++)
-            //{
-            //    cmbCant.Items.Add(i);
-            //}
 
             txtDescripcion.Font = new Font("Segoe UI", 11F);
             txtDescripcion.BackColor = Color.FromArgb(248, 249, 250);
@@ -144,9 +134,10 @@ namespace ServindAp.UI.UserControls
             txtNombre.Size = new Size(330, 40);
 
             // COLUMNA DERECHA
-            NameCantidad.Location = new Point(margenDer + 100, 100);
-            //cmbCant.Location = new Point(margenDer + 100, 125);
-            //cmbCant.Size = new Size(200, 40);
+            lblStock.Location = new Point(margenDer, 100);
+            txtStock.Location = new Point(margenDer, 125);
+            txtStock.Size = new Size(200, 40);
+            txtStock.Multiline = false;
 
             // DESCRIPCIÓN - Ancho completo
             materialLabel1.Location = new Point(margenIzq, 100 + espacio + 40);
@@ -349,13 +340,13 @@ namespace ServindAp.UI.UserControls
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(labelStock.Text))
+                if (string.IsNullOrWhiteSpace(txtStock.Text))
                 {
                     MessageBox.Show("El stock es requerido", "Validación");
                     return;
                 }
 
-                if (!int.TryParse(labelStock.Text.Trim(), out int stock))
+                if (!int.TryParse(txtStock.Text.Trim(), out int stock))
                 {
                     MessageBox.Show("El stock debe ser un número", "Validación");
                     return;

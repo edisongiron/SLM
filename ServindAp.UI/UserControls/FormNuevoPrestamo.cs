@@ -12,11 +12,14 @@ namespace ServindAp.UI.UserControls
         private GradientPanel panelFondo;
         private readonly IApplicationService _appService;
 
+        private List<HerramientaControl> herramientasAdicionales = new List<HerramientaControl>();
+        private int contadorHerramientas = 0;
+        private const int POSICION_BASE_HERRAMIENTAS = 280; // Posición Y donde empiezan las herramientas adicionales
+
         public FormNuevoPrestamo(IApplicationService appService)
         {
             InitializeComponent();
-            _appService = appService;
-
+            _appService = appService;      
 
             // ABRIR MAXIMIZADO
             this.WindowState = FormWindowState.Maximized;
@@ -34,6 +37,9 @@ namespace ServindAp.UI.UserControls
 
             this.Shown += FormNuevoPrestamo_Shown;
 
+
+            panelContenedor.Click += (s, e) => panelFondo.Focus();
+            panelFondo.Click += (s, e) => panelFondo.Focus();
         }
 
 
@@ -43,21 +49,28 @@ namespace ServindAp.UI.UserControls
             EstilizarYPosicionarTodo();
             CentrarPanel();
 
-            RedondearPanel();
-            AgregarSombraPanel();
-
             if (btnAgregar != null)
                 btnAgregar.Region = new Region(GetRoundedPath(btnAgregar.ClientRectangle, 12));
 
             if (btnCancelar != null)
                 btnCancelar.Region = new Region(GetRoundedPath(btnCancelar.ClientRectangle, 12));
+
+            btnAgregarOtraHerramienta.Click += BtnAgregarOtraHerramienta_Click;
+
+            this.ActiveControl = null;
+            panelFondo.Focus();
+
         }
+
 
         private async void FormNuevoPrestamo_Shown(object? sender, EventArgs e)
         {
             await Task.Delay(50);
             this.ActiveControl = null;
             panelFondo.Focus();
+
+            txtResponsable.Parent?.Focus();
+
         }
 
 
@@ -76,7 +89,7 @@ namespace ServindAp.UI.UserControls
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
+        
 
         private void EstilizarYPosicionarTodo()
         {
@@ -109,27 +122,21 @@ namespace ServindAp.UI.UserControls
 
             materialLabel4.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             materialLabel4.ForeColor = Color.FromArgb(33, 37, 41);
-
-            Cantidad.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            Cantidad.ForeColor = Color.FromArgb(33, 37, 41);
+   
 
             //  INPUTS 
-            txtResponsable.Font = new Font("Segoe UI", 11F);
             txtResponsable.BackColor = Color.FromArgb(248, 249, 250);
 
-            txtObservaciones.Font = new Font("Segoe UI", 11F);
             txtObservaciones.BackColor = Color.FromArgb(248, 249, 250);
 
             cmbHerramienta.Font = new Font("Segoe UI", 11F);
             cmbHerramienta.BackColor = Color.FromArgb(248, 249, 250);
 
-            //materialComboBox1.Font = new Font("Segoe UI", 11F);
-            //materialComboBox1.BackColor = Color.FromArgb(248, 249, 250);
-
             FechaEntrega.Font = new Font("Segoe UI", 10F);
             FechaEntrega.Enabled = false;
 
-            // BOTONES 
+            txtCantidad.BackColor = Color.FromArgb(248, 249, 250);
+
             // AGREGAR 
             btnAgregar.BackColor = Color.FromArgb(46, 204, 113); // Verde esmeralda
             btnAgregar.ForeColor = Color.White;
@@ -149,28 +156,30 @@ namespace ServindAp.UI.UserControls
             btnCancelar.FlatAppearance.BorderSize = 0;
             btnCancelar.UseVisualStyleBackColor = false;
 
-            //  POSICIONES 
+            
             int margenIzq = 55;
             int margenDer = 450;
             int espacio = 65;
 
             // COLUMNA IZQUIERDA
-            materialLabel1.Location = new Point(margenIzq, 100);
-            cmbHerramienta.Location = new Point(margenIzq, 125);
+            materialLabel2.Location = new Point(margenIzq, 100);  // "RESPONSABLE:"
+            txtResponsable.Location = new Point(margenIzq, 125);
+            txtResponsable.Size = new Size(380, 50);
+
+
+            materialLabel1.Location = new Point(margenIzq, 100 + espacio + 40);  // "HERRAMIENTA:" 
+            cmbHerramienta.Location = new Point(margenIzq, 125 + espacio + 40);
             cmbHerramienta.Size = new Size(330, 40);
 
-            materialLabel2.Location = new Point(margenIzq, 100 + espacio + 40);
-            txtResponsable.Location = new Point(margenIzq, 125 + espacio + 40);
-            txtResponsable.Size = new Size(330, 40);
-
             // COLUMNA DERECHA
-            materialLabel3.Location = new Point(margenDer, 100);
+            materialLabel3.Location = new Point(margenDer, 100);  // "FECHA ENTREGA:"
             FechaEntrega.Location = new Point(margenDer, 125);
             FechaEntrega.Size = new Size(320, 28);
 
-            Cantidad.Location = new Point(margenDer, 100 + espacio + 40);
-            //materialComboBox1.Location = new Point(margenDer, 125 + espacio + 40);
-            //materialComboBox1.Size = new Size(120, 40);
+            Cantidad.Location = new Point(margenDer, 100 + espacio + 40);  // "CANTIDAD:"
+            txtCantidad.Location = new Point(margenDer, 125 + espacio + 40);
+            txtCantidad.Size = new Size(180, 40);
+
 
             // OBSERVACIONES - Ancho completo
             materialLabel4.Location = new Point(margenIzq, 315);
@@ -184,6 +193,19 @@ namespace ServindAp.UI.UserControls
 
             // CENTRAR EL PANEL cuando se maximiza o cambia de tamaño
 
+
+            // BOTÓN "+ AGREGAR OTRA HERRAMIENTA"
+            btnAgregarOtraHerramienta.Text = "+ Agregar ";
+            btnAgregarOtraHerramienta.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnAgregarOtraHerramienta.ForeColor = Color.FromArgb(46, 204, 113); // Verde
+            btnAgregarOtraHerramienta.BackColor = Color.Transparent;
+            btnAgregarOtraHerramienta.FlatStyle = FlatStyle.Flat;
+            btnAgregarOtraHerramienta.FlatAppearance.BorderSize = 0;
+            btnAgregarOtraHerramienta.FlatAppearance.MouseOverBackColor = Color.FromArgb(240, 255, 245);
+            btnAgregarOtraHerramienta.FlatAppearance.MouseDownBackColor = Color.FromArgb(220, 250, 230);
+            btnAgregarOtraHerramienta.Size = new Size(200, 40);
+            btnAgregarOtraHerramienta.Cursor = Cursors.Hand;
+            btnAgregarOtraHerramienta.Location = new Point(660, 205); 
         }
 
         private void CentrarPanel()
@@ -192,7 +214,7 @@ namespace ServindAp.UI.UserControls
             panelContenedor.Top = (this.ClientSize.Height - panelContenedor.Height) / 2;
         }
 
-        // Evento para centrar el panel cuando se redimensiona el formulario
+        // centra el panel cuando se redimensiona el formulario
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -203,69 +225,6 @@ namespace ServindAp.UI.UserControls
 
         }
 
-
-        private void AgregarSombraPanel()
-        {
-            // Capa 1 - Más alejada (difuminado externo)
-            Panel sombra1 = new Panel();
-            sombra1.BackColor = Color.FromArgb(20, 0, 0, 0); // Aumentado de 10 a 20
-            sombra1.Size = new Size(
-                panelContenedor.Width + 20,
-                panelContenedor.Height + 20
-            );
-            sombra1.Location = new Point(
-                panelContenedor.Left + 10,
-                panelContenedor.Top + 10
-            );
-            panelFondo.Controls.Add(sombra1);
-
-            // Capa 2 - Intermedia
-            Panel sombra2 = new Panel();
-            sombra2.BackColor = Color.FromArgb(35, 0, 0, 0); // Aumentado de 15 a 35
-            sombra2.Size = new Size(
-                panelContenedor.Width + 14,
-                panelContenedor.Height + 14
-            );
-            sombra2.Location = new Point(
-                panelContenedor.Left + 7,
-                panelContenedor.Top + 7
-            );
-            panelFondo.Controls.Add(sombra2);
-
-            // Capa 3 - Más cercana (núcleo de la sombra)
-            Panel sombra3 = new Panel();
-            sombra3.BackColor = Color.FromArgb(50, 0, 0, 0); // Aumentado de 25 a 50
-            sombra3.Size = new Size(
-                panelContenedor.Width + 8,
-                panelContenedor.Height + 8
-            );
-            sombra3.Location = new Point(
-                panelContenedor.Left + 4,
-                panelContenedor.Top + 4
-            );
-            panelFondo.Controls.Add(sombra3);
-
-            // Enviar todas las sombras atrás
-            sombra1.SendToBack();
-            sombra2.SendToBack();
-            sombra3.SendToBack();
-        }
-
-
-        private void RedondearPanel()
-        {
-            int radio = 8;
-            GraphicsPath pathPanel = new GraphicsPath();
-            pathPanel.AddArc(0, 0, radio, radio, 180, 90);
-            pathPanel.AddArc(panelContenedor.Width - radio, 0, radio, radio, 270, 90);
-            pathPanel.AddArc(panelContenedor.Width - radio, panelContenedor.Height - radio, radio, radio, 0, 90);
-            pathPanel.AddArc(0, panelContenedor.Height - radio, radio, radio, 90, 90);
-            pathPanel.CloseFigure();
-            panelContenedor.Region = new Region(pathPanel);
-        }
-
-
-        //Panel degradado
 
         public class GradientPanel : Panel
         {
@@ -288,7 +247,6 @@ namespace ServindAp.UI.UserControls
                 base.OnPaint(e);
             }
         }
-
 
 
         private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
@@ -370,7 +328,7 @@ namespace ServindAp.UI.UserControls
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(labelCantidad.Text))
+            if (string.IsNullOrWhiteSpace(txtCantidad.Text))
             {
                 MessageBox.Show(
                     "Por favor ingresa la cantidad",
@@ -381,7 +339,7 @@ namespace ServindAp.UI.UserControls
                 return false;
             }
 
-            if (!int.TryParse(labelCantidad.Text.Trim(), out _))
+            if (!int.TryParse(txtCantidad.Text.Trim(), out _))
             {
                 MessageBox.Show(
                     "La cantidad debe ser un número",
@@ -391,20 +349,10 @@ namespace ServindAp.UI.UserControls
                 );
                 return false;
             }
-
-            /*if (FechaEntrega.Value.Date < DateTime.Now.Date)
-            {
-                MessageBox.Show(
-                    "La fecha de entrega debe ser hoy o posterior",
-                    "Fecha inválida",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                return false;
-            }*/
-
+       
             return true;
         }
+
 
         private async void btnAgregar_Click(object sender, EventArgs e)
         {
@@ -412,30 +360,53 @@ namespace ServindAp.UI.UserControls
             {
                 if (!ValidarFormulario()) return;
 
+                var listaHerramientas = new List<HerramientaPrestamoRequest>();
+
+                // 1. Agregar la herramienta PRINCIPAL
+                listaHerramientas.Add(new HerramientaPrestamoRequest
+                {
+                    HerramientaId = int.Parse(cmbHerramienta.SelectedValue?.ToString() ?? "0"),
+                    Cantidad = int.Parse(txtCantidad.Text.Trim())
+                });
+
+                // 2. Agregar herramientas ADICIONALES
+                foreach (var herr in herramientasAdicionales)
+                {
+                    // Validar que tenga herramienta seleccionada y cantidad
+                    if (herr.CmbHerramienta.SelectedValue != null &&
+                        !string.IsNullOrWhiteSpace(herr.TxtCantidad.Text))
+                    {
+                        int cantidad;
+                        if (int.TryParse(herr.TxtCantidad.Text.Trim(), out cantidad) && cantidad > 0)
+                        {
+                            listaHerramientas.Add(new HerramientaPrestamoRequest
+                            {
+                                HerramientaId = int.Parse(herr.CmbHerramienta.SelectedValue.ToString()),
+                                Cantidad = cantidad
+                            });
+                        }
+                    }
+                }
+
+                // Crear el préstamo con TODAS las herramientas
                 var request = new CrearPrestamoRequest
                 {
                     Responsable = txtResponsable.Text.Trim(),
                     FechaEntrega = FechaEntrega.Value,
-                    Observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? null : txtObservaciones.Text.Trim(),
-                    Herramientas = new List<HerramientaPrestamoRequest>
-                    {
-                        new HerramientaPrestamoRequest
-                        {
-                            HerramientaId = int.Parse(cmbHerramienta.SelectedItem?.ToString() ?? "1"),
-                            Cantidad = int.Parse(labelCantidad.Text.Trim())
-                        }
-                    }
+                    Observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text)
+                        ? null
+                        : txtObservaciones.Text.Trim(),
+                    Herramientas = listaHerramientas
                 };
 
                 var prestamo = await _appService.CrearPrestamo.ExecuteAsync(request);
 
                 MessageBox.Show(
-                    "Préstamo agregado exitosamente",
+                    $"Préstamo agregado exitosamente con {listaHerramientas.Count} herramienta(s)",
                     "Éxito",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
-                this.Close();
 
             }
             catch (DatoRequeridoException ex)
@@ -451,6 +422,214 @@ namespace ServindAp.UI.UserControls
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+
+
+        public class HerramientaControl
+        {
+            public MaterialSkin.Controls.MaterialComboBox CmbHerramienta { get; set; } = null!;
+            public MaterialSkin.Controls.MaterialLabel LblHerramienta { get; set; } = null!;
+            public MaterialSkin.Controls.MaterialLabel LblCantidad { get; set; } = null!;
+            public MaterialSkin.Controls.MaterialTextBox TxtCantidad { get; set; } = null!;
+            public Button BtnEliminar { get; set; } = null!;
+            public int PosicionY { get; set; }
+        }
+
+
+        // "+ Agregar otra herramienta"
+        private async void BtnAgregarOtraHerramienta_Click(object sender, EventArgs e)
+        {
+            panelContenedor.SuspendLayout();
+
+            try
+            {
+                contadorHerramientas++;
+                int posicionY = POSICION_BASE_HERRAMIENTAS + (contadorHerramientas * 80);
+
+                var nuevoControl = new HerramientaControl
+                {
+                    PosicionY = posicionY,
+
+                    LblHerramienta = new MaterialSkin.Controls.MaterialLabel
+                    {
+                        Text = "HERRAMIENTA:",
+                        Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        Location = new Point(55, posicionY),
+                        AutoSize = true,
+                        Depth = 0
+                    },
+
+                    CmbHerramienta = new MaterialSkin.Controls.MaterialComboBox
+                    {
+                        Font = new Font("Segoe UI", 11F),
+                        BackColor = Color.FromArgb(248, 249, 250),
+                        Location = new Point(55, posicionY + 25),
+                        Size = new Size(280, 49),
+                        DropDownStyle = ComboBoxStyle.DropDownList,
+                        Depth = 0
+                    },
+
+                    LblCantidad = new MaterialSkin.Controls.MaterialLabel
+                    {
+                        Text = "CANTIDAD:",
+                        Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        Location = new Point(360, posicionY),
+                        AutoSize = true,
+                        Depth = 0
+                    },
+
+                    TxtCantidad = new MaterialSkin.Controls.MaterialTextBox
+                    {
+                        Font = new Font("Segoe UI", 11F),
+                        BackColor = Color.FromArgb(248, 249, 250),
+                        Location = new Point(360, posicionY + 25),
+                        Size = new Size(180, 40),
+                        BorderStyle = BorderStyle.None,
+                        Depth = 0
+                    },
+
+                    BtnEliminar = new Button
+                    {
+                        Text = "", 
+                        BackColor = Color.FromArgb(239, 83, 80),
+                        FlatStyle = FlatStyle.Flat,
+                        Size = new Size(35, 35),
+                        Location = new Point(560, posicionY + 25),
+                        Cursor = Cursors.Hand,
+                        TabStop = false,
+
+                        BackgroundImage = Properties.Resources.Icono,
+                        BackgroundImageLayout = ImageLayout.Zoom
+                    }
+                };
+
+                nuevoControl.BtnEliminar.FlatAppearance.BorderSize = 0;
+
+
+                nuevoControl.BtnEliminar.MouseEnter += (s, ev) =>
+                {
+                    nuevoControl.BtnEliminar.BackColor = Color.FromArgb(229, 57, 53);
+                };
+
+                nuevoControl.BtnEliminar.MouseLeave += (s, ev) =>
+                {
+                    nuevoControl.BtnEliminar.BackColor = Color.FromArgb(239, 83, 80);
+                };
+
+
+                var herramientas = await _appService.ListarHerramientas.ExecuteAsync();
+                nuevoControl.CmbHerramienta.DataSource = herramientas;
+                nuevoControl.CmbHerramienta.DisplayMember = "Nombre";
+                nuevoControl.CmbHerramienta.ValueMember = "Id";
+
+                nuevoControl.BtnEliminar.Click += (s, ev) => EliminarHerramienta(nuevoControl);
+
+                panelContenedor.Controls.Add(nuevoControl.LblHerramienta);
+                panelContenedor.Controls.Add(nuevoControl.CmbHerramienta);
+                panelContenedor.Controls.Add(nuevoControl.LblCantidad);
+                panelContenedor.Controls.Add(nuevoControl.TxtCantidad);
+                panelContenedor.Controls.Add(nuevoControl.BtnEliminar);
+
+                herramientasAdicionales.Add(nuevoControl);
+
+           
+                AjustarPosicionesInferiores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar herramientas: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                panelContenedor.ResumeLayout(true);
+            }
+        }
+
+
+
+        private void EliminarHerramienta(HerramientaControl control)
+        {
+            panelContenedor.SuspendLayout();
+
+            try
+            {
+                panelContenedor.Controls.Remove(control.LblHerramienta);
+                panelContenedor.Controls.Remove(control.CmbHerramienta);
+                panelContenedor.Controls.Remove(control.LblCantidad);
+                panelContenedor.Controls.Remove(control.TxtCantidad);
+                panelContenedor.Controls.Remove(control.BtnEliminar);
+
+                int indiceEliminado = herramientasAdicionales.IndexOf(control);
+                herramientasAdicionales.Remove(control);
+                contadorHerramientas--;
+
+                // 3. SOLO reorganizar las que están DESPUÉS de la eliminada
+                for (int i = indiceEliminado; i < herramientasAdicionales.Count; i++)
+                {
+                    int nuevaPosY = POSICION_BASE_HERRAMIENTAS + ((i + 1) * 80);
+                    var ctrl = herramientasAdicionales[i];
+
+                    ctrl.LblHerramienta.Location = new Point(55, nuevaPosY);
+                    ctrl.CmbHerramienta.Location = new Point(55, nuevaPosY + 25);
+                    ctrl.LblCantidad.Location = new Point(360, nuevaPosY);
+                    ctrl.TxtCantidad.Location = new Point(360, nuevaPosY + 25);
+                    ctrl.BtnEliminar.Location = new Point(560, nuevaPosY + 25);
+                    ctrl.PosicionY = nuevaPosY;
+                }
+
+                AjustarPosicionesInferiores();
+            }
+            finally
+            {
+                panelContenedor.ResumeLayout(true);
+            }
+        }
+
+
+        // MÉTODO: Reorganizar herramientas después de eliminar una
+        private void ReorganizarHerramientas()
+        {
+            for (int i = 0; i < herramientasAdicionales.Count; i++)
+            {
+                int nuevaPosY = POSICION_BASE_HERRAMIENTAS + ((i + 1) * 80);
+                var control = herramientasAdicionales[i];
+
+                // Actualizar posiciones
+                control.LblHerramienta.Location = new Point(55, nuevaPosY);
+                control.CmbHerramienta.Location = new Point(55, nuevaPosY + 25);
+                control.LblCantidad.Location = new Point(360, nuevaPosY);
+                control.TxtCantidad.Location = new Point(360, nuevaPosY + 25);
+                control.BtnEliminar.Location = new Point(500, nuevaPosY + 30);
+                control.PosicionY = nuevaPosY;
+            }
+
+        }
+
+
+        //Ajustar posiciones de Observaciones y Botones
+        private void AjustarPosicionesInferiores()
+        {
+            int baseY = POSICION_BASE_HERRAMIENTAS + (contadorHerramientas * 80) + 100;
+
+            materialLabel4.Location = new Point(55, baseY);
+            txtObservaciones.Location = new Point(55, baseY + 30);
+
+            int centroPanel = panelContenedor.Width / 2;
+            btnAgregar.Location = new Point(centroPanel - 155, baseY + 100);
+            btnCancelar.Location = new Point(centroPanel + 15, baseY + 100);
+
+            int nuevaAltura = baseY + 200;
+
+            if (nuevaAltura > panelContenedor.Height)
+            {
+                panelContenedor.Height = nuevaAltura;
+                CentrarPanel();
+            }
+        }
+
 
 
     }
