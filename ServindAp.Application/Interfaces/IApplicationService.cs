@@ -23,6 +23,21 @@ namespace ServindAp.Application.Interfaces
         UseCases.RegistrarDevolucionUseCase RegistrarDevolucion { get; }
 
         /// <summary>
+        /// Acceso al UseCase de registrar devoluciones parciales.
+        /// </summary>
+        UseCases.RegistrarDevolucionParcialUseCase RegistrarDevolucionParcial { get; }
+
+        /// <summary>
+        /// Acceso al UseCase de actualizar préstamos.
+        /// </summary>
+        UseCases.ActualizarPrestamoUseCase ActualizarPrestamo { get; }
+
+        /// <summary>
+        /// Acceso al UseCase de eliminar préstamos.
+        /// </summary>
+        UseCases.EliminarPrestamoUseCase EliminarPrestamo { get; }
+
+        /// <summary>
         /// Acceso al UseCase de listar herramientas.
         /// </summary>
         UseCases.ListarHerramientasUseCase ListarHerramientas { get; }

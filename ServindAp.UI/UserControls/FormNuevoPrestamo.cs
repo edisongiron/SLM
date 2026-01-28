@@ -1,7 +1,9 @@
 ﻿using ServindAp.Application.Interfaces;
 using ServindAp.Application.UseCases;
 using ServindAp.Domain.Exceptions;
+using System.Linq;
 using System.ComponentModel;
+using System;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
@@ -381,7 +383,7 @@ namespace ServindAp.UI.UserControls
                         {
                             listaHerramientas.Add(new HerramientaPrestamoRequest
                             {
-                                HerramientaId = int.Parse(herr.CmbHerramienta.SelectedValue.ToString()),
+                                HerramientaId = int.Parse(herr.CmbHerramienta.SelectedValue.ToString()!),
                                 Cantidad = cantidad
                             });
                         }
@@ -408,6 +410,8 @@ namespace ServindAp.UI.UserControls
                     MessageBoxIcon.Information
                 );
 
+                this.Close();
+
             }
             catch (DatoRequeridoException ex)
             {
@@ -424,6 +428,33 @@ namespace ServindAp.UI.UserControls
         }
 
 
+        // Limpia el formulario a su estado inicial y elimina herramientas adicionales
+        private void LimpiarFormularioPrestamo()
+        {
+            // Campos básicos
+            txtResponsable.Text = string.Empty;
+            txtObservaciones.Text = string.Empty;
+            FechaEntrega.Value = DateTime.Now;
+            cmbHerramienta.SelectedIndex = -1;
+            txtCantidad.Text = "1";
+
+            // Eliminar herramientas añadidas dinámicamente
+            foreach (var ctrl in herramientasAdicionales.ToList())
+            {
+                panelContenedor.Controls.Remove(ctrl.LblHerramienta);
+                panelContenedor.Controls.Remove(ctrl.CmbHerramienta);
+                panelContenedor.Controls.Remove(ctrl.LblCantidad);
+                panelContenedor.Controls.Remove(ctrl.TxtCantidad);
+                panelContenedor.Controls.Remove(ctrl.BtnEliminar);
+            }
+            herramientasAdicionales.Clear();
+            contadorHerramientas = 0;
+            // Reajustar posiciones si es necesario
+            ReorganizarHerramientas();
+            // Enfocar al responsable para un nuevo ingreso rápido
+            txtResponsable.Focus();
+        }
+
 
         public class HerramientaControl
         {
@@ -437,7 +468,7 @@ namespace ServindAp.UI.UserControls
 
 
         // "+ Agregar otra herramienta"
-        private async void BtnAgregarOtraHerramienta_Click(object sender, EventArgs e)
+        private async void BtnAgregarOtraHerramienta_Click(object? sender, EventArgs e)
         {
             panelContenedor.SuspendLayout();
 

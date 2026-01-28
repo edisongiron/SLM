@@ -2,8 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using ServindAp.Application.DependencyInjection;
 using ServindAp.Infrastructure.DependencyInjection;
 using ServindAp.UI.Forms;
-using ServindAp.UI.UserControls;
-using System.Windows.Forms;
 
 namespace ServindAp.UI
 {

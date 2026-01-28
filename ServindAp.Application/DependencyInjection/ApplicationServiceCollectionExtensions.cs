@@ -27,8 +27,11 @@ namespace ServindAp.Application.DependencyInjection
             services.AddScoped<ListarPrestamosUseCase>();
             services.AddScoped<ObtenerPrestamoUseCase>();
             services.AddScoped<RegistrarDevolucionUseCase>();
+            services.AddScoped<RegistrarDevolucionParcialUseCase>();
             services.AddScoped<ListarHerramientasUseCase>();
             services.AddScoped<ActualizarStockHerramientaUseCase>();
+            services.AddScoped<ActualizarPrestamoUseCase>();
+            services.AddScoped<EliminarPrestamoUseCase>();
             services.AddScoped<CrearHerramientaUseCase>();
             services.AddScoped<ActualizarHerramientaUseCase>();
             services.AddScoped<ObtenerHerramientaUseCase>();
@@ -53,6 +56,9 @@ namespace ServindAp.Application.DependencyInjection
         public ListarPrestamosUseCase ListarPrestamos { get; }
         public ObtenerPrestamoUseCase ObtenerPrestamo { get; }
         public RegistrarDevolucionUseCase RegistrarDevolucion { get; }
+        public RegistrarDevolucionParcialUseCase RegistrarDevolucionParcial { get; }
+        public ActualizarPrestamoUseCase ActualizarPrestamo { get; }
+        public EliminarPrestamoUseCase EliminarPrestamo { get; }
         public ListarHerramientasUseCase ListarHerramientas { get; }
         public CrearHerramientaUseCase CrearHerramienta { get; }
         public ActualizarHerramientaUseCase ActualizarHerramienta { get; }
@@ -68,6 +74,9 @@ namespace ServindAp.Application.DependencyInjection
             ListarPrestamosUseCase listarPrestamos,
             ObtenerPrestamoUseCase obtenerPrestamo,
             RegistrarDevolucionUseCase registrarDevolucion,
+            RegistrarDevolucionParcialUseCase registrarDevolucionParcial,
+            ActualizarPrestamoUseCase actualizarPrestamo,
+            EliminarPrestamoUseCase eliminarPrestamo,
             ListarHerramientasUseCase listarHerramientas,
             CrearHerramientaUseCase crearHerramienta,
             ActualizarHerramientaUseCase actualizarHerramienta,
@@ -78,6 +87,9 @@ namespace ServindAp.Application.DependencyInjection
             ListarPrestamos = listarPrestamos ?? throw new ArgumentNullException(nameof(listarPrestamos));
             ObtenerPrestamo = obtenerPrestamo ?? throw new ArgumentNullException(nameof(obtenerPrestamo));
             RegistrarDevolucion = registrarDevolucion ?? throw new ArgumentNullException(nameof(registrarDevolucion));
+            RegistrarDevolucionParcial = registrarDevolucionParcial ?? throw new ArgumentNullException(nameof(registrarDevolucionParcial));
+            ActualizarPrestamo = actualizarPrestamo ?? throw new ArgumentNullException(nameof(actualizarPrestamo));
+            EliminarPrestamo = eliminarPrestamo ?? throw new ArgumentNullException(nameof(eliminarPrestamo));
             ListarHerramientas = listarHerramientas ?? throw new ArgumentNullException(nameof(listarHerramientas));
             CrearHerramienta = crearHerramienta ?? throw new ArgumentNullException(nameof(crearHerramienta));
             ActualizarHerramienta = actualizarHerramienta ?? throw new ArgumentNullException(nameof(actualizarHerramienta));

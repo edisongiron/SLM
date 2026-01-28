@@ -20,5 +20,24 @@
             HerramientaId = herramientaId;
             Cantidad = cantidad;
         }
+        
+        /// <summary>
+        /// Verifica si la herramienta ha sido completamente devuelta
+        /// </summary>
+        public bool EstaCompletamenteDevuelta() => Cantidad == 0;
+        
+        /// <summary>
+        /// Registra una devolución parcial reduciendo la cantidad prestada
+        /// </summary>
+        public void RegistrarDevolucion(int cantidadADevolver)
+        {
+            if (cantidadADevolver <= 0)
+                throw new ArgumentException("La cantidad a devolver debe ser mayor a cero");
+                
+            if (cantidadADevolver > Cantidad)
+                throw new InvalidOperationException($"No se puede devolver más de lo prestado. Cantidad prestada: {Cantidad}, Intentando devolver: {cantidadADevolver}");
+                
+            Cantidad -= cantidadADevolver;
+        }
     }
 }
