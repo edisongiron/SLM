@@ -271,16 +271,24 @@ namespace ServindAp.UI.UserControls
             };
 
             // Ajustar posición de los botones dentro del panel
-            int margenBoton = 40;
+            int margenBoton = 60;
 
             btnEditar = new MaterialButton
             {
                 Text = "Editar",
                 Type = MaterialButton.MaterialButtonType.Contained,
-                UseAccentColor = true,
+                HighEmphasis = false,
+                UseAccentColor = false,
                 Size = new Size(120, 40),
-                Location = new Point(margenBoton, 15)
+                Location = new Point(40, 15),
+                AutoSize = false
             };
+
+            btnEditar.BackColor = Color.FromArgb(76, 175, 80);
+            btnEditar.ForeColor = Color.White;
+            btnEditar.FlatStyle = FlatStyle.Flat;
+            btnEditar.FlatAppearance.BorderSize = 0;
+
             btnEditar.Click += BtnEditar_Click;
             panelBotones.Controls.Add(btnEditar);
 
@@ -341,14 +349,23 @@ namespace ServindAp.UI.UserControls
         private void ConfigurarEstiloGridHerramientas()
         {
             dgvHerramientas.EnableHeadersVisualStyles = false;
-            dgvHerramientas.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(76, 175, 80);
+
+            // HEADER
+            dgvHerramientas.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(76, 175, 80); // VERDE
             dgvHerramientas.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvHerramientas.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dgvHerramientas.ColumnHeadersHeight = 40;
+            dgvHerramientas.ColumnHeadersHeight = 42;
+            dgvHerramientas.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+
+            // CELDAS
             dgvHerramientas.DefaultCellStyle.Font = new Font("Segoe UI", 9);
+            dgvHerramientas.DefaultCellStyle.BackColor = Color.White;
             dgvHerramientas.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 230, 201);
             dgvHerramientas.DefaultCellStyle.SelectionForeColor = Color.Black;
+
+            dgvHerramientas.GridColor = Color.FromArgb(224, 224, 224);
         }
+
 
         private async Task CargarPrestamo(int prestamoId)
         {
@@ -393,10 +410,11 @@ namespace ServindAp.UI.UserControls
 
             // Ocultar botón Editar si el préstamo ya fue devuelto
             btnEditar.Visible = !_prestamoActual.FechaDevolucion.HasValue;
-            
+
             // Mostrar botón de devolución solo si NO ha sido devuelto
             btnRegistrarDevolucion.Visible = !_prestamoActual.FechaDevolucion.HasValue;
         }
+
 
         private void CargarHerramientasEnGrid()
         {
@@ -427,13 +445,13 @@ namespace ServindAp.UI.UserControls
             // Ocultar columnas ID y HerramientaId
             if (dgvHerramientas.Columns.Contains("ID"))
             {
-                dgvHerramientas.Columns["ID"].Visible = false;
+                dgvHerramientas.Columns["ID"]?.Visible = false;
             }
             if (dgvHerramientas.Columns.Contains("HerramientaId"))
             {
-                dgvHerramientas.Columns["HerramientaId"].Visible = false;
+                dgvHerramientas.Columns["HerramientaId"]?.Visible = false;
             }
-            
+
             // Resaltar filas con cantidades pendientes
             foreach (DataGridViewRow row in dgvHerramientas.Rows)
             {
@@ -466,12 +484,12 @@ namespace ServindAp.UI.UserControls
             // Habilitar/Deshabilitar campos editables
             txtResponsable.Enabled = editar;
             txtResponsable.ReadOnly = !editar;
-            
+
             dtpFechaEntrega.Enabled = editar;
-            
+
             txtObservaciones.Enabled = editar;
             txtObservaciones.ReadOnly = !editar;
-            
+
             // Cambiar color de fondo para indicar que es editable
             if (editar)
             {
@@ -486,7 +504,7 @@ namespace ServindAp.UI.UserControls
             btnEditar.Visible = !editar;
             btnGuardar.Visible = editar;
             btnCancelar.Visible = editar;
-            
+
             // Ocultar botón de devolución en modo edición
             btnRegistrarDevolucion.Visible = !editar && !(_prestamoActual?.FechaDevolucion.HasValue ?? true);
         }
@@ -587,7 +605,7 @@ namespace ServindAp.UI.UserControls
                     if (dialogoDevolucion.ShowDialog() == DialogResult.OK)
                     {
                         var herramientasADevolver = dialogoDevolucion.ObtenerHerramientasSeleccionadas();
-                        
+
                         if (!herramientasADevolver.Any())
                         {
                             MessageBox.Show("Debe seleccionar al menos una herramienta para devolver", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -620,6 +638,11 @@ namespace ServindAp.UI.UserControls
             {
                 MessageBox.Show($"Error al registrar devolución: {ex.Message}\n\n{ex.GetType().Name}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void PrestamoDetalleForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

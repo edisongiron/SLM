@@ -28,16 +28,19 @@ namespace ServindAp.UI.UserControls
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
+            SuspendLayout();
             // 
             // PrestamoDetalleForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 700);
-            this.Name = "PrestamoDetalleForm";
-            this.Text = "Detalle del Préstamo";
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1029, 933);
+            Margin = new Padding(3, 4, 3, 4);
+            Name = "PrestamoDetalleForm";
+            Padding = new Padding(3, 85, 3, 4);
+            Text = "Detalle del Préstamo";
+            Load += PrestamoDetalleForm_Load;
+            ResumeLayout(false);
         }
 
         #endregion

@@ -29,7 +29,7 @@ namespace ServindAp.UI.UserControls
         public FormDevolucionParcial(List<PrestamoHerramientaDTO> herramientasPendientes)
         {
             _herramientasPendientes = herramientasPendientes ?? throw new ArgumentNullException(nameof(herramientasPendientes));
-            
+
             InitializeComponent();
             ConfigurarMaterialSkin();
             InicializarControles();
@@ -96,7 +96,7 @@ namespace ServindAp.UI.UserControls
                 AllowUserToDeleteRows = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.Fixed3D,
@@ -152,12 +152,15 @@ namespace ServindAp.UI.UserControls
             {
                 Text = "Aceptar",
                 Type = MaterialButton.MaterialButtonType.Contained,
-                UseAccentColor = true,
+                UseAccentColor = false,
                 Size = new Size(120, 40),
                 Location = new Point(this.Width - 150, yActual)
             };
             btnAceptar.Click += BtnAceptar_Click;
             this.Controls.Add(btnAceptar);
+
+            btnAceptar.BackColor = Color.FromArgb(76, 175, 80); 
+            btnAceptar.ForeColor = Color.White;
         }
 
         private void ConfigurarEstiloGrid()
@@ -194,18 +197,11 @@ namespace ServindAp.UI.UserControls
             dgvHerramientas.DataSource = table;
 
             // Ocultar columna ID
-            dgvHerramientas.Columns["HerramientaId"].Visible = false;
+            dgvHerramientas.Columns["HerramientaId"]?.Visible = false;
 
-            // Configurar columnas
-            dgvHerramientas.Columns["Herramienta"].ReadOnly = true;
-            dgvHerramientas.Columns["Herramienta"].Width = 250;
-
-            dgvHerramientas.Columns["Cantidad Pendiente"].ReadOnly = true;
-            dgvHerramientas.Columns["Cantidad Pendiente"].Width = 150;
-
-            // Columna editable con validación
-            dgvHerramientas.Columns["Cantidad a Devolver"].ReadOnly = false;
-            dgvHerramientas.Columns["Cantidad a Devolver"].Width = 200;
+            dgvHerramientas.Columns["Herramienta"]?.FillWeight = 35;
+            dgvHerramientas.Columns["Cantidad Pendiente"]?.FillWeight = 40;
+            dgvHerramientas.Columns["Cantidad a Devolver"]?.FillWeight = 35;
 
             // Validación en tiempo real
             dgvHerramientas.CellValidating += DgvHerramientas_CellValidating;
@@ -260,7 +256,7 @@ namespace ServindAp.UI.UserControls
         {
             // Validar que al menos una herramienta tenga cantidad > 0
             var herramientasSeleccionadas = ObtenerHerramientasSeleccionadas();
-            
+
             if (!herramientasSeleccionadas.Any())
             {
                 MessageBox.Show("Debe seleccionar al menos una herramienta para devolver", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -278,7 +274,7 @@ namespace ServindAp.UI.UserControls
             foreach (DataGridViewRow row in dgvHerramientas.Rows)
             {
                 int cantidadADevolver = Convert.ToInt32(row.Cells["Cantidad a Devolver"].Value);
-                
+
                 if (cantidadADevolver > 0)
                 {
                     lista.Add(new HerramientaDevolucionItem
@@ -290,6 +286,11 @@ namespace ServindAp.UI.UserControls
             }
 
             return lista;
+        }
+
+        private void FormDevolucionParcial_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

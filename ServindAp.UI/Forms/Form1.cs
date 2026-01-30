@@ -20,7 +20,18 @@ namespace ServindAp.UI.Forms
         private DataTable? tablaHerramientas;
         private MaterialButton? btnNuevaHerramienta;
 
+        private DataTable? tablaHistorial;
+        private int buscadorHistorialOriginalWidth = 400;
+        private int buscadorHistorialOriginalHeight = 45;
+
         private readonly IApplicationService _appService;
+
+        private int buscadorOriginalWidth = 400;
+        private int buscadorOriginalHeight = 45;
+        private bool buscadorConfigurado = false;
+
+        private int buscadorHerramientasOriginalWidth = 400;
+        private int buscadorHerramientasOriginalHeight = 45;
 
         public Form1(IApplicationService appService)
         {
@@ -31,16 +42,19 @@ namespace ServindAp.UI.Forms
             ConfigurarMaterialSkin();
             ConfigurarBuscador();
             ConfigurarBuscadorHerramientas();
+            ConfigurarBuscadorHistorial();
             CentrarControles();
 
             this.Resize += (s, e) => CentrarControles();
             tabPage2.Resize += (s, e) => LayoutTabPrestamos();
             tabPage3.Resize += (s, e) => LayoutTabHerramientas();
+            tabPage1.Resize += (s, e) => LayoutTabHistorial();
 
             //Tabla de Prestamos
             this.Load += Form1_Load;
             TablaPrestamos.AllowUserToResizeRows = false;
             TablaHerramientas.AllowUserToResizeRows = false;
+            TablaHistorial.AllowUserToResizeRows = false;
             TablaPrestamos.CellContentClick += TablaPrestamos_CellContentClick;
             TablaPrestamos.CellPainting += TablaPrestamos_CellPainting;
             panelBuscador.Paint += PanelBuscador_Paint;
@@ -48,6 +62,10 @@ namespace ServindAp.UI.Forms
             TablaHerramientas.CellContentClick += TablaHerramientas_CellContentClick;
             TablaHerramientas.CellPainting += TablaHerramientas_CellPainting;
             panelBuscadorHerramientas.Paint += PanelBuscadorHerramientas_Paint;
+
+            TablaHistorial.CellContentClick += TablaHistorial_CellContentClick;
+            TablaHistorial.CellPainting += TablaHistorial_CellPainting;
+            panelBuscadorHistorial.Paint += PanelBuscadorHistorial_Paint;
         }
 
         private async void Form1_Load(object? sender, EventArgs e)
@@ -58,7 +76,7 @@ namespace ServindAp.UI.Forms
                 ConfigurarEstiloTabla();
                 CrearColumnas();
                 await CargarDatosPrueba();
-                LayoutTabPrestamos(); // ✅ Ejecutar sincrónicamente
+                LayoutTabPrestamos(); // Ejecutar sincrónicamente
                 ConfigurarBotonNuevoPrestamo();
 
                 //Herramientas
@@ -67,6 +85,12 @@ namespace ServindAp.UI.Forms
                 await CargarDatosPruebaHerramientas();
                 ConfigurarBotonNuevaHerramienta();
                 LayoutTabHerramientas();
+
+                //Historial
+                ConfigurarEstiloTablaHistorial();
+                CrearColumnasHistorial();
+                await CargarDatosHistorial();
+                LayoutTabHistorial();
             }
             catch (Exception ex)
             {
@@ -90,6 +114,7 @@ namespace ServindAp.UI.Forms
 
         private void LayoutTabPrestamos()
         {
+
             if (!IsHandleCreated || TablaPrestamos == null || tabPage2 == null || panelBuscador == null)
                 return;
 
@@ -100,14 +125,15 @@ namespace ServindAp.UI.Forms
             TablaPrestamos.Width = (int)(tabPage2.ClientSize.Width * 0.95);
             TablaPrestamos.Location = new Point(
                 (tabPage2.ClientSize.Width - TablaPrestamos.Width) / 2,
-                margenSuperior + panelBuscador.Height + espacioVertical
+                margenSuperior + buscadorOriginalHeight + espacioVertical
             );
 
             TablaPrestamos.Height = tabPage2.ClientSize.Height - TablaPrestamos.Top - 25;
 
-            // BUSCADOR
-            panelBuscador.Width = 400;
-            panelBuscador.Height = 45;
+            // RESTAURAR BUSCADOR COMPLETAMENTE
+            RestaurarBuscador();
+
+            // Posicionar el panel buscador
             panelBuscador.Location = new Point(TablaPrestamos.Left, margenSuperior);
 
             // BOTÓN NUEVO PRÉSTAMO
@@ -121,6 +147,7 @@ namespace ServindAp.UI.Forms
 
             RedondearPanelBuscador();
         }
+
 
         private void LayoutTabHerramientas()
         {
@@ -137,30 +164,10 @@ namespace ServindAp.UI.Forms
                 margenSuperior + panelBuscadorHerramientas.Height + espacioVertical
             );
 
+
             TablaHerramientas.Height = tabPage3.ClientSize.Height - TablaHerramientas.Top - 25;
-
-            // BUSCADOR
-            panelBuscadorHerramientas.Width = 400;
-            panelBuscadorHerramientas.Height = 45;
+            RestaurarBuscadorHerramientas();
             panelBuscadorHerramientas.Location = new Point(TablaHerramientas.Left, margenSuperior);
-
-            // ELEMENTOS DENTRO DEL PANEL
-            if (picLupaHerramientas != null)
-            {
-                picLupaHerramientas.Width = 24;
-                picLupaHerramientas.Height = 24;
-                picLupaHerramientas.Location = new Point(15, (panelBuscadorHerramientas.Height - 24) / 2);
-                picLupaHerramientas.SizeMode = PictureBoxSizeMode.Zoom;
-            }
-
-            if (txbBuscadorHerramientas != null)
-            {
-                txbBuscadorHerramientas.Location = new Point(
-                    (picLupaHerramientas?.Right ?? 15) + 10,
-                    (panelBuscadorHerramientas.Height - txbBuscadorHerramientas.Height) / 2
-                );
-                txbBuscadorHerramientas.Width = panelBuscadorHerramientas.Width - (picLupaHerramientas?.Right ?? 15) - 25;
-            }
 
             // BOTÓN NUEVA HERRAMIENTA
             if (btnNuevaHerramienta != null)
@@ -197,7 +204,8 @@ namespace ServindAp.UI.Forms
         {
             TablaPrestamos.BackgroundColor = Color.White;
             TablaPrestamos.BorderStyle = BorderStyle.None;
-            TablaPrestamos.CellBorderStyle = DataGridViewCellBorderStyle.None;
+
+            TablaPrestamos.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             TablaPrestamos.GridColor = Color.FromArgb(240, 240, 240);
 
             TablaPrestamos.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 230, 201);
@@ -205,7 +213,7 @@ namespace ServindAp.UI.Forms
             TablaPrestamos.DefaultCellStyle.BackColor = Color.White;
             TablaPrestamos.DefaultCellStyle.ForeColor = Color.FromArgb(60, 60, 60);
             TablaPrestamos.DefaultCellStyle.Font = new Font("Segoe UI", 10);
-            TablaPrestamos.DefaultCellStyle.Padding = new Padding(10, 8, 10, 8);
+            TablaPrestamos.DefaultCellStyle.Padding = new Padding(12, 8, 12, 8);
             TablaPrestamos.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
             TablaPrestamos.RowHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(76, 175, 80);
 
@@ -222,16 +230,17 @@ namespace ServindAp.UI.Forms
             TablaPrestamos.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             TablaPrestamos.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 245, 245);
 
-            TablaPrestamos.RowTemplate.Height = 50;
+            TablaPrestamos.RowTemplate.Height = 50;  // ← CAMBIÉ DE 48 A 50
             TablaPrestamos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             TablaPrestamos.MultiSelect = false;
             TablaPrestamos.AllowUserToAddRows = false;
             TablaPrestamos.ReadOnly = true;
-            TablaPrestamos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            TablaPrestamos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;  // ← CAMBIÉ DE Fill A None
             TablaPrestamos.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             TablaPrestamos.EditMode = DataGridViewEditMode.EditProgrammatically;
             TablaPrestamos.RowHeadersVisible = false;
         }
+
 
         private void CrearColumnas()
         {
@@ -248,39 +257,41 @@ namespace ServindAp.UI.Forms
             TablaPrestamos.AutoGenerateColumns = true;
             TablaPrestamos.DataSource = tablaDatos;
 
-            DataGridViewButtonColumn btnEditar = new DataGridViewButtonColumn();
-            btnEditar.Name = "btnEditar";
-            btnEditar.HeaderText = "";
-            btnEditar.Text = "Editar";
-            btnEditar.UseColumnTextForButtonValue = true;
-            btnEditar.Width = 80;
-            TablaPrestamos.Columns.Add(btnEditar);
-
+            // Botón Ver 
             DataGridViewButtonColumn btnVer = new DataGridViewButtonColumn();
             btnVer.Name = "btnVer";
             btnVer.HeaderText = "";
             btnVer.Text = "Ver";
             btnVer.UseColumnTextForButtonValue = true;
-            btnVer.Width = 80;
             TablaPrestamos.Columns.Add(btnVer);
 
+            // Botón Eliminar
             DataGridViewButtonColumn btnEliminar = new DataGridViewButtonColumn();
             btnEliminar.Name = "btnEliminar";
             btnEliminar.HeaderText = "";
             btnEliminar.Text = "Eliminar";
             btnEliminar.UseColumnTextForButtonValue = true;
-            btnEliminar.Width = 80;
             TablaPrestamos.Columns.Add(btnEliminar);
 
-            // ✅ Anchos optimizados para mejor visualización
-            TablaPrestamos.Columns["ID"].Width = 60;
-            TablaPrestamos.Columns["Responsable"].Width = 180;
-            TablaPrestamos.Columns["Herramienta"].Width = 200;
-            TablaPrestamos.Columns["Cantidad"].Width = 100;
-            TablaPrestamos.Columns["FechaEntrega"].Width = 130;
-            TablaPrestamos.Columns["Estado"].Width = 120;
-            TablaPrestamos.Columns["Observaciones"].Width = 250;
+            //ANCHO DE COLUMNA
+
+            TablaPrestamos.Columns["ID"]?.Width = 60;
+            TablaPrestamos.Columns["Responsable"]?.Width = 180;
+            TablaPrestamos.Columns["Herramienta"]?.Width = 200;
+            TablaPrestamos.Columns["Cantidad"]?.Width = 150;
+            TablaPrestamos.Columns["FechaEntrega"]?.Width = 150;
+            TablaPrestamos.Columns["Estado"]?.Width = 120;
+
+            var colObservaciones = TablaPrestamos.Columns["Observaciones"];
+            if (colObservaciones != null)
+                colObservaciones.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            TablaPrestamos.Columns["btnVer"]?.Width = 100;
+            TablaPrestamos.Columns["btnEliminar"]?.Width = 100;
+
         }
+
+
 
         private async Task CargarDatosPrueba()
         {
@@ -361,27 +372,34 @@ namespace ServindAp.UI.Forms
             TablaHerramientas.AutoGenerateColumns = true;
             TablaHerramientas.DataSource = tablaHerramientas;
 
+            // Botón Editar
             DataGridViewButtonColumn btnEditar = new DataGridViewButtonColumn();
             btnEditar.Name = "btnEditarHerr";
             btnEditar.HeaderText = "";
             btnEditar.Text = "Editar";
             btnEditar.UseColumnTextForButtonValue = true;
-            btnEditar.Width = 90;
             TablaHerramientas.Columns.Add(btnEditar);
 
+            // Botón Eliminar
             DataGridViewButtonColumn btnEliminar = new DataGridViewButtonColumn();
             btnEliminar.Name = "btnEliminarHerr";
             btnEliminar.HeaderText = "";
             btnEliminar.Text = "Eliminar";
             btnEliminar.UseColumnTextForButtonValue = true;
-            btnEliminar.Width = 90;
             TablaHerramientas.Columns.Add(btnEliminar);
 
-            // ✅ Anchos optimizados para mejor visualización
-            TablaHerramientas.Columns["ID"].Width = 80;
-            TablaHerramientas.Columns["Nombre"].Width = 250;
-            TablaHerramientas.Columns["Descripcion"].Width = 450;
-            TablaHerramientas.Columns["Stock"].Width = 120;
+            //ANCHOS DE COLUMNA
+            TablaHerramientas.Columns["ID"]?.Width = 80;
+            TablaHerramientas.Columns["Nombre"]?.Width = 250;
+            TablaHerramientas.Columns["Descripcion"]?.Width = 350;
+            TablaHerramientas.Columns["btnEditarHerr"]?.Width = 100;
+            TablaHerramientas.Columns["btnEliminarHerr"]?.Width = 100;
+
+            //  Stock se expande para llenar el espacio restante
+            var colStock = TablaHerramientas.Columns["Stock"];
+            if (colStock != null)
+                colStock.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
         }
 
         private async Task CargarDatosPruebaHerramientas()
@@ -416,18 +434,18 @@ namespace ServindAp.UI.Forms
             if (columna == null)
                 return;
 
-            if (columna.Name == "btnEditar" || columna.Name == "btnVer" || columna.Name == "btnEliminar")
+            if (columna.Name == "btnVer" || columna.Name == "btnEliminar")
             {
                 if (e.Graphics == null)
                     return;
 
-                // ✅ Pintar fondo primero
+                // Pintar fondo primero
                 e.PaintBackground(e.CellBounds, true);
 
-                string texto = columna.Name == "btnEditar" ? "Editar" : columna.Name == "btnVer" ? "Ver" : "Eliminar";
-                Color fill = columna.Name == "btnEditar" ? Color.FromArgb(66, 165, 245) : columna.Name == "btnVer" ? Color.FromArgb(200, 200, 200) : Color.FromArgb(239, 83, 80);
+                string texto = columna.Name == "btnVer" ? "Ver" : "Eliminar";
+                Color fill = columna.Name == "btnVer" ? Color.FromArgb(200, 200, 200) : Color.FromArgb(239, 83, 80);
 
-                // ✅ Margen fijo para mejor control
+                // Margen fijo para mejor control
                 int margen = 6;
                 Rectangle inner = new Rectangle(
                     e.CellBounds.X + margen,
@@ -498,6 +516,8 @@ namespace ServindAp.UI.Forms
             BuscadorTxb.Enter += BuscadorTxb_Enter;
             BuscadorTxb.Leave += BuscadorTxb_Leave;
             BuscadorTxb.TextChanged += BuscadorTxb_TextChanged;
+
+            buscadorConfigurado = true;
         }
 
         private void BuscadorTxb_Enter(object? sender, EventArgs e)
@@ -677,13 +697,13 @@ namespace ServindAp.UI.Forms
                 if (graphics == null)
                     return;
 
-                // ✅ Pintar fondo primero
+                // Pintar fondo primero
                 e.PaintBackground(e.CellBounds, true);
 
                 Color colorBoton = columna.Name == "btnEditarHerr" ? Color.FromArgb(66, 165, 245) : Color.FromArgb(239, 83, 80);
                 string texto = e.FormattedValue?.ToString() ?? "";
 
-                // ✅ Margen fijo para mejor control
+                // Margen fijo para mejor control
                 int margen = 6;
                 Rectangle rect = new Rectangle(
                     e.CellBounds.X + margen,
@@ -721,7 +741,13 @@ namespace ServindAp.UI.Forms
             if (TablaHerramientas.Columns[e.ColumnIndex].Name == "btnEditarHerr")
             {
                 int id = Convert.ToInt32(TablaHerramientas.Rows[e.RowIndex].Cells["ID"].Value);
-                MessageBox.Show($"Editar herramienta ID: {id}", "Editar");
+
+                FormEditarHerramienta editarForm = new FormEditarHerramienta(_appService, id);
+
+                if (editarForm.ShowDialog() == DialogResult.OK)
+                {
+                    _ = RecargarHerramientas();
+                }
             }
 
             if (TablaHerramientas.Columns[e.ColumnIndex].Name == "btnEliminarHerr")
@@ -740,7 +766,9 @@ namespace ServindAp.UI.Forms
                     EliminarHerramienta(id);
                 }
             }
+
         }
+
 
         private async void EliminarHerramienta(int id)
         {
@@ -780,6 +808,9 @@ namespace ServindAp.UI.Forms
         {
             FormNuevaHerramienta herramienta = new FormNuevaHerramienta(_appService);
             herramienta.ShowDialog();
+
+            RestaurarBuscadorHerramientas();
+
             _ = RecargarHerramientas();
         }
 
@@ -799,17 +830,14 @@ namespace ServindAp.UI.Forms
 
             int id = Convert.ToInt32(TablaPrestamos.Rows[e.RowIndex].Cells["ID"].Value);
 
-            if (col == "btnEditar")
+
+            if (col == "btnVer")
             {
-                MessageBox.Show($"Editar préstamo ID: {id}", "Editar");
-            }
-            else if (col == "btnVer")
-            {
-                // Abrir modal de detalle
                 PrestamoDetalleForm detalleForm = new PrestamoDetalleForm(_appService, id);
                 detalleForm.ShowDialog();
-                
-                // Recargar datos por si hubo cambios
+
+                RestaurarBuscador();
+
                 await RecargarPrestamos();
                 await RecargarHerramientas();
             }
@@ -857,14 +885,492 @@ namespace ServindAp.UI.Forms
 
         private void btnNuevoPrestamo_Click(object? sender, EventArgs e)
         {
+
             FormNuevoPrestamo prestamo = new FormNuevoPrestamo(_appService);
             prestamo.ShowDialog();
+
+            RestaurarBuscador();
+
             _ = Task.WhenAll(RecargarPrestamos(), RecargarHerramientas());
+
         }
 
         private async Task RecargarPrestamos()
         {
             await CargarDatosPrueba();
         }
+
+
+        private void RestaurarBuscador()
+        {
+            if (panelBuscador == null || BuscadorTxb == null || picLupa == null)
+                return;
+
+            panelBuscador.SuspendLayout();
+
+            try
+            {
+                // Restaurar panel
+                panelBuscador.Width = buscadorOriginalWidth;
+                panelBuscador.Height = buscadorOriginalHeight;
+
+                // Restaurar lupa
+                picLupa.Width = 24;
+                picLupa.Height = 24;
+                picLupa.Location = new Point(15, (buscadorOriginalHeight - 24) / 2);
+                picLupa.SizeMode = PictureBoxSizeMode.Zoom;
+
+                //Restaurar TextBox
+                BuscadorTxb.Font = new Font("Segoe UI", 14, FontStyle.Regular);
+                BuscadorTxb.BackColor = Color.FromArgb(245, 245, 245);
+                BuscadorTxb.ForeColor = BuscadorTxb.Text == PLACEHOLDER_BUSCADOR ? Color.Gray : Color.Black; // ✅ AGREGADO
+                BuscadorTxb.Height = 35;
+                BuscadorTxb.Padding = new Padding(5);
+                BuscadorTxb.BorderStyle = BorderStyle.None;
+                BuscadorTxb.Location = new Point(
+                    picLupa.Right + 10,
+                    (buscadorOriginalHeight - 35) / 2
+                );
+                BuscadorTxb.Width = buscadorOriginalWidth - picLupa.Right - 25;
+                BuscadorTxb.TabStop = false;
+                BuscadorTxb.HideSelection = true;
+
+                RedondearPanelBuscador();
+            }
+            finally
+            {
+                panelBuscador.ResumeLayout(true);
+            }
+
+            panelBuscador.Refresh();
+            BuscadorTxb.Refresh();
+        }
+
+
+        private void RestaurarBuscadorHerramientas()
+        {
+            if (panelBuscadorHerramientas == null || txbBuscadorHerramientas == null || picLupaHerramientas == null)
+                return;
+
+            panelBuscadorHerramientas.SuspendLayout();
+
+            try
+            {
+                // Restaurar panel
+                panelBuscadorHerramientas.Width = buscadorHerramientasOriginalWidth;
+                panelBuscadorHerramientas.Height = buscadorHerramientasOriginalHeight;
+
+                // Restaurar lupa
+                picLupaHerramientas.Width = 24;
+                picLupaHerramientas.Height = 24;
+                picLupaHerramientas.Location = new Point(15, (buscadorHerramientasOriginalHeight - 24) / 2);
+                picLupaHerramientas.SizeMode = PictureBoxSizeMode.Zoom;
+
+                // Restaurar TextBox
+                txbBuscadorHerramientas.Font = new Font("Segoe UI", 14, FontStyle.Regular);
+                txbBuscadorHerramientas.BackColor = Color.FromArgb(245, 245, 245);
+                txbBuscadorHerramientas.ForeColor = txbBuscadorHerramientas.Text == PLACEHOLDER_BUSCADOR_HERR ? Color.Gray : Color.Black; // ✅ AGREGADO
+                txbBuscadorHerramientas.Height = 35;
+                txbBuscadorHerramientas.Padding = new Padding(5);
+                txbBuscadorHerramientas.BorderStyle = BorderStyle.None;
+                txbBuscadorHerramientas.Location = new Point(
+                    picLupaHerramientas.Right + 10,
+                    (buscadorHerramientasOriginalHeight - 35) / 2
+                );
+                txbBuscadorHerramientas.Width = buscadorHerramientasOriginalWidth - picLupaHerramientas.Right - 25;
+                txbBuscadorHerramientas.TabStop = false;
+                txbBuscadorHerramientas.HideSelection = true;
+                RedondearPanelBuscadorHerramientas();
+            }
+            finally
+            {
+                panelBuscadorHerramientas.ResumeLayout(true);
+            }
+
+            // Forzar actualización visual
+            panelBuscadorHerramientas.Refresh();
+            txbBuscadorHerramientas.Refresh();
+        }
+
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        private void LayoutTabHistorial()
+        {
+            if (!IsHandleCreated || TablaHistorial == null || tabPage1 == null || panelBuscadorHistorial == null)
+                return;
+
+            int margenSuperior = 90;
+            int espacioVertical = 15;
+
+            // Usar 95% del ancho para dejar márgenes laterales
+            TablaHistorial.Width = (int)(tabPage1.ClientSize.Width * 0.95);
+            TablaHistorial.Location = new Point(
+                (tabPage1.ClientSize.Width - TablaHistorial.Width) / 2,
+                margenSuperior + panelBuscadorHistorial.Height + espacioVertical
+            );
+
+            TablaHistorial.Height = tabPage1.ClientSize.Height - TablaHistorial.Top - 25;
+
+            RestaurarBuscadorHistorial();
+            panelBuscadorHistorial.Location = new Point(TablaHistorial.Left, margenSuperior);
+
+            RedondearPanelBuscadorHistorial();
+        }
+
+        private void ConfigurarEstiloTablaHistorial()
+        {
+            TablaHistorial.BackgroundColor = Color.White;
+            TablaHistorial.BorderStyle = BorderStyle.None;
+            TablaHistorial.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            TablaHistorial.GridColor = Color.FromArgb(240, 240, 240);
+
+            TablaHistorial.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 230, 201);
+            TablaHistorial.DefaultCellStyle.SelectionForeColor = Color.FromArgb(60, 60, 60);
+            TablaHistorial.DefaultCellStyle.BackColor = Color.White;
+            TablaHistorial.DefaultCellStyle.ForeColor = Color.FromArgb(60, 60, 60);
+            TablaHistorial.DefaultCellStyle.Font = new Font("Segoe UI", 10);
+            TablaHistorial.DefaultCellStyle.Padding = new Padding(12, 8, 12, 8);
+            TablaHistorial.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            TablaHistorial.RowHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(76, 175, 80);
+
+            TablaHistorial.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 250);
+
+            TablaHistorial.EnableHeadersVisualStyles = false;
+            TablaHistorial.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+            TablaHistorial.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(80, 80, 80);
+            TablaHistorial.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            TablaHistorial.ColumnHeadersHeight = 45;
+            TablaHistorial.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 5, 10, 5);
+            TablaHistorial.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            TablaHistorial.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            TablaHistorial.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            TablaHistorial.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 245, 245);
+
+            TablaHistorial.RowTemplate.Height = 50;
+            TablaHistorial.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            TablaHistorial.MultiSelect = false;
+            TablaHistorial.AllowUserToAddRows = false;
+            TablaHistorial.ReadOnly = true;
+            TablaHistorial.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            TablaHistorial.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            TablaHistorial.EditMode = DataGridViewEditMode.EditProgrammatically;
+            TablaHistorial.RowHeadersVisible = false;
+        }
+
+        private void CrearColumnasHistorial()
+        {
+            tablaHistorial = new DataTable();
+
+            tablaHistorial.Columns.Add("ID", typeof(int));
+            tablaHistorial.Columns.Add("Responsable", typeof(string));
+            tablaHistorial.Columns.Add("Herramienta", typeof(string));
+            tablaHistorial.Columns.Add("Cantidad", typeof(int));
+            tablaHistorial.Columns.Add("FechaEntrega", typeof(string));
+            tablaHistorial.Columns.Add("FechaDevolucion", typeof(string));
+            tablaHistorial.Columns.Add("Estado", typeof(string));
+            tablaHistorial.Columns.Add("Observaciones", typeof(string));
+
+            TablaHistorial.AutoGenerateColumns = true;
+            TablaHistorial.DataSource = tablaHistorial;
+
+            // Botón Eliminar (solo este botón)
+            DataGridViewButtonColumn btnEliminar = new DataGridViewButtonColumn();
+            btnEliminar.Name = "btnEliminarHist";
+            btnEliminar.HeaderText = "";
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.UseColumnTextForButtonValue = true;
+            TablaHistorial.Columns.Add(btnEliminar);
+
+            // ANCHOS DE COLUMNA
+            TablaHistorial.Columns["ID"]?.Width = 60;
+            TablaHistorial.Columns["Responsable"]?.Width = 150;
+            TablaHistorial.Columns["Herramienta"]?.Width = 150;
+            TablaHistorial.Columns["Cantidad"]?.Width = 100;
+            TablaHistorial.Columns["FechaEntrega"]?.Width = 120;
+            TablaHistorial.Columns["FechaDevolucion"]?.Width = 130;
+            TablaHistorial.Columns["Estado"]?.Width = 120;
+
+            var colObservaciones = TablaHistorial.Columns["Observaciones"];
+            if (colObservaciones != null)
+                colObservaciones.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            TablaHistorial.Columns["btnEliminarHist"]?.Width = 100;
+        }
+
+        private async Task CargarDatosHistorial()
+        {
+            try
+            {
+                tablaHistorial?.Rows.Clear();
+                var prestamos = await _appService.ListarPrestamos.ExecuteAsync();
+
+                // Filtrar solo préstamos devueltos (con FechaDevolucion)
+                var historial = prestamos.Where(p => p.FechaDevolucion.HasValue);
+
+                foreach (var prestamo in historial)
+                {
+                    var herramienta = prestamo.Herramientas?.FirstOrDefault()?.Herramienta;
+                    tablaHistorial?.Rows.Add(
+                        prestamo.Id,
+                        prestamo.Responsable,
+                        herramienta?.Nombre ?? "N/A",
+                        prestamo.Herramientas?.FirstOrDefault()?.Cantidad ?? 0,
+                        prestamo.FechaEntrega.ToString("dd/MM/yyyy"),
+                        prestamo.FechaDevolucion?.ToString("dd/MM/yyyy") ?? "N/A",
+                        prestamo.Estado ?? "Desconocido",
+                        prestamo.Observaciones ?? ""
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar historial: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private const string PLACEHOLDER_BUSCADOR_HIST = "Buscar...";
+
+        private void ConfigurarBuscadorHistorial()
+        {
+            picLupaHistorial.Width = 24;
+            picLupaHistorial.Height = 24;
+            picLupaHistorial.Location = new Point(15, (panelBuscadorHistorial.Height - picLupaHistorial.Height) / 2);
+            picLupaHistorial.SizeMode = PictureBoxSizeMode.Zoom;
+
+            txbBuscadorHistorial.Text = PLACEHOLDER_BUSCADOR_HIST;
+            txbBuscadorHistorial.ForeColor = Color.Gray;
+            txbBuscadorHistorial.Font = new Font("Segoe UI", 14, FontStyle.Regular);
+            txbBuscadorHistorial.BackColor = Color.FromArgb(245, 245, 245);
+            txbBuscadorHistorial.Height = 35;
+            txbBuscadorHistorial.Padding = new Padding(5);
+            txbBuscadorHistorial.Location = new Point(picLupaHistorial.Right + 10, (panelBuscadorHistorial.Height - txbBuscadorHistorial.Height) / 2);
+            txbBuscadorHistorial.Width = panelBuscadorHistorial.Width - 70;
+            txbBuscadorHistorial.TabStop = false;
+            txbBuscadorHistorial.HideSelection = true;
+            txbBuscadorHistorial.BorderStyle = BorderStyle.None;
+
+            txbBuscadorHistorial.Enter += txbBuscadorHistorial_Enter;
+            txbBuscadorHistorial.Leave += txbBuscadorHistorial_Leave;
+            txbBuscadorHistorial.TextChanged += txbBuscadorHistorial_TextChanged;
+        }
+
+        private void txbBuscadorHistorial_Enter(object? sender, EventArgs e)
+        {
+            if (txbBuscadorHistorial.Text == PLACEHOLDER_BUSCADOR_HIST)
+            {
+                txbBuscadorHistorial.Text = "";
+                txbBuscadorHistorial.ForeColor = Color.Black;
+            }
+        }
+
+        private void txbBuscadorHistorial_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txbBuscadorHistorial.Text))
+            {
+                txbBuscadorHistorial.Text = PLACEHOLDER_BUSCADOR_HIST;
+                txbBuscadorHistorial.ForeColor = Color.Gray;
+            }
+        }
+
+        private void txbBuscadorHistorial_TextChanged(object? sender, EventArgs e)
+        {
+            if (TablaHistorial.DataSource == null)
+                return;
+
+            string textoBusqueda = txbBuscadorHistorial.Text.Trim();
+
+            if (textoBusqueda == PLACEHOLDER_BUSCADOR_HIST)
+                textoBusqueda = "";
+
+            var vista = (TablaHistorial?.DataSource as DataTable)?.DefaultView;
+
+            if (string.IsNullOrEmpty(textoBusqueda))
+            {
+                vista?.RowFilter = string.Empty;
+            }
+            else
+            {
+                vista?.RowFilter =
+                    $"Responsable LIKE '%{textoBusqueda}%' OR " +
+                    $"Herramienta LIKE '%{textoBusqueda}%' OR " +
+                    $"Estado LIKE '%{textoBusqueda}%'";
+            }
+        }
+
+        private void RedondearPanelBuscadorHistorial()
+        {
+            int radio = 15;
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+            path.AddArc(0, 0, radio, radio, 180, 90);
+            path.AddArc(panelBuscadorHistorial.Width - radio, 0, radio, radio, 270, 90);
+            path.AddArc(panelBuscadorHistorial.Width - radio, panelBuscadorHistorial.Height - radio, radio, radio, 0, 90);
+            path.AddArc(0, panelBuscadorHistorial.Height - radio, radio, radio, 90, 90);
+            path.CloseFigure();
+
+            panelBuscadorHistorial.Region = new Region(path);
+        }
+
+        private void PanelBuscadorHistorial_Paint(object? sender, PaintEventArgs e)
+        {
+            int radio = 18;
+            int grosor = 2;
+
+            Rectangle rect = panelBuscadorHistorial.ClientRectangle;
+            rect.Width -= 1;
+            rect.Height -= 1;
+
+            using (GraphicsPath path = new GraphicsPath())
+            using (Pen pen = new Pen(Color.FromArgb(180, 180, 180), grosor))
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+                path.AddArc(rect.X, rect.Y, radio, radio, 180, 90);
+                path.AddArc(rect.Right - radio, rect.Y, radio, radio, 270, 90);
+                path.AddArc(rect.Right - radio, rect.Bottom - radio, radio, radio, 0, 90);
+                path.AddArc(rect.X, rect.Bottom - radio, radio, radio, 90, 90);
+                path.CloseFigure();
+
+                panelBuscadorHistorial.Region = new Region(path);
+                e.Graphics.DrawPath(pen, path);
+            }
+        }
+
+        private void RestaurarBuscadorHistorial()
+        {
+            if (panelBuscadorHistorial == null || txbBuscadorHistorial == null || picLupaHistorial == null)
+                return;
+
+            panelBuscadorHistorial.SuspendLayout();
+
+            try
+            {
+                panelBuscadorHistorial.Width = buscadorHistorialOriginalWidth;
+                panelBuscadorHistorial.Height = buscadorHistorialOriginalHeight;
+
+                picLupaHistorial.Width = 24;
+                picLupaHistorial.Height = 24;
+                picLupaHistorial.Location = new Point(15, (buscadorHistorialOriginalHeight - 24) / 2);
+                picLupaHistorial.SizeMode = PictureBoxSizeMode.Zoom;
+
+                txbBuscadorHistorial.Font = new Font("Segoe UI", 14, FontStyle.Regular);
+                txbBuscadorHistorial.BackColor = Color.FromArgb(245, 245, 245);
+                txbBuscadorHistorial.ForeColor = txbBuscadorHistorial.Text == PLACEHOLDER_BUSCADOR_HIST ? Color.Gray : Color.Black;
+                txbBuscadorHistorial.Height = 35;
+                txbBuscadorHistorial.Padding = new Padding(5);
+                txbBuscadorHistorial.BorderStyle = BorderStyle.None;
+                txbBuscadorHistorial.Location = new Point(
+                    picLupaHistorial.Right + 10,
+                    (buscadorHistorialOriginalHeight - 35) / 2
+                );
+                txbBuscadorHistorial.Width = buscadorHistorialOriginalWidth - picLupaHistorial.Right - 25;
+                txbBuscadorHistorial.TabStop = false;
+                txbBuscadorHistorial.HideSelection = true;
+
+                RedondearPanelBuscadorHistorial();
+            }
+            finally
+            {
+                panelBuscadorHistorial.ResumeLayout(true);
+            }
+
+            panelBuscadorHistorial.Refresh();
+            txbBuscadorHistorial.Refresh();
+        }
+
+        private void TablaHistorial_CellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+                return;
+
+            var columna = TablaHistorial.Columns[e.ColumnIndex];
+
+            if (columna?.Name == "btnEliminarHist")
+            {
+                var graphics = e.Graphics;
+                if (graphics == null)
+                    return;
+
+                e.PaintBackground(e.CellBounds, true);
+
+                Color colorBoton = Color.FromArgb(239, 83, 80); // Rojo
+                string texto = "Eliminar";
+
+                int margen = 6;
+                Rectangle rect = new Rectangle(
+                    e.CellBounds.X + margen,
+                    e.CellBounds.Y + 6,
+                    e.CellBounds.Width - (margen * 2),
+                    e.CellBounds.Height - 12
+                );
+
+                if (rect.Width > 0 && rect.Height > 0)
+                {
+                    using (SolidBrush brush = new SolidBrush(colorBoton))
+                    {
+                        graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                        graphics.FillRectangle(brush, rect);
+                    }
+
+                    TextRenderer.DrawText(
+                        graphics,
+                        texto,
+                        new Font("Segoe UI", 9, FontStyle.Bold),
+                        rect,
+                        Color.White,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
+                    );
+                }
+                e.Handled = true;
+            }
+        }
+
+        private async void TablaHistorial_CellContentClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            if (TablaHistorial.Columns[e.ColumnIndex]?.Name == "btnEliminarHist")
+            {
+                int id = Convert.ToInt32(TablaHistorial.Rows[e.RowIndex].Cells["ID"].Value);
+
+                var confirmacion = MessageBox.Show(
+                    "¿Seguro que deseas eliminar este registro del historial?",
+                    "Confirmación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+
+                if (confirmacion == DialogResult.Yes)
+                {
+                    try
+                    {
+                        await _appService.EliminarPrestamo.ExecuteAsync(id);
+                        MessageBox.Show("Registro eliminado correctamente", "Éxito");
+                        await CargarDatosHistorial();
+                        await RecargarPrestamos();
+                        await RecargarHerramientas();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private async Task RecargarHistorial()
+        {
+            await CargarDatosHistorial();
+        }
+
+
+
+
     }
 }

@@ -15,12 +15,16 @@ namespace ServindAp.UI.UserControls
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.SuspendLayout();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 550);
-            this.Name = "FormDevolucionParcial";
-            this.ResumeLayout(false);
+            SuspendLayout();
+            // 
+            // FormDevolucionParcial
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(700, 550);
+            Name = "FormDevolucionParcial";
+            Load += FormDevolucionParcial_Load;
+            ResumeLayout(false);
         }
     }
 }

@@ -289,47 +289,6 @@ namespace ServindAp.UI.UserControls
             this.Close();
         }
 
-        //private bool ValidarFormulario()
-        //{
-        //    if (string.IsNullOrWhiteSpace(txtNombre.Text))
-        //    {
-        //        MessageBox.Show(
-        //            "Por favor ingresa el nombre de la herramienta",
-        //            "Campo requerido",
-        //            MessageBoxButtons.OK,
-        //            MessageBoxIcon.Warning
-        //        );
-        //        txtNombre.Focus();
-        //        return false;
-        //    }
-
-        //    if (cmbCant.SelectedIndex == -1)
-        //    {
-        //        MessageBox.Show(
-        //            "Por favor selecciona la cantidad",
-        //            "Campo requerido",
-        //            MessageBoxButtons.OK,
-        //            MessageBoxIcon.Warning
-        //        );
-        //        cmbCant.Focus();
-        //        return false;
-        //    }
-
-        //    if (string.IsNullOrWhiteSpace(txtDescripcion.Text))
-        //    {
-        //        MessageBox.Show(
-        //            "Por favor ingresa una descripción",
-        //            "Campo requerido",
-        //            MessageBoxButtons.OK,
-        //            MessageBoxIcon.Warning
-        //        );
-        //        txtDescripcion.Focus();
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
-
         private async void btnAgregar_Click(object sender, EventArgs e)
         {
             try

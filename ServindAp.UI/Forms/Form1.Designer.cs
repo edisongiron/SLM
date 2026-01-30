@@ -48,8 +48,13 @@ namespace ServindAp.UI.Forms
             panelBuscadorHerramientas = new Panel();
             picLupaHerramientas = new PictureBox();
             txbBuscadorHerramientas = new TextBox();
+            tabPage1 = new TabPage();
             imageList1 = new ImageList(components);
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            TablaHistorial = new DataGridView();
+            panelBuscadorHistorial = new Panel();
+            picLupaHistorial = new PictureBox();
+            txbBuscadorHistorial = new TextBox();
             materialTabControl1.SuspendLayout();
             Home.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
@@ -61,6 +66,10 @@ namespace ServindAp.UI.Forms
             ((System.ComponentModel.ISupportInitialize)TablaHerramientas).BeginInit();
             panelBuscadorHerramientas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picLupaHerramientas).BeginInit();
+            tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)TablaHistorial).BeginInit();
+            panelBuscadorHistorial.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picLupaHistorial).BeginInit();
             SuspendLayout();
             // 
             // materialTabControl1
@@ -68,6 +77,7 @@ namespace ServindAp.UI.Forms
             materialTabControl1.Controls.Add(Home);
             materialTabControl1.Controls.Add(tabPage2);
             materialTabControl1.Controls.Add(tabPage3);
+            materialTabControl1.Controls.Add(tabPage1);
             materialTabControl1.Depth = 0;
             materialTabControl1.Dock = DockStyle.Fill;
             materialTabControl1.ImageList = imageList1;
@@ -228,6 +238,19 @@ namespace ServindAp.UI.Forms
             txbBuscadorHerramientas.Size = new Size(192, 20);
             txbBuscadorHerramientas.TabIndex = 6;
             // 
+            // tabPage1
+            // 
+            tabPage1.Controls.Add(TablaHistorial);
+            tabPage1.Controls.Add(panelBuscadorHistorial);
+            tabPage1.ImageKey = "list_alt_24dp_000000_FILL0_wght400_GRAD0_opsz24.png";
+            tabPage1.Location = new Point(4, 54);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1688, 851);
+            tabPage1.TabIndex = 3;
+            tabPage1.Text = "Historial";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
             // imageList1
             // 
             imageList1.ColorDepth = ColorDepth.Depth32Bit;
@@ -236,6 +259,45 @@ namespace ServindAp.UI.Forms
             imageList1.Images.SetKeyName(0, "home_32dp_000000_FILL0_wght400_GRAD0_opsz40.png");
             imageList1.Images.SetKeyName(1, "swap_horiz_32dp_000000_FILL0_wght400_GRAD0_opsz40.png");
             imageList1.Images.SetKeyName(2, "service_toolbox_32dp_000000_FILL0_wght400_GRAD0_opsz40.png");
+            imageList1.Images.SetKeyName(3, "list_alt_24dp_000000_FILL0_wght400_GRAD0_opsz24.png");
+            // 
+            // TablaHistorial
+            // 
+            TablaHistorial.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            TablaHistorial.Location = new Point(123, 196);
+            TablaHistorial.Name = "TablaHistorial";
+            TablaHistorial.RowHeadersWidth = 51;
+            TablaHistorial.Size = new Size(1442, 530);
+            TablaHistorial.TabIndex = 11;
+            // 
+            // panelBuscadorHistorial
+            // 
+            panelBuscadorHistorial.BackColor = Color.White;
+            panelBuscadorHistorial.Controls.Add(picLupaHistorial);
+            panelBuscadorHistorial.Controls.Add(txbBuscadorHistorial);
+            panelBuscadorHistorial.Location = new Point(123, 125);
+            panelBuscadorHistorial.Name = "panelBuscadorHistorial";
+            panelBuscadorHistorial.Size = new Size(300, 46);
+            panelBuscadorHistorial.TabIndex = 10;
+            // 
+            // picLupaHistorial
+            // 
+            picLupaHistorial.Image = (Image)resources.GetObject("picLupaHistorial.Image");
+            picLupaHistorial.Location = new Point(58, 6);
+            picLupaHistorial.Name = "picLupaHistorial";
+            picLupaHistorial.Size = new Size(30, 30);
+            picLupaHistorial.SizeMode = PictureBoxSizeMode.Zoom;
+            picLupaHistorial.TabIndex = 7;
+            picLupaHistorial.TabStop = false;
+            // 
+            // txbBuscadorHistorial
+            // 
+            txbBuscadorHistorial.BackColor = Color.White;
+            txbBuscadorHistorial.BorderStyle = BorderStyle.None;
+            txbBuscadorHistorial.Location = new Point(94, 12);
+            txbBuscadorHistorial.Name = "txbBuscadorHistorial";
+            txbBuscadorHistorial.Size = new Size(192, 20);
+            txbBuscadorHistorial.TabIndex = 6;
             // 
             // Form1
             // 
@@ -245,6 +307,7 @@ namespace ServindAp.UI.Forms
             Controls.Add(materialTabControl1);
             DrawerTabControl = materialTabControl1;
             Name = "Form1";
+            Load += Form1_Load_1;
             materialTabControl1.ResumeLayout(false);
             Home.ResumeLayout(false);
             Home.PerformLayout();
@@ -259,6 +322,11 @@ namespace ServindAp.UI.Forms
             panelBuscadorHerramientas.ResumeLayout(false);
             panelBuscadorHerramientas.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picLupaHerramientas).EndInit();
+            tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)TablaHistorial).EndInit();
+            panelBuscadorHistorial.ResumeLayout(false);
+            panelBuscadorHistorial.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picLupaHistorial).EndInit();
             ResumeLayout(false);
         }
 
@@ -280,5 +348,10 @@ namespace ServindAp.UI.Forms
         private Panel panelBuscadorHerramientas;
         private PictureBox picLupaHerramientas;
         private TextBox txbBuscadorHerramientas;
+        private TabPage tabPage1;
+        private DataGridView TablaHistorial;
+        private Panel panelBuscadorHistorial;
+        private PictureBox picLupaHistorial;
+        private TextBox txbBuscadorHistorial;
     }
 }
