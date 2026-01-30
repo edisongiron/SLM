@@ -38,9 +38,13 @@ namespace ServindAp.Application.UseCases
             // Obtener las herramientas del préstamo para devolver el stock
             var herramientasPrestamo = await _prestamoHerramientaRepository.ObtenerPorPrestamoIdAsync(prestamo.Id);
 
-            // Registrar la devolución en la entidad de dominio
+            // Registrar la devolución en la entidad de dominio ANTES de procesar las herramientas
+            // Esto asegura que cuando el trigger se dispare, el estado del préstamo ya esté actualizado
             // Esto lanzará excepciones del dominio si hay problemas
             prestamo.RegistrarDevolucion(request.FechaDevolucion, request.TieneDefectos);
+
+            // Persistir los cambios del préstamo ANTES de actualizar las herramientas
+            await _prestamoRepository.ActualizarAsync(prestamo);
 
             // Devolver el stock de las herramientas retornables
             foreach (var ph in herramientasPrestamo)
@@ -53,9 +57,6 @@ namespace ServindAp.Application.UseCases
                     await _herramientaRepository.ActualizarAsync(herramienta);
                 }
             }
-
-            // Persistir los cambios del préstamo
-            await _prestamoRepository.ActualizarAsync(prestamo);
 
             // Construir y retornar el DTO con los datos actualizados
             var herramientas = await _prestamoHerramientaRepository.ObtenerPorPrestamoIdAsync(prestamo.Id);

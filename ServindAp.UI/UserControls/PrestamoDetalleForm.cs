@@ -3,13 +3,7 @@ using MaterialSkin.Controls;
 using ServindAp.Application.DTOs;
 using ServindAp.Application.Interfaces;
 using ServindAp.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ServindAp.UI.UserControls
 {
@@ -175,7 +169,7 @@ namespace ServindAp.UI.UserControls
 
             lblFechaDevolucionValue = new MaterialLabel
             {
-                Text = "No devuelto",
+                Text = "Pendiente",
                 Location = new Point(margenIzq, yActual),
                 AutoSize = true,
                 FontType = MaterialSkinManager.fontType.Body1

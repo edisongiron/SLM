@@ -1,4 +1,4 @@
-﻿using MaterialSkin;
+using MaterialSkin;
 using MaterialSkin.Controls;
 using ServindAp.Application.Interfaces;
 using ServindAp.UI.UserControls;
@@ -838,8 +838,10 @@ namespace ServindAp.UI.Forms
 
                 RestaurarBuscador();
 
-                await RecargarPrestamos();
-                await RecargarHerramientas();
+await RecargarPrestamos();
+                        await RecargarHerramientas();
+                        await RecargarHistorial();
+                await RecargarHistorial();
             }
             else if (col == "btnEliminar")
             {
@@ -891,7 +893,7 @@ namespace ServindAp.UI.Forms
 
             RestaurarBuscador();
 
-            _ = Task.WhenAll(RecargarPrestamos(), RecargarHerramientas());
+            _ = Task.WhenAll(RecargarPrestamos(), RecargarHerramientas(), RecargarHistorial());
 
         }
 
@@ -1070,9 +1072,8 @@ namespace ServindAp.UI.Forms
             tablaHistorial.Columns.Add("Responsable", typeof(string));
             tablaHistorial.Columns.Add("Herramienta", typeof(string));
             tablaHistorial.Columns.Add("Cantidad", typeof(int));
-            tablaHistorial.Columns.Add("FechaEntrega", typeof(string));
-            tablaHistorial.Columns.Add("FechaDevolucion", typeof(string));
-            tablaHistorial.Columns.Add("Estado", typeof(string));
+            tablaHistorial.Columns.Add("Fecha evento", typeof(string));
+            tablaHistorial.Columns.Add("Tipo evento", typeof(string));
             tablaHistorial.Columns.Add("Observaciones", typeof(string));
 
             TablaHistorial.AutoGenerateColumns = true;
@@ -1091,9 +1092,8 @@ namespace ServindAp.UI.Forms
             TablaHistorial.Columns["Responsable"]?.Width = 150;
             TablaHistorial.Columns["Herramienta"]?.Width = 150;
             TablaHistorial.Columns["Cantidad"]?.Width = 100;
-            TablaHistorial.Columns["FechaEntrega"]?.Width = 120;
-            TablaHistorial.Columns["FechaDevolucion"]?.Width = 130;
-            TablaHistorial.Columns["Estado"]?.Width = 120;
+            TablaHistorial.Columns["Fecha evento"]?.Width = 140;
+            TablaHistorial.Columns["Tipo evento"]?.Width = 120;
 
             var colObservaciones = TablaHistorial.Columns["Observaciones"];
             if (colObservaciones != null)
@@ -1107,23 +1107,18 @@ namespace ServindAp.UI.Forms
             try
             {
                 tablaHistorial?.Rows.Clear();
-                var prestamos = await _appService.ListarPrestamos.ExecuteAsync();
+                var historial = await _appService.ListarHistorial.ExecuteAsync();
 
-                // Filtrar solo préstamos devueltos (con FechaDevolucion)
-                var historial = prestamos.Where(p => p.FechaDevolucion.HasValue);
-
-                foreach (var prestamo in historial)
+                foreach (var item in historial)
                 {
-                    var herramienta = prestamo.Herramientas?.FirstOrDefault()?.Herramienta;
                     tablaHistorial?.Rows.Add(
-                        prestamo.Id,
-                        prestamo.Responsable,
-                        herramienta?.Nombre ?? "N/A",
-                        prestamo.Herramientas?.FirstOrDefault()?.Cantidad ?? 0,
-                        prestamo.FechaEntrega.ToString("dd/MM/yyyy"),
-                        prestamo.FechaDevolucion?.ToString("dd/MM/yyyy") ?? "N/A",
-                        prestamo.Estado ?? "Desconocido",
-                        prestamo.Observaciones ?? ""
+                        item.Id,
+                        item.Responsable,
+                        item.Herramienta,
+                        item.Cantidad,
+item.FechaEvento.ToString("dd/MM/yyyy HH:mm"),
+                        item.TipoEventoDescripcion,
+                        item.Observaciones ?? ""
                     );
                 }
             }
@@ -1198,7 +1193,7 @@ namespace ServindAp.UI.Forms
                 vista?.RowFilter =
                     $"Responsable LIKE '%{textoBusqueda}%' OR " +
                     $"Herramienta LIKE '%{textoBusqueda}%' OR " +
-                    $"Estado LIKE '%{textoBusqueda}%'";
+                    $"[Tipo evento] LIKE '%{textoBusqueda}%'";
             }
         }
 
@@ -1340,8 +1335,10 @@ namespace ServindAp.UI.Forms
                 int id = Convert.ToInt32(TablaHistorial.Rows[e.RowIndex].Cells["ID"].Value);
 
                 var confirmacion = MessageBox.Show(
-                    "¿Seguro que deseas eliminar este registro del historial?",
-                    "Confirmación",
+                    "⚠️ El historial es un registro de auditoría inmutable.\n\n" +
+                    "¿Estás seguro de que deseas eliminar este registro?\n" +
+                    "Esta acción no se puede deshacer y afectará la integridad del historial.",
+                    "Confirmación - Advertencia",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
                 );
@@ -1350,11 +1347,16 @@ namespace ServindAp.UI.Forms
                 {
                     try
                     {
-                        await _appService.EliminarPrestamo.ExecuteAsync(id);
-                        MessageBox.Show("Registro eliminado correctamente", "Éxito");
-                        await CargarDatosHistorial();
-                        await RecargarPrestamos();
-                        await RecargarHerramientas();
+                        // Nota: El sistema de historial está diseñado como append-only
+                        // La eliminación directa no está permitida por diseño
+                        MessageBox.Show(
+                            "❌ Operación no permitida\n\n" +
+                            "El historial está diseñado como un registro de auditoría inmutable.\n" +
+                            "Los registros del historial no pueden eliminarse para mantener la integridad de los datos.",
+                            "Restricción de Seguridad",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
                     }
                     catch (Exception ex)
                     {

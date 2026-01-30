@@ -14,15 +14,18 @@ namespace ServindAp.Application.UseCases
         private readonly IPrestamoRepository _prestamoRepository;
         private readonly IPrestamoHerramientaRepository _prestamoHerramientaRepository;
         private readonly IHerramientaRepository _herramientaRepository;
+        private readonly IHistorialRepository _historialRepository;
 
         public RegistrarDevolucionParcialUseCase(
             IPrestamoRepository prestamoRepository,
             IPrestamoHerramientaRepository prestamoHerramientaRepository,
-            IHerramientaRepository herramientaRepository)
+            IHerramientaRepository herramientaRepository,
+            IHistorialRepository historialRepository)
         {
             _prestamoRepository = prestamoRepository ?? throw new ArgumentNullException(nameof(prestamoRepository));
             _prestamoHerramientaRepository = prestamoHerramientaRepository ?? throw new ArgumentNullException(nameof(prestamoHerramientaRepository));
             _herramientaRepository = herramientaRepository ?? throw new ArgumentNullException(nameof(herramientaRepository));
+            _historialRepository = historialRepository ?? throw new ArgumentNullException(nameof(historialRepository));
         }
 
         /// <summary>
@@ -43,6 +46,40 @@ namespace ServindAp.Application.UseCases
 
             // Obtener todas las herramientas del préstamo
             var todasLasHerramientas = await _prestamoHerramientaRepository.ObtenerPorPrestamoIdAsync(prestamoId);
+
+            // Determinar si será una devolución completa
+            bool seraDevolucionCompleta = true;
+            
+            // Para ser devolución completa, deben cumplirse dos condiciones:
+            // 1. Se devuelven TODAS las herramientas del préstamo
+            // 2. Se devuelve la CANTIDAD COMPLETA de cada herramienta
+            
+            if (request.HerramientasADevolver.Count != todasLasHerramientas.Count)
+            {
+                // No se están devolviendo todas las herramientas, es parcial
+                seraDevolucionCompleta = false;
+            }
+            else
+            {
+                // Se devuelven todas las herramientas, verificar cantidades
+                foreach (var itemDevolucion in request.HerramientasADevolver)
+                {
+                    var prestamoHerramienta = todasLasHerramientas.FirstOrDefault(h => h.HerramientaId == itemDevolucion.HerramientaId);
+                    if (prestamoHerramienta == null || itemDevolucion.CantidadADevolver != prestamoHerramienta.Cantidad)
+                    {
+                        // Al menos una herramienta no se devuelve en su cantidad completa
+                        seraDevolucionCompleta = false;
+                        break;
+                    }
+                }
+            }
+
+            // Si es una devolución completa, actualizar el estado del préstamo ANTES de procesar las herramientas
+            if (seraDevolucionCompleta && !prestamo.EstaDevuelto())
+            {
+                prestamo.RegistrarDevolucion(DateTime.Now, request.TieneDefectos);
+                await _prestamoRepository.ActualizarAsync(prestamo);
+            }
 
             // Procesar cada herramienta a devolver
             foreach (var itemDevolucion in request.HerramientasADevolver)
@@ -65,7 +102,7 @@ namespace ServindAp.Application.UseCases
                 // Registrar la devolución parcial en la entidad (reduce la cantidad)
                 prestamoHerramienta.RegistrarDevolucion(itemDevolucion.CantidadADevolver);
 
-                // Actualizar en BD
+                // Actualizar en BD (el trigger registrará automáticamente en historial)
                 await _prestamoHerramientaRepository.ActualizarAsync(prestamoHerramienta);
 
                 // Devolver el stock a la herramienta
@@ -81,11 +118,17 @@ namespace ServindAp.Application.UseCases
             var herramientasActualizadas = await _prestamoHerramientaRepository.ObtenerPorPrestamoIdAsync(prestamoId);
             bool todasDevueltas = herramientasActualizadas.All(h => h.EstaCompletamenteDevuelta());
 
-            // Si todas las herramientas fueron devueltas, marcar el préstamo como devuelto
-            if (todasDevueltas && !prestamo.EstaDevuelto())
+            // Si es una devolución parcial y todas las herramientas fueron devueltas, marcar el préstamo como devuelto
+            if (!seraDevolucionCompleta && todasDevueltas && !prestamo.EstaDevuelto())
             {
                 prestamo.RegistrarDevolucion(DateTime.Now, request.TieneDefectos);
                 await _prestamoRepository.ActualizarAsync(prestamo);
+            }
+            
+            // Actualizar observaciones en el historial si se proporcionaron
+            if (!string.IsNullOrWhiteSpace(request.Observaciones))
+            {
+                await _historialRepository.ActualizarObservacionesDevolucionRecienteAsync(prestamoId, request.Observaciones);
             }
 
             // Construir y retornar el DTO actualizado

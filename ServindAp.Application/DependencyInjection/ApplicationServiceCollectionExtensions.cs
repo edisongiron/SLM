@@ -36,6 +36,7 @@ namespace ServindAp.Application.DependencyInjection
             services.AddScoped<ActualizarHerramientaUseCase>();
             services.AddScoped<ObtenerHerramientaUseCase>();
             services.AddScoped<EliminarHerramientaUseCase>();
+            services.AddScoped<ListarHistorialUseCase>();
 
             services.AddScoped<IApplicationService, ApplicationService>();
 
@@ -64,6 +65,7 @@ namespace ServindAp.Application.DependencyInjection
         public ActualizarHerramientaUseCase ActualizarHerramienta { get; }
         public ObtenerHerramientaUseCase ObtenerHerramienta { get; }
         public EliminarHerramientaUseCase EliminarHerramienta { get; }
+        public ListarHistorialUseCase ListarHistorial { get; }
 
         /// <summary>
         /// Constructor que recibe todos los UseCases.
@@ -81,7 +83,8 @@ namespace ServindAp.Application.DependencyInjection
             CrearHerramientaUseCase crearHerramienta,
             ActualizarHerramientaUseCase actualizarHerramienta,
             ObtenerHerramientaUseCase obtenerHerramienta,
-            EliminarHerramientaUseCase eliminarHerramienta)
+            EliminarHerramientaUseCase eliminarHerramienta,
+            ListarHistorialUseCase listarHistorial)
         {
             CrearPrestamo = crearPrestamo ?? throw new ArgumentNullException(nameof(crearPrestamo));
             ListarPrestamos = listarPrestamos ?? throw new ArgumentNullException(nameof(listarPrestamos));
@@ -95,6 +98,7 @@ namespace ServindAp.Application.DependencyInjection
             ActualizarHerramienta = actualizarHerramienta ?? throw new ArgumentNullException(nameof(actualizarHerramienta));
             ObtenerHerramienta = obtenerHerramienta ?? throw new ArgumentNullException(nameof(obtenerHerramienta));
             EliminarHerramienta = eliminarHerramienta ?? throw new ArgumentNullException(nameof(eliminarHerramienta));
+            ListarHistorial = listarHistorial ?? throw new ArgumentNullException(nameof(listarHistorial));
         }
     }
 }

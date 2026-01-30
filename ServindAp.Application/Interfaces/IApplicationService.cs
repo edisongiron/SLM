@@ -61,5 +61,10 @@ namespace ServindAp.Application.Interfaces
         /// Acceso al UseCase de eliminar herramientas.
         /// </summary>
         UseCases.EliminarHerramientaUseCase EliminarHerramienta { get; }
+
+        /// <summary>
+        /// Acceso al UseCase de listar historial.
+        /// </summary>
+        UseCases.ListarHistorialUseCase ListarHistorial { get; }
     }
 }

@@ -10,6 +10,7 @@ namespace ServindAp.Infrastructure.Data
         public DbSet<Herramienta> Herramientas { get; set; }
         public DbSet<EstadoPrestamo> EstadosPrestamo { get; set; }
         public DbSet<PrestamoHerramienta> PrestamosHerramientas { get; set; }
+        public DbSet<HistorialPrestamoHerramienta> HistorialPrestamosHerramientas { get; set; }
 
         public ServindApDbContext(DbContextOptions<ServindApDbContext> options) : base(options)
         {
@@ -77,6 +78,36 @@ namespace ServindAp.Infrastructure.Data
                     .WithMany()
                     .HasForeignKey(e => e.HerramientaId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Configuración de tabla de Historial (append-only, gestionada por triggers)
+            modelBuilder.Entity<HistorialPrestamoHerramienta>(entity =>
+            {
+                entity.ToTable("Historial");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.PrestamoId).HasColumnName("prestamo_id").IsRequired();
+                entity.Property(e => e.HerramientaId).HasColumnName("herramienta_id").IsRequired();
+                entity.Property(e => e.Cantidad).HasColumnName("cantidad").IsRequired();
+                entity.Property(e => e.TipoEvento).HasColumnName("tipo_evento").IsRequired().HasMaxLength(20);
+                entity.Property(e => e.FechaEvento).HasColumnName("fecha_evento").IsRequired();
+                entity.Property(e => e.Observaciones).HasColumnName("observaciones");
+
+                entity.HasOne(e => e.Prestamo)
+                    .WithMany()
+                    .HasForeignKey(e => e.PrestamoId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Herramienta)
+                    .WithMany()
+                    .HasForeignKey(e => e.HerramientaId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                // Constraint para validar tipo de evento
+                entity.ToTable(t => t.HasCheckConstraint(
+                    "CK_TipoEvento", 
+                    "tipo_evento IN ('PRESTAMO', 'DEVOLUCION', 'DEVOLUCION_CON_DEFECTOS', 'CANCELACION')"
+                ));
             });
 
             base.OnModelCreating(modelBuilder);
