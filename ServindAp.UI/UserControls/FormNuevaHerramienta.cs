@@ -46,7 +46,7 @@ namespace ServindAp.UI.UserControls
 
         private async void FormNuevaHerramienta_Shown(object? sender, EventArgs e)
         {
-            await Task.Delay(50);  // Este sí usa await, se queda con async
+            await Task.Delay(50);
             this.ActiveControl = null;
             panelFondo.Focus();
         }
@@ -55,9 +55,7 @@ namespace ServindAp.UI.UserControls
         {
             EstilizarYPosicionarTodo();
             CentrarPanel();
-
             RedondearPanel();
-            AgregarSombraPanel();
 
             if (btnAgregar != null)
                 btnAgregar.Region = new Region(GetRoundedPath(btnAgregar.ClientRectangle, 12));
@@ -72,7 +70,7 @@ namespace ServindAp.UI.UserControls
         {
             // PANEL CONTENEDOR
             panelContenedor2.Width = 850;
-            panelContenedor2.Height = 500;  
+            panelContenedor2.Height = 500;
             panelContenedor2.BackColor = Color.White;
             panelContenedor2.Padding = new Padding(50);
 
@@ -86,26 +84,27 @@ namespace ServindAp.UI.UserControls
             // LABELS 
             materialLabel2.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             materialLabel2.ForeColor = Color.FromArgb(33, 37, 41);
-            
+
 
             lblStock.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblStock.ForeColor = Color.FromArgb(33, 37, 41);
-            
+
 
             materialLabel1.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             materialLabel1.ForeColor = Color.FromArgb(33, 37, 41);
-            
+
 
             // INPUTS 
             txtNombre.BackColor = Color.FromArgb(248, 249, 250);
 
             txtDescripcion.Font = new Font("Segoe UI", 11F);
             txtDescripcion.BackColor = Color.FromArgb(248, 249, 250);
-            txtDescripcion.Multiline = true;  // Para que sea más grande
+            txtDescripcion.Multiline = true;
+            txtDescripcion.MaxLength = 0;
 
             // BOTONES 
             // AGREGAR 
-            btnAgregar.BackColor = Color.FromArgb(46, 204, 113); // Verde esmeralda
+            btnAgregar.BackColor = Color.FromArgb(46, 204, 113);
             btnAgregar.ForeColor = Color.White;
             btnAgregar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnAgregar.Size = new Size(140, 42);
@@ -114,7 +113,7 @@ namespace ServindAp.UI.UserControls
             btnAgregar.FlatAppearance.BorderSize = 0;
 
             // CANCELAR 
-            btnCancelar.BackColor = Color.FromArgb(149, 165, 166); // Gris neutro
+            btnCancelar.BackColor = Color.FromArgb(149, 165, 166);
             btnCancelar.ForeColor = Color.White;
             btnCancelar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnCancelar.Size = new Size(140, 42);
@@ -142,7 +141,7 @@ namespace ServindAp.UI.UserControls
             // DESCRIPCIÓN - Ancho completo
             materialLabel1.Location = new Point(margenIzq, 100 + espacio + 40);
             txtDescripcion.Location = new Point(margenIzq, 125 + espacio + 40);
-            txtDescripcion.Size = new Size(720, 80);  // Más alto para descripción
+            txtDescripcion.Size = new Size(720, 80);
 
             // BOTONES - Centrados
             int centroPanel = panelContenedor2.Width / 2;
@@ -165,53 +164,6 @@ namespace ServindAp.UI.UserControls
             }
         }
 
-        private void AgregarSombraPanel()
-        {
-            // Capa 1 - Más alejada (difuminado externo)
-            Panel sombra1 = new Panel();
-            sombra1.BackColor = Color.FromArgb(20, 0, 0, 0);
-            sombra1.Size = new Size(
-                panelContenedor2.Width + 20,
-                panelContenedor2.Height + 20
-            );
-            sombra1.Location = new Point(
-                panelContenedor2.Left + 10,
-                panelContenedor2.Top + 10
-            );
-            panelFondo.Controls.Add(sombra1);
-
-            // Capa 2 - Intermedia
-            Panel sombra2 = new Panel();
-            sombra2.BackColor = Color.FromArgb(35, 0, 0, 0);
-            sombra2.Size = new Size(
-                panelContenedor2.Width + 14,
-                panelContenedor2.Height + 14
-            );
-            sombra2.Location = new Point(
-                panelContenedor2.Left + 7,
-                panelContenedor2.Top + 7
-            );
-            panelFondo.Controls.Add(sombra2);
-
-            // Capa 3 - Más cercana (núcleo de la sombra)
-            Panel sombra3 = new Panel();
-            sombra3.BackColor = Color.FromArgb(50, 0, 0, 0);
-            sombra3.Size = new Size(
-                panelContenedor2.Width + 8,
-                panelContenedor2.Height + 8
-            );
-            sombra3.Location = new Point(
-                panelContenedor2.Left + 4,
-                panelContenedor2.Top + 4
-            );
-            panelFondo.Controls.Add(sombra3);
-
-            // Enviar todas las sombras atrás
-            sombra1.SendToBack();
-            sombra2.SendToBack();
-            sombra3.SendToBack();
-        }
-
         private void RedondearPanel()
         {
             int radio = 8;
@@ -228,9 +180,9 @@ namespace ServindAp.UI.UserControls
         public class GradientPanel : Panel
         {
             [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-            public Color Color1 { get; set; } = Color.FromArgb(76, 175, 80);   // Verde
+            public Color Color1 { get; set; } = Color.FromArgb(76, 175, 80);
             [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-            public Color Color2 { get; set; } = Color.FromArgb(33, 150, 243);  // Azul
+            public Color Color2 { get; set; } = Color.FromArgb(33, 150, 243);
 
             protected override void OnPaint(PaintEventArgs e)
             {
@@ -314,7 +266,7 @@ namespace ServindAp.UI.UserControls
                 var request = new CrearHerramientaRequest
                 {
                     Nombre = txtNombre.Text.Trim(),
-                    Descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) 
+                    Descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text)
                         ? null
                         : txtDescripcion.Text.Trim(),
                     Stock = stock
@@ -337,4 +289,3 @@ namespace ServindAp.UI.UserControls
         }
     }
 }
-

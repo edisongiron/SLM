@@ -501,6 +501,7 @@ namespace ServindAp.UI.Forms
             picLupa.Location = new Point(15, (panelBuscador.Height - picLupa.Height) / 2);
             picLupa.SizeMode = PictureBoxSizeMode.Zoom;
 
+            BuscadorTxb.Multiline = false;
             BuscadorTxb.Text = PLACEHOLDER_BUSCADOR;
             BuscadorTxb.ForeColor = Color.Gray;
             BuscadorTxb.Font = new Font("Segoe UI", 14, FontStyle.Regular);
@@ -586,6 +587,7 @@ namespace ServindAp.UI.Forms
             picLupaHerramientas.Location = new Point(15, (panelBuscadorHerramientas.Height - picLupaHerramientas.Height) / 2);
             picLupaHerramientas.SizeMode = PictureBoxSizeMode.Zoom;
 
+            txbBuscadorHerramientas.Multiline = false;
             txbBuscadorHerramientas.Text = PLACEHOLDER_BUSCADOR_HERR;
             txbBuscadorHerramientas.ForeColor = Color.Gray;
             txbBuscadorHerramientas.Font = new Font("Segoe UI", 14, FontStyle.Regular);
@@ -742,11 +744,25 @@ namespace ServindAp.UI.Forms
             {
                 int id = Convert.ToInt32(TablaHerramientas.Rows[e.RowIndex].Cells["ID"].Value);
 
-                FormEditarHerramienta editarForm = new FormEditarHerramienta(_appService, id);
+                // BLOQUEAR LAYOUT DEL FORM1
+                this.SuspendLayout();
 
-                if (editarForm.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    _ = RecargarHerramientas();
+                    FormEditarHerramienta editarForm = new FormEditarHerramienta(_appService, id);
+
+                    if (editarForm.ShowDialog() == DialogResult.OK)
+                    {
+                        _ = RecargarHerramientas();
+                    }
+                }
+                finally
+                {
+                    // DESBLOQUEAR Y RESTAURAR
+                    this.ResumeLayout(false);
+                    RestaurarBuscador();
+                    RestaurarBuscadorHerramientas();
+                    RestaurarBuscadorHistorial();
                 }
             }
 
@@ -766,7 +782,6 @@ namespace ServindAp.UI.Forms
                     EliminarHerramienta(id);
                 }
             }
-
         }
 
 
@@ -830,17 +845,27 @@ namespace ServindAp.UI.Forms
 
             int id = Convert.ToInt32(TablaPrestamos.Rows[e.RowIndex].Cells["ID"].Value);
 
-
             if (col == "btnVer")
             {
-                PrestamoDetalleForm detalleForm = new PrestamoDetalleForm(_appService, id);
-                detalleForm.ShowDialog();
+                // BLOQUEAR LAYOUT DEL FORM1
+                this.SuspendLayout();
 
-                RestaurarBuscador();
+                try
+                {
+                    PrestamoDetalleForm detalleForm = new PrestamoDetalleForm(_appService, id);
+                    detalleForm.ShowDialog();
+                }
+                finally
+                {
+                    // DESBLOQUEAR Y RESTAURAR
+                    this.ResumeLayout(false);
+                    RestaurarBuscador();
+                    RestaurarBuscadorHerramientas();
+                    RestaurarBuscadorHistorial();
+                }
 
-await RecargarPrestamos();
-                        await RecargarHerramientas();
-                        await RecargarHistorial();
+                await RecargarPrestamos();
+                await RecargarHerramientas();
                 await RecargarHistorial();
             }
             else if (col == "btnEliminar")
@@ -868,6 +893,7 @@ await RecargarPrestamos();
                 }
             }
         }
+        
 
         private void ConfigurarBotonNuevoPrestamo()
         {
@@ -912,6 +938,11 @@ await RecargarPrestamos();
 
             try
             {
+                // FORZAR PROPIEDADES CRÍTICAS PRIMERO
+                BuscadorTxb.Multiline = false;
+                BuscadorTxb.WordWrap = false;
+                BuscadorTxb.AutoSize = false;
+
                 // Restaurar panel
                 panelBuscador.Width = buscadorOriginalWidth;
                 panelBuscador.Height = buscadorOriginalHeight;
@@ -922,10 +953,10 @@ await RecargarPrestamos();
                 picLupa.Location = new Point(15, (buscadorOriginalHeight - 24) / 2);
                 picLupa.SizeMode = PictureBoxSizeMode.Zoom;
 
-                //Restaurar TextBox
+                // Restaurar TextBox
                 BuscadorTxb.Font = new Font("Segoe UI", 14, FontStyle.Regular);
                 BuscadorTxb.BackColor = Color.FromArgb(245, 245, 245);
-                BuscadorTxb.ForeColor = BuscadorTxb.Text == PLACEHOLDER_BUSCADOR ? Color.Gray : Color.Black; // ✅ AGREGADO
+                BuscadorTxb.ForeColor = BuscadorTxb.Text == PLACEHOLDER_BUSCADOR ? Color.Gray : Color.Black;
                 BuscadorTxb.Height = 35;
                 BuscadorTxb.Padding = new Padding(5);
                 BuscadorTxb.BorderStyle = BorderStyle.None;
@@ -958,6 +989,11 @@ await RecargarPrestamos();
 
             try
             {
+                // FORZAR PROPIEDADES 
+                txbBuscadorHerramientas.Multiline = false;
+                txbBuscadorHerramientas.WordWrap = false;
+                txbBuscadorHerramientas.AutoSize = false;
+
                 // Restaurar panel
                 panelBuscadorHerramientas.Width = buscadorHerramientasOriginalWidth;
                 panelBuscadorHerramientas.Height = buscadorHerramientasOriginalHeight;
@@ -971,7 +1007,7 @@ await RecargarPrestamos();
                 // Restaurar TextBox
                 txbBuscadorHerramientas.Font = new Font("Segoe UI", 14, FontStyle.Regular);
                 txbBuscadorHerramientas.BackColor = Color.FromArgb(245, 245, 245);
-                txbBuscadorHerramientas.ForeColor = txbBuscadorHerramientas.Text == PLACEHOLDER_BUSCADOR_HERR ? Color.Gray : Color.Black; // ✅ AGREGADO
+                txbBuscadorHerramientas.ForeColor = txbBuscadorHerramientas.Text == PLACEHOLDER_BUSCADOR_HERR ? Color.Gray : Color.Black;
                 txbBuscadorHerramientas.Height = 35;
                 txbBuscadorHerramientas.Padding = new Padding(5);
                 txbBuscadorHerramientas.BorderStyle = BorderStyle.None;
@@ -982,6 +1018,7 @@ await RecargarPrestamos();
                 txbBuscadorHerramientas.Width = buscadorHerramientasOriginalWidth - picLupaHerramientas.Right - 25;
                 txbBuscadorHerramientas.TabStop = false;
                 txbBuscadorHerramientas.HideSelection = true;
+
                 RedondearPanelBuscadorHerramientas();
             }
             finally
@@ -989,7 +1026,6 @@ await RecargarPrestamos();
                 panelBuscadorHerramientas.ResumeLayout(true);
             }
 
-            // Forzar actualización visual
             panelBuscadorHerramientas.Refresh();
             txbBuscadorHerramientas.Refresh();
         }
@@ -1116,7 +1152,7 @@ await RecargarPrestamos();
                         item.Responsable,
                         item.Herramienta,
                         item.Cantidad,
-item.FechaEvento.ToString("dd/MM/yyyy HH:mm"),
+                        item.FechaEvento.ToString("dd/MM/yyyy HH:mm"),
                         item.TipoEventoDescripcion,
                         item.Observaciones ?? ""
                     );
@@ -1137,6 +1173,7 @@ item.FechaEvento.ToString("dd/MM/yyyy HH:mm"),
             picLupaHistorial.Location = new Point(15, (panelBuscadorHistorial.Height - picLupaHistorial.Height) / 2);
             picLupaHistorial.SizeMode = PictureBoxSizeMode.Zoom;
 
+            txbBuscadorHistorial.Multiline = false;
             txbBuscadorHistorial.Text = PLACEHOLDER_BUSCADOR_HIST;
             txbBuscadorHistorial.ForeColor = Color.Gray;
             txbBuscadorHistorial.Font = new Font("Segoe UI", 14, FontStyle.Regular);
@@ -1245,6 +1282,11 @@ item.FechaEvento.ToString("dd/MM/yyyy HH:mm"),
 
             try
             {
+                // FORZAR PROPIEDADES CRÍTICAS PRIMERO
+                txbBuscadorHistorial.Multiline = false;
+                txbBuscadorHistorial.WordWrap = false;
+                txbBuscadorHistorial.AutoSize = false;
+
                 panelBuscadorHistorial.Width = buscadorHistorialOriginalWidth;
                 panelBuscadorHistorial.Height = buscadorHistorialOriginalHeight;
 

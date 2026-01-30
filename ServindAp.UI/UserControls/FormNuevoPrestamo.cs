@@ -130,6 +130,7 @@ namespace ServindAp.UI.UserControls
             txtResponsable.BackColor = Color.FromArgb(248, 249, 250);
 
             txtObservaciones.BackColor = Color.FromArgb(248, 249, 250);
+            txtObservaciones.MaxLength = 0;
 
             cmbHerramienta.Font = new Font("Segoe UI", 11F);
             cmbHerramienta.BackColor = Color.FromArgb(248, 249, 250);
