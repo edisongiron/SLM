@@ -394,7 +394,7 @@ namespace ServindAp.UI.UserControls
             }
             else
             {
-                lblFechaDevolucionValue.Text = "No devuelto";
+                lblFechaDevolucionValue.Text = "Pendiente";
             }
 
             lblEstadoValue.Text = _prestamoActual.Estado;

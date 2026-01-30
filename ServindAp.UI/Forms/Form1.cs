@@ -292,7 +292,6 @@ namespace ServindAp.UI.Forms
         }
 
 
-
         private async Task CargarDatosPrueba()
         {
             try
@@ -402,6 +401,7 @@ namespace ServindAp.UI.Forms
 
         }
 
+
         private async Task CargarDatosPruebaHerramientas()
         {
             try
@@ -424,6 +424,7 @@ namespace ServindAp.UI.Forms
                 MessageBox.Show($"Error al cargar herramientas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void TablaPrestamos_CellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
         {
@@ -1115,27 +1116,18 @@ namespace ServindAp.UI.Forms
             TablaHistorial.AutoGenerateColumns = true;
             TablaHistorial.DataSource = tablaHistorial;
 
-            // Botón Eliminar (solo este botón)
-            DataGridViewButtonColumn btnEliminar = new DataGridViewButtonColumn();
-            btnEliminar.Name = "btnEliminarHist";
-            btnEliminar.HeaderText = "";
-            btnEliminar.Text = "Eliminar";
-            btnEliminar.UseColumnTextForButtonValue = true;
-            TablaHistorial.Columns.Add(btnEliminar);
-
             // ANCHOS DE COLUMNA
-            TablaHistorial.Columns["ID"]?.Width = 60;
-            TablaHistorial.Columns["Responsable"]?.Width = 150;
-            TablaHistorial.Columns["Herramienta"]?.Width = 150;
-            TablaHistorial.Columns["Cantidad"]?.Width = 100;
-            TablaHistorial.Columns["Fecha evento"]?.Width = 140;
-            TablaHistorial.Columns["Tipo evento"]?.Width = 120;
+            TablaHistorial.Columns["ID"]!.Width = 80;
+            TablaHistorial.Columns["Responsable"]!.Width = 220;
+            TablaHistorial.Columns["Herramienta"]!.Width = 260;
+            TablaHistorial.Columns["Cantidad"]!.Width = 150;
+            TablaHistorial.Columns["Fecha evento"]!.Width = 220;
+            TablaHistorial.Columns["Tipo evento"]!.Width = 160;
 
-            var colObservaciones = TablaHistorial.Columns["Observaciones"];
-            if (colObservaciones != null)
-                colObservaciones.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            // Observaciones ocupa el espacio restante
+            TablaHistorial.Columns["Observaciones"]!.AutoSizeMode =
+                DataGridViewAutoSizeColumnMode.Fill;
 
-            TablaHistorial.Columns["btnEliminarHist"]?.Width = 100;
         }
 
         private async Task CargarDatosHistorial()
@@ -1327,85 +1319,13 @@ namespace ServindAp.UI.Forms
 
             var columna = TablaHistorial.Columns[e.ColumnIndex];
 
-            if (columna?.Name == "btnEliminarHist")
-            {
-                var graphics = e.Graphics;
-                if (graphics == null)
-                    return;
-
-                e.PaintBackground(e.CellBounds, true);
-
-                Color colorBoton = Color.FromArgb(239, 83, 80); // Rojo
-                string texto = "Eliminar";
-
-                int margen = 6;
-                Rectangle rect = new Rectangle(
-                    e.CellBounds.X + margen,
-                    e.CellBounds.Y + 6,
-                    e.CellBounds.Width - (margen * 2),
-                    e.CellBounds.Height - 12
-                );
-
-                if (rect.Width > 0 && rect.Height > 0)
-                {
-                    using (SolidBrush brush = new SolidBrush(colorBoton))
-                    {
-                        graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                        graphics.FillRectangle(brush, rect);
-                    }
-
-                    TextRenderer.DrawText(
-                        graphics,
-                        texto,
-                        new Font("Segoe UI", 9, FontStyle.Bold),
-                        rect,
-                        Color.White,
-                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
-                    );
-                }
-                e.Handled = true;
-            }
+            
         }
 
         private async void TablaHistorial_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
-                return;
-
-            if (TablaHistorial.Columns[e.ColumnIndex]?.Name == "btnEliminarHist")
-            {
-                int id = Convert.ToInt32(TablaHistorial.Rows[e.RowIndex].Cells["ID"].Value);
-
-                var confirmacion = MessageBox.Show(
-                    "⚠️ El historial es un registro de auditoría inmutable.\n\n" +
-                    "¿Estás seguro de que deseas eliminar este registro?\n" +
-                    "Esta acción no se puede deshacer y afectará la integridad del historial.",
-                    "Confirmación - Advertencia",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-
-                if (confirmacion == DialogResult.Yes)
-                {
-                    try
-                    {
-                        // Nota: El sistema de historial está diseñado como append-only
-                        // La eliminación directa no está permitida por diseño
-                        MessageBox.Show(
-                            "❌ Operación no permitida\n\n" +
-                            "El historial está diseñado como un registro de auditoría inmutable.\n" +
-                            "Los registros del historial no pueden eliminarse para mantener la integridad de los datos.",
-                            "Restricción de Seguridad",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
+                return; 
         }
 
         private async Task RecargarHistorial()
