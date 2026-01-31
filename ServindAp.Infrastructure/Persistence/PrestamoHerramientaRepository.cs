@@ -38,6 +38,11 @@ namespace ServindAp.Infrastructure.Persistence
 
         public async Task ActualizarAsync(PrestamoHerramienta prestamoHerramienta)
         {
+            // Marcar explícitamente la propiedad TieneDefectosTemp como modificada
+            // para garantizar que Entity Framework la incluya en el UPDATE
+            // Esto es crucial para que el trigger pueda detectar el cambio
+            _context.Entry(prestamoHerramienta).Property(e => e.TieneDefectosTemp).IsModified = true;
+            
             _context.PrestamosHerramientas.Update(prestamoHerramienta);
             await _context.SaveChangesAsync();
         }

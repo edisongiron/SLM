@@ -468,7 +468,7 @@ namespace ServindAp.UI.Forms
             }
         }
 
-        private void BuscadorTxb_TextChanged(object sender, EventArgs e)
+        private void BuscadorTxb_TextChanged(object? sender, EventArgs e)
         {
             if (TablaPrestamos.DataSource == null)
                 return;

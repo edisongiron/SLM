@@ -68,6 +68,11 @@ namespace ServindAp.Infrastructure.Data
                 entity.Property(e => e.PrestamoId).HasColumnName("prestamo_id").IsRequired();
                 entity.Property(e => e.HerramientaId).HasColumnName("herramienta_id").IsRequired();
                 entity.Property(e => e.Cantidad).HasColumnName("cantidad").IsRequired();
+                
+                // Columna temporal para manejar defectos en devoluciones parciales
+                entity.Property(e => e.TieneDefectosTemp)
+                    .HasColumnName("tiene_defectos_temp")
+                    .HasDefaultValue(false);
 
                 entity.HasOne(e => e.Prestamo)
                     .WithMany()

@@ -43,13 +43,13 @@ namespace ServindAp.Infrastructure.Persistence
             if (string.IsNullOrWhiteSpace(observaciones))
                 return;
 
-            // Actualizar solo los registros de DEVOLUCION recientes (último minuto)
+            // Actualizar solo los registros de DEVOLUCION y DEVOLUCION_CON_DEFECTOS recientes (último minuto)
             // que no tienen observaciones aún
             var sql = @"
                 UPDATE Historial 
                 SET observaciones = {0}
                 WHERE prestamo_id = {1} 
-                  AND tipo_evento = 'DEVOLUCION'
+                  AND tipo_evento IN ('DEVOLUCION', 'DEVOLUCION_CON_DEFECTOS')
                   AND (observaciones IS NULL OR observaciones = '')
                   AND fecha_evento >= datetime('now', '-1 minute', 'localtime')
             ";

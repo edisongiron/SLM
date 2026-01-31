@@ -2,12 +2,7 @@ using MaterialSkin;
 using MaterialSkin.Controls;
 using ServindAp.Application.DTOs;
 using ServindAp.Application.UseCases;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace ServindAp.UI.UserControls
 {
@@ -196,8 +191,16 @@ namespace ServindAp.UI.UserControls
 
             dgvHerramientas.DataSource = table;
 
-            // Ocultar columna ID
+// Ocultar columna ID
             dgvHerramientas.Columns["HerramientaId"]?.Visible = false;
+
+            // Configurar columnas no editables (solo lectura)
+            dgvHerramientas.Columns["Herramienta"]?.ReadOnly = true;
+            dgvHerramientas.Columns["Cantidad Pendiente"]?.ReadOnly = true;
+            
+            // Configurar estilo visual para columnas de solo lectura
+            dgvHerramientas.Columns["Herramienta"]?.DefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
+            dgvHerramientas.Columns["Cantidad Pendiente"]?.DefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
 
             dgvHerramientas.Columns["Herramienta"]?.FillWeight = 35;
             dgvHerramientas.Columns["Cantidad Pendiente"]?.FillWeight = 40;
@@ -212,7 +215,7 @@ namespace ServindAp.UI.UserControls
         {
             if (dgvHerramientas.Columns[e.ColumnIndex].Name == "Cantidad a Devolver")
             {
-                if (!int.TryParse(e.FormattedValue.ToString(), out int cantidadDevolver))
+                if (!int.TryParse(e.FormattedValue?.ToString(), out int cantidadDevolver))
                 {
                     e.Cancel = true;
                     MessageBox.Show("Debe ingresar un número válido", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -254,7 +257,6 @@ namespace ServindAp.UI.UserControls
 
         private void BtnAceptar_Click(object? sender, EventArgs e)
         {
-            // Validar que al menos una herramienta tenga cantidad > 0
             var herramientasSeleccionadas = ObtenerHerramientasSeleccionadas();
 
             if (!herramientasSeleccionadas.Any())
@@ -286,11 +288,6 @@ namespace ServindAp.UI.UserControls
             }
 
             return lista;
-        }
-
-        private void FormDevolucionParcial_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

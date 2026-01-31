@@ -99,11 +99,25 @@ namespace ServindAp.Application.UseCases
                         $"Intentando devolver: {itemDevolucion.CantidadADevolver}");
                 }
 
+                // Establecer flag temporal si hay defectos (para que el trigger lo detecte)
+                if (request.TieneDefectos)
+                {
+                    prestamoHerramienta.TieneDefectosTemp = true;
+                    System.Diagnostics.Debug.WriteLine($"✅ Estableciendo TieneDefectosTemp = true para PH ID: {prestamoHerramienta.Id}, Herramienta: {prestamoHerramienta.HerramientaId}");
+                }
+                else
+                {
+                    // EXPLÍCITAMENTE establecer a false cuando no hay defectos
+                    prestamoHerramienta.TieneDefectosTemp = false;
+                    System.Diagnostics.Debug.WriteLine($"❌ Estableciendo TieneDefectosTemp = false para PH ID: {prestamoHerramienta.Id}, Herramienta: {prestamoHerramienta.HerramientaId}");
+                }
+
                 // Registrar la devolución parcial en la entidad (reduce la cantidad)
                 prestamoHerramienta.RegistrarDevolucion(itemDevolucion.CantidadADevolver);
 
-                // Actualizar en BD (el trigger registrará automáticamente en historial)
+                // Actualizar en BD (el trigger registrará automáticamente en historial usando el flag temporal)
                 await _prestamoHerramientaRepository.ActualizarAsync(prestamoHerramienta);
+                System.Diagnostics.Debug.WriteLine($"💾 Después del UPDATE - PH ID: {prestamoHerramienta.Id}, TieneDefectosTemp: {prestamoHerramienta.TieneDefectosTemp}");
 
                 // Devolver el stock a la herramienta
                 var herramienta = await _herramientaRepository.ObtenerPorIdAsync(itemDevolucion.HerramientaId);

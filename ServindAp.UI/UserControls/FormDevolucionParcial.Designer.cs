@@ -23,7 +23,6 @@ namespace ServindAp.UI.UserControls
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(700, 550);
             Name = "FormDevolucionParcial";
-            Load += FormDevolucionParcial_Load;
             ResumeLayout(false);
         }
     }

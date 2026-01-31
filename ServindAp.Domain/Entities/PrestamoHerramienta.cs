@@ -1,4 +1,4 @@
-﻿namespace ServindAp.Domain.Entities
+namespace ServindAp.Domain.Entities
 {
     public class PrestamoHerramienta
     {
@@ -6,6 +6,10 @@
         public int PrestamoId { get; set; }
         public int HerramientaId { get; set; }
         public int Cantidad { get; set; }
+        
+        // Columna temporal para detectar defectos en devoluciones parciales
+        // No se mapea a la base de datos permanentemente, solo se usa temporalmente
+        public bool TieneDefectosTemp { get; set; }
 
         // Navegación
         public Prestamo? Prestamo { get; set; }

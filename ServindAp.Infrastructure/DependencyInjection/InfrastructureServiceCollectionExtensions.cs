@@ -27,6 +27,9 @@ namespace ServindAp.Infrastructure.DependencyInjection
             var context = scope.ServiceProvider.GetRequiredService<ServindApDbContext>();
             context.Database.EnsureCreated();
             
+            // Verificar y crear columna temporal para defectos si no existe
+            EnsureTieneDefectosTempColumnExists(context);
+            
             // Crear triggers de historial automático
             CreateHistorialTriggers(context);
         }
@@ -77,15 +80,24 @@ namespace ServindAp.Infrastructure.DependencyInjection
                         NEW.herramienta_id,
                         OLD.cantidad - NEW.cantidad,  -- Cantidad devuelta
                         CASE 
+                            -- Prioridad 1: Usar flag temporal para devoluciones parciales con defectos
+                            WHEN NEW.tiene_defectos_temp = 1 THEN 'DEVOLUCION_CON_DEFECTOS'
+                            -- Prioridad 2: Verificar estado del préstamo (devoluciones completas)
                             WHEN EXISTS (
                                 SELECT 1 FROM Prestamos p 
                                 WHERE p.id = NEW.prestamo_id 
                                 AND p.estado_prestamo = 3  -- Devuelto con Defectos
                             ) THEN 'DEVOLUCION_CON_DEFECTOS'
+                            -- Por defecto: devolución normal
                             ELSE 'DEVOLUCION'
                         END,
                         datetime('now', 'localtime')
                     );
+                    
+                    -- Limpiar el flag temporal después de usarlo
+                    UPDATE Prestamo_Herramienta 
+                    SET tiene_defectos_temp = 0 
+                    WHERE id = NEW.id;
                 END;
             ";
             
@@ -118,6 +130,64 @@ namespace ServindAp.Infrastructure.DependencyInjection
             context.Database.ExecuteSqlRaw(triggerPrestamo);
             context.Database.ExecuteSqlRaw(triggerDevolucion);
             context.Database.ExecuteSqlRaw(triggerCancelacion);
+        }
+
+        /// <summary>
+        /// Verifica y crea la columna temporal para defectos si no existe.
+        /// Esto es necesario porque EnsureCreated() no modifica tablas existentes.
+        /// </summary>
+        private static void EnsureTieneDefectosTempColumnExists(ServindApDbContext context)
+        {
+            try
+            {
+                // Verificar si la columna existe usando PRAGMA
+                var reader = context.Database.GetDbConnection().CreateCommand();
+                reader.CommandText = "PRAGMA table_info('Prestamo_Herramienta')";
+                
+                bool columnExists = false;
+                if (reader.Connection?.State != System.Data.ConnectionState.Open)
+                    reader.Connection?.Open();
+                    
+                using (var result = reader.ExecuteReader())
+                {
+                    while (result.Read())
+                    {
+                        string columnName = result.GetString(1); // segunda columna es el nombre
+                        if (columnName == "tiene_defectos_temp")
+                        {
+                            columnExists = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // Si la columna no existe, agregarla
+                if (!columnExists)
+                {
+                    context.Database.ExecuteSqlRaw(
+                        "ALTER TABLE Prestamo_Herramienta ADD COLUMN tiene_defectos_temp INTEGER NOT NULL DEFAULT 0"
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log del error pero continúa para no bloquear el inicio
+                System.Diagnostics.Debug.WriteLine($"Error verificando columna tiene_defectos_temp: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                
+                // Intento de respaldo: ejecutar el ALTER TABLE directamente
+                try
+                {
+                    context.Database.ExecuteSqlRaw(
+                        "ALTER TABLE Prestamo_Herramienta ADD COLUMN tiene_defectos_temp INTEGER NOT NULL DEFAULT 0"
+                    );
+                    System.Diagnostics.Debug.WriteLine("Columna tiene_defectos_temp agregada por método de respaldo");
+                }
+                catch (Exception fallbackEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error en método de respaldo: {fallbackEx.Message}");
+                }
+            }
         }
     }
 }
