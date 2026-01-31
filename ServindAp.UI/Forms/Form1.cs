@@ -275,7 +275,7 @@ namespace ServindAp.UI.Forms
 
             //ANCHO DE COLUMNA
 
-            TablaPrestamos.Columns["ID"]?.Width = 60;
+            TablaPrestamos.Columns["ID"]?.Width = 80;
             TablaPrestamos.Columns["Responsable"]?.Width = 180;
             TablaPrestamos.Columns["Herramienta"]?.Width = 200;
             TablaPrestamos.Columns["Cantidad"]?.Width = 150;
@@ -1118,11 +1118,11 @@ namespace ServindAp.UI.Forms
 
             // ANCHOS DE COLUMNA
             TablaHistorial.Columns["ID"]!.Width = 80;
-            TablaHistorial.Columns["Responsable"]!.Width = 220;
-            TablaHistorial.Columns["Herramienta"]!.Width = 260;
-            TablaHistorial.Columns["Cantidad"]!.Width = 150;
-            TablaHistorial.Columns["Fecha evento"]!.Width = 220;
-            TablaHistorial.Columns["Tipo evento"]!.Width = 160;
+            TablaHistorial.Columns["Responsable"]!.Width = 200;
+            TablaHistorial.Columns["Herramienta"]!.Width = 220;
+            TablaHistorial.Columns["Cantidad"]!.Width = 140;
+            TablaHistorial.Columns["Fecha evento"]!.Width = 200;
+            TablaHistorial.Columns["Tipo evento"]!.Width = 240;
 
             // Observaciones ocupa el espacio restante
             TablaHistorial.Columns["Observaciones"]!.AutoSizeMode =
