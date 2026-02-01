@@ -36,6 +36,7 @@ namespace ServindAp.UI.Forms
         public Form1(IApplicationService appService)
         {
             InitializeComponent();
+
             _appService = appService ?? throw new ArgumentNullException(nameof(appService));
 
             WindowState = FormWindowState.Maximized;
@@ -68,10 +69,32 @@ namespace ServindAp.UI.Forms
             panelBuscadorHistorial.Paint += PanelBuscadorHistorial_Paint;
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            // Asignar el ícono DESPUÉS de que MaterialSkin inicialice
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico");
+            if (File.Exists(iconPath))
+            {
+                this.Icon = new Icon(iconPath);
+            }
+        }
+
+
         private async void Form1_Load(object? sender, EventArgs e)
         {
             try
             {
+                this.ShowInTaskbar = true;
+                this.ShowIcon = true;
+                this.Text = "Servind";
+                var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico");
+                if (File.Exists(iconPath))
+                {
+                    this.Icon = new Icon(iconPath);
+                }
+
                 //Prestamos
                 ConfigurarEstiloTabla();
                 CrearColumnas();
@@ -91,6 +114,20 @@ namespace ServindAp.UI.Forms
                 CrearColumnasHistorial();
                 await CargarDatosHistorial();
                 LayoutTabHistorial();
+
+                var timer = new System.Windows.Forms.Timer();
+                timer.Interval = 1; // intervalo en ms
+                timer.Tick += (s, args) =>
+                {
+                    timer.Stop();
+                    var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico");
+                    if (File.Exists(iconPath))
+                    {
+                        this.Icon = new Icon(iconPath);
+                        this.ShowIcon = true;
+                    }
+                };
+                timer.Start();
             }
             catch (Exception ex)
             {
@@ -198,6 +235,13 @@ namespace ServindAp.UI.Forms
             DrawerShowIconsWhenHidden = true;
             DrawerHighlightWithAccent = true;
             DrawerBackgroundWithAccent = false;
+
+            this.ShowIcon = true;
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico");
+            if (File.Exists(iconPath))
+            {
+                this.Icon = new Icon(iconPath);
+            }
         }
 
         private void ConfigurarEstiloTabla()

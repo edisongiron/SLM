@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ServindAp.Application.DependencyInjection;
 using ServindAp.Infrastructure.DependencyInjection;
 using ServindAp.UI.Forms;
+using System.Runtime.InteropServices;
+
 
 namespace ServindAp.UI
 {
@@ -13,6 +15,8 @@ namespace ServindAp.UI
         [STAThread]
         static void Main()
         {
+            SetAppUserModelID("ServindAp.UI");
+
             ApplicationConfiguration.Initialize();
 
             var services = new ServiceCollection();
@@ -30,7 +34,30 @@ namespace ServindAp.UI
             InfrastructureServiceCollectionExtensions.InitializeDatabase(serviceProvider);
 
             var mainForm = serviceProvider.GetRequiredService<Form1>();
+
+            mainForm.Text = "Servind";
+            mainForm.Icon = new Icon(
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico")
+            );
+            mainForm.ShowIcon = true;
+            mainForm.ShowInTaskbar = true;
+
             System.Windows.Forms.Application.Run(mainForm);
+
+        }
+
+        internal static class NativeMethods
+        {
+            [DllImport("shell32.dll", SetLastError = true)]
+            internal static extern int SetCurrentProcessExplicitAppUserModelID(string AppID);
+        }
+
+        internal static void SetAppUserModelID(string appId)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                NativeMethods.SetCurrentProcessExplicitAppUserModelID(appId);
+            }
         }
     }
 }
